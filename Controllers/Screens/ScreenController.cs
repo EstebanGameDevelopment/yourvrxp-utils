@@ -233,8 +233,21 @@ namespace yourvrexperience.Utils
             CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
-        public void CreateScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        public void CreateWorldScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
+            GameObject newScreen = CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			newScreen.transform.position = position;
+			newScreen.transform.forward = forward;
+			newScreen.transform.localScale = new Vector3(scale, scale, scale);
+			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+        }
+		public void CreateScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        {
+			CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+		}
+        private GameObject CreateSingleScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        {
+			GameObject newScreen = null;
             if (destroyPreviousScreen)
             {
                 DestroyScreens();
@@ -260,7 +273,7 @@ namespace yourvrexperience.Utils
 				{
 					if (Screens[i].name == nameScreen)
 					{
-						GameObject newScreen = Instantiate(Screens[i]);
+						newScreen = Instantiate(Screens[i]);
 						newScreen.transform.parent = this.transform;
 						_screensCreated.Add(newScreen);
 						if (newScreen.GetComponent<IScreenView>() != null)  newScreen.GetComponent<IScreenView>().Initialize(parameters);
@@ -281,6 +294,7 @@ namespace yourvrexperience.Utils
 					}
 				}
             }
+			return newScreen;
         }
 
         public void DestroyScreens()
