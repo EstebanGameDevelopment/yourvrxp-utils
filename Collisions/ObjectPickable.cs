@@ -13,6 +13,9 @@ namespace yourvrexperience.Utils
 {
 	[RequireComponent(typeof(Collider))]
 	[RequireComponent(typeof(Rigidbody))]
+#if ENABLE_ULTIMATEXR
+	[RequireComponent(typeof(UxrGrabbableObject))]
+#endif	
     public class ObjectPickable : MonoBehaviour, IObjectPickable
     {
 		public const string EventObjectPickableGrabbed = "EventObjectPickableGrabbed";
