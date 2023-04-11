@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -104,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 2
+    serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -117,7 +117,7 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    buildHeightMesh: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23d62611bb7343241bc3755469afde02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DistanceScreen: 1.2
   Screens:
   - {fileID: 2138772302884864254, guid: 7c6c3f249f52ca847a04906f437834b0, type: 3}
   - {fileID: 1039042156429949042, guid: c517c096fc9db7444983500e8c6daf08, type: 3}
@@ -267,8 +268,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9f35c60b8d6734ba7869ae533e36fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerDesktopPrefab: {fileID: 1994694427569012878, guid: 29b2ebb8bce835f4aa06758d2e06f1a6, type: 3}
-  LevelPrefab: {fileID: 1197921396952565035, guid: dbf857a7e20d92a4f9d593ad6bf665df, type: 3}
+  PlayerDesktopPrefab: {fileID: 1994694427569012878, guid: 29b2ebb8bce835f4aa06758d2e06f1a6,
+    type: 3}
+  LevelPrefab: {fileID: 1197921396952565035, guid: dbf857a7e20d92a4f9d593ad6bf665df,
+    type: 3}
 --- !u!1 &367315455
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,9 +424,17 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -509,7 +520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c41dd7964f9df41bd4173390834ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AssetBundleURL: https://www.yourvrexperience.com/mygames/multiuserapp/multiuserapp
+  AssetBundleURL: https://www.yourvrexperience.com/mygames/yourvrxrframework/yourvrxrframework
   AssetBundleVersion: 1
 --- !u!1 &1410056574
 GameObject:
@@ -521,6 +532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1410056576}
   - component: {fileID: 1410056575}
+  - component: {fileID: 1410056577}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -605,6 +617,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1410056577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410056574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!1 &1529765696
 GameObject:
   m_ObjectHideFlags: 0
