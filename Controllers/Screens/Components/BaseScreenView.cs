@@ -34,7 +34,7 @@ namespace yourvrexperience.Utils
 
 		public virtual void Destroy()
 		{
-			SystemEventController.Instance.DispatchSystemEvent(EventBaseScreenViewDestroyed, this.gameObject);			
+			SystemEventController.Instance.DelaySystemEvent(EventBaseScreenViewDestroyed, 0.1f);			
 		}
 	}
 }

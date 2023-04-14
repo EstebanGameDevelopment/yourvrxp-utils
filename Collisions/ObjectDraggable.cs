@@ -9,18 +9,20 @@ namespace yourvrexperience.Utils
 		[SerializeField] private float SizeCube = 1;
 		[SerializeField] private string CastingTarget = "Floor";
 		[SerializeField] private string CastingForbidden = "Forbidden";
-		[SerializeField] private Vector3 ShiftFromFloor = new Vector3(0, 0.5f, 0);
 
 		private int _forbiddenMaskLayer = -1;
 		private int _floorMaskLayer = -1;
-		protected Vector3 _shiftFromFloor;
 
 		protected override void Start()
 		{
 			base.Start();
-			_shiftFromFloor = ShiftFromFloor;
 			_floorMaskLayer = LayerMask.GetMask(CastingTarget);
 			_forbiddenMaskLayer = LayerMask.GetMask(CastingForbidden);
+		}
+
+		private Vector3 GetShiftFromFloor()
+		{
+			return new Vector3(0, SizeCube, 0) * Mathf.Abs(this.transform.localScale.y/2);
 		}
 
 		private void AdjustPosition(Vector3 position, Vector3 normal)
@@ -30,7 +32,7 @@ namespace yourvrexperience.Utils
 			Vector3 positionFloor = RaycastingTools.GetRaycastOriginForward(finalAirPosition, Vector3.down, ref hitData, 1000, _floorMaskLayer);
 			if (positionFloor != Vector3.zero)
 			{
-				this.transform.position = positionFloor + _shiftFromFloor;
+				this.transform.position = positionFloor + GetShiftFromFloor();
 			}			
 		}
 
@@ -73,7 +75,7 @@ namespace yourvrexperience.Utils
 
 				if (!isForbidden)
 				{
-					this.transform.position = positionFloor + _shiftFromFloor;
+					this.transform.position = positionFloor + GetShiftFromFloor();
 				}
 				else
 				{
