@@ -31,7 +31,10 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-        [SerializeField] private float grabbedObjectDistance = 1;
+        [SerializeField] protected float grabbedObjectDistance = 1;
+		[SerializeField] protected float SizeCube = 1;
+		[SerializeField] protected string CastingTarget = "Floor";
+		[SerializeField] protected string CastingForbidden = "Forbidden";		
 #if ENABLE_ULTIMATEXR
         private UxrGrabbableObject _grabbableObject;
 #endif
@@ -41,6 +44,9 @@ namespace yourvrexperience.Utils
         protected Collider _collider;
         protected Rigidbody _rigidBody;
         protected int _layer;
+		protected int _forbiddenMaskLayer = -1;
+		protected int _floorMaskLayer = -1;
+
 
 		public bool IsGrabbed
 		{
@@ -62,6 +68,9 @@ namespace yourvrexperience.Utils
 
         protected virtual void Start()
         {
+			_floorMaskLayer = LayerMask.GetMask(CastingTarget);
+			_forbiddenMaskLayer = LayerMask.GetMask(CastingForbidden);
+
 #if (ENABLE_ULTIMATEXR)
             _grabbableObject = GetComponent<UxrGrabbableObject>();
 			if (_grabbableObject != null)
@@ -148,6 +157,21 @@ namespace yourvrexperience.Utils
 			Vector3 nextPosition = positionController + forwardController * grabbedObjectDistance;
 			this.transform.position = nextPosition;
         }
+
+		protected Vector3 GetShiftFromFloor()
+		{
+			return new Vector3(0, SizeCube, 0) * Mathf.Abs(this.transform.localScale.y/2);
+		}
+
+		public void FloorAdjustment()
+		{
+			RaycastHit hitData = new RaycastHit();
+			Vector3 positionFloor = RaycastingTools.GetRaycastOriginForward(this.transform.position, Vector3.down, ref hitData, 1000, _floorMaskLayer);
+			if (positionFloor != Vector3.zero)
+			{
+				this.transform.position = positionFloor + GetShiftFromFloor();
+			}			
+		}
 
         protected virtual void Update()
         {

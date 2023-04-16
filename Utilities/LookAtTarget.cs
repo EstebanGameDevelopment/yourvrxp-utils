@@ -12,6 +12,11 @@ namespace yourvrexperience.Utils
             _target = target;
         }
 
+        public Transform GetTarget()
+        {
+            return _target;
+        }
+
         void Update()
         {
             if (_target != null)

@@ -6,23 +6,9 @@ namespace yourvrexperience.Utils
 	[RequireComponent(typeof(Rigidbody))]
     public class ObjectDraggable : ObjectPickable
     {
-		[SerializeField] private float SizeCube = 1;
-		[SerializeField] private string CastingTarget = "Floor";
-		[SerializeField] private string CastingForbidden = "Forbidden";
-
-		private int _forbiddenMaskLayer = -1;
-		private int _floorMaskLayer = -1;
-
 		protected override void Start()
 		{
 			base.Start();
-			_floorMaskLayer = LayerMask.GetMask(CastingTarget);
-			_forbiddenMaskLayer = LayerMask.GetMask(CastingForbidden);
-		}
-
-		private Vector3 GetShiftFromFloor()
-		{
-			return new Vector3(0, SizeCube, 0) * Mathf.Abs(this.transform.localScale.y/2);
 		}
 
 		private void AdjustPosition(Vector3 position, Vector3 normal)
