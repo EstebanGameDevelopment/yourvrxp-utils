@@ -73,6 +73,28 @@ namespace yourvrexperience.Utils
 			return Vector3.zero;
 		}
 
+		public static Vector3 GetRaycastOriginForwardIgnoreLayer(Vector3 origin, Vector3 forward, ref RaycastHit hitCollision, float distance, int mask = -1)
+		{
+			Vector3 fwd = forward.normalized;
+
+			if (mask != -1)
+			{
+				{
+				if (Physics.Raycast(origin, fwd, out hitCollision, distance, ~mask))
+					return hitCollision.point;
+				}
+			}
+			else
+			{
+				if (Physics.Raycast(origin, fwd, out hitCollision, distance))
+				{
+					return hitCollision.point;
+				}
+			}
+
+			return Vector3.zero;
+		}
+
 		public static GameObject GetRaycastObject(Vector3 origin, Vector3 forward, float distance, ref RaycastHit hitCollision, int mask = -1)
 		{
 			Vector3 fwd = forward.normalized;
