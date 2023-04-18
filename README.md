@@ -1,2 +1,2 @@
 # yourvrxp-utils
-Utilities
+Collection of basic utilities for app development.
