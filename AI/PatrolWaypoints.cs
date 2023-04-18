@@ -139,9 +139,9 @@ namespace yourvrexperience.Utils
 
 		public void UnPack(string data)
 		{
-			string[] dataArray = data.Split(SeparatorPatrol, StringSplitOptions.None);
+			string[] dataArray = data.Split(new String[]{SeparatorPatrol}, data.Length, StringSplitOptions.None);
 
-			string[] waypointsArray = dataArray[0].Split(SeparatorWaypoints, StringSplitOptions.None);
+			string[] waypointsArray = dataArray[0].Split(new String[]{SeparatorWaypoints}, data.Length, StringSplitOptions.None);
 			Waypoints = new Waypoint[waypointsArray.Length];
 			for (int i = 0; i < Waypoints.Length; i++)
 			{
@@ -154,7 +154,7 @@ namespace yourvrexperience.Utils
 			EnableRotationToWaypoint = bool.Parse(dataArray[2]);
 			AutoStart = bool.Parse(dataArray[3]);
 
-			string[] masksArray = dataArray[4].Split(SeparatorMasks, StringSplitOptions.None);
+			string[] masksArray = dataArray[4].Split(new String[]{SeparatorMasks}, data.Length, StringSplitOptions.None);
 			MasksToIgnore = new string[masksArray.Length];
 			for (int i = 0; i < MasksToIgnore.Length; i++)
 			{

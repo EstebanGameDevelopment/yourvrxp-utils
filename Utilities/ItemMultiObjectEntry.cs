@@ -115,13 +115,13 @@ namespace yourvrexperience.Utils
 
 		public static ItemMultiObjectEntry Parse(string dataString)
 		{
-			ItemMultiObjectEntry output = new ItemMultiObjectEntry();
-			string[] data = dataString.Split(TokenSeparatorEntry, StringSplitOptions.None);
+			ItemMultiObjectEntry output = new ItemMultiObjectEntry();			
+			string[] data = dataString.Split(new String[]{TokenSeparatorEntry}, dataString.Length, StringSplitOptions.None);
 			for (int i = 0; i < data.Length; i++)
 			{
 				if (data[i] != null)
 				{
-					string[] item = data[i].Split(TokenSeparatorData, StringSplitOptions.None);
+					string[] item = data[i].Split(new String[]{TokenSeparatorData}, data.Length, StringSplitOptions.None);
 					if (item.Length == 2)
 					{
 						Type myType = Type.GetType(item[0]);

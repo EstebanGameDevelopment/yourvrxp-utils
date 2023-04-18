@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace yourvrexperience.Utils
@@ -60,7 +58,7 @@ namespace yourvrexperience.Utils
 
 		public void UnPack(string data)
 		{
-			string[] dataArray = data.Split(SeparatorWaypoint, StringSplitOptions.None);
+			string[] dataArray = data.Split(new String[]{SeparatorWaypoint}, data.Length, StringSplitOptions.None);
 			Action = (ActionsPatrol)int.Parse(dataArray[0]);
 			Position = Utilities.DeserializeVector3(dataArray[1]);
 			Duration = float.Parse(dataArray[2]);

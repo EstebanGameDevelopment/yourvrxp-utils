@@ -169,7 +169,7 @@ namespace yourvrexperience.Utils
 
 		public static Vector2 DeserializeVector2(string data)
 		{
-			string[] buffer = data.Split(SeparatorBasicTypes, StringSplitOptions.None);
+			string[] buffer = data.Split(new String[]{SeparatorBasicTypes}, data.Length, StringSplitOptions.None);
 			return new Vector2(float.Parse(buffer[0]), float.Parse(buffer[1]));
 		}
 
@@ -185,13 +185,13 @@ namespace yourvrexperience.Utils
 
 		public static Quaternion DeserializeQuaternion(string data)
 		{
-			string[] buffer = data.Split(SeparatorBasicTypes, StringSplitOptions.None);
+			string[] buffer = data.Split(new String[]{SeparatorBasicTypes}, data.Length, StringSplitOptions.None);
 			return new Quaternion(float.Parse(buffer[0]), float.Parse(buffer[1]), float.Parse(buffer[2]), float.Parse(buffer[3]));
 		}
 
 		public static Color UnpackColor(string color)
 		{
-			string[] colorData = color.Split(SeparatorBasicTypes, StringSplitOptions.None);
+			string[] colorData = color.Split(new String[]{SeparatorBasicTypes}, color.Length, StringSplitOptions.None);
 			return new Color(float.Parse(colorData[0]),float.Parse(colorData[1]),float.Parse(colorData[2]),float.Parse(colorData[3]));
 		}
 
