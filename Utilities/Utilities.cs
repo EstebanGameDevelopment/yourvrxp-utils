@@ -195,6 +195,26 @@ namespace yourvrexperience.Utils
 			return new Color(float.Parse(colorData[0]),float.Parse(colorData[1]),float.Parse(colorData[2]),float.Parse(colorData[3]));
 		}
 
+		public static string SerializeIntList(List<int> data)
+		{
+			string output = "";
+			for (int i = 0; i < data.Count; i++)
+			{
+				output += data[i].ToString();
+				if (i < data.Count - 1) output += SeparatorBasicTypes;
+			}
+			return output;
+		}
+		public static void DeserializeIntList(string data, ref List<int> list)
+		{
+			string[] listData = data.Split(new String[]{SeparatorBasicTypes}, data.Length, StringSplitOptions.None);
+			list = new List<int>();
+			for (int i = 0; i < listData.Length; i++)
+			{
+				list.Add(int.Parse(listData[i]));
+			}
+		}
+
 		private static readonly DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public static long GetTimestamp()
