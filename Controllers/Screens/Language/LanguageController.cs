@@ -7,6 +7,11 @@ namespace yourvrexperience.Utils
 {
     public class LanguageController : MonoBehaviour
     {
+        public const string EventLanguageControllerChangedCodeLanguage = "EventLanguageControllerChangedCodeLanguage";
+
+        public const string CodeLanguageEnglish = "en";
+        public const string CodeLanguageSpanish = "es";
+
         private static LanguageController _instance;
         public static LanguageController Instance
         {
@@ -70,6 +75,20 @@ namespace yourvrexperience.Utils
             else
             {
                 return id;
+            }
+        }
+
+        public void ChangeLanguage(string newCodeLanguage)
+        {
+            bool reportToSystemLanguageChange = false;
+            if (CodeLanguage != newCodeLanguage)
+            {
+                reportToSystemLanguageChange = true;
+            }
+            CodeLanguage = newCodeLanguage;
+            if (reportToSystemLanguageChange)
+            {
+                SystemEventController.Instance.DispatchSystemEvent(EventLanguageControllerChangedCodeLanguage);
             }
         }
 
