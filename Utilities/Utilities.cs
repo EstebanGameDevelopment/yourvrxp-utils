@@ -136,18 +136,18 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		public static string RandomCodeGeneration(string idUser)
+		public static string RandomCodeGeneration(int length)
 		{
 			string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-			var stringChars = new char[8];
+			var stringChars = new char[length];
 			var random = new System.Random();
 
-			for (int i = 0; i < stringChars.Length; i++)
+			for (int i = 0; i < length; i++)
 			{
 				stringChars[i] = chars[random.Next(chars.Length)];
 			}
 
-			string finalString = idUser + "_" + new String(stringChars);
+			string finalString = new String(stringChars);
 			return finalString;
 		}
 
