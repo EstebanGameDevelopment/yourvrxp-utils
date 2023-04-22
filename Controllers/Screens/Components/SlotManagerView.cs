@@ -60,6 +60,8 @@ namespace yourvrexperience.Utils
 			_content = this.gameObject.transform.Find("ScrollContent/Entries").gameObject;
 			if (ButtonNext!=null) _buttonNext = ButtonNext.transform;
 			if (ButtonPrevious != null) _buttonPrevious = ButtonPrevious.transform;
+			if (_buttonNext != null) _buttonNext.gameObject.SetActive(false);
+			if (_buttonPrevious != null) _buttonPrevious.gameObject.SetActive(false);
 
 			if (_buttonNext != null)
 			{
