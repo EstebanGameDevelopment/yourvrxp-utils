@@ -109,7 +109,7 @@ namespace yourvrexperience.Utils
                     targetScreen.transform.localScale = new Vector3(SizeVRScreen, SizeVRScreen, SizeVRScreen);
 					if (_forward != Vector3.zero)
                     {
-                        targetScreen.transform.position = positionCamera + _forward;
+                        targetScreen.transform.position = positionCamera + _forward * DistanceScreen;
                         targetScreen.transform.forward = _forward;
                     }
                     if (_position != Vector3.zero)
