@@ -43,7 +43,13 @@ namespace yourvrexperience.Utils
 			get { return Camera.main; }
 		}
 
-		void Start()
+        public float SpeedJoystickMovement 
+        { 
+            get { return -1; }
+            set {}
+        }
+
+        void Start()
         {
             SystemEventController.Instance.DispatchSystemEvent(EventInputControllerHasStarted, this.gameObject);
         }
