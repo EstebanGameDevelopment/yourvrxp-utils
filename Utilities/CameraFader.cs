@@ -43,7 +43,7 @@ namespace yourvrexperience.Utils
 			_fromColor = _material.color;
 			_toColor = _material.color;
 
-			CameraFader.ReverseNormals(gameObject);
+			Utilities.ReverseNormals(gameObject);
 		}
 
 		void Start()
@@ -53,7 +53,7 @@ namespace yourvrexperience.Utils
 
 		void OnDestroy()
 		{
-			SystemEventController.Instance.Event -= OnSystemEvent;
+			if (SystemEventController.Instance != null) SystemEventController.Instance.Event -= OnSystemEvent;
 		}
 
 		private void OnSystemEvent(string _nameEvent, object[] _parameters)
@@ -112,34 +112,6 @@ namespace yourvrexperience.Utils
 					{
 						_fading = true;
 					}
-				}
-			}
-		}
-
-		public static void ReverseNormals(GameObject gameObject)
-		{
-			// Renders interior of the overlay instead of exterior.
-			// Included for ease-of-use. 
-			// Public so you can use it, too.
-			MeshFilter filter = gameObject.GetComponent(typeof(MeshFilter)) as MeshFilter;
-			if(filter != null)
-			{
-				Mesh mesh = filter.mesh;
-				Vector3[] normals = mesh.normals;
-				for(int i = 0; i < normals.Length; i++)
-					normals[i] = -normals[i];
-				mesh.normals = normals;
-
-				for(int m = 0; m < mesh.subMeshCount; m++)
-				{
-					int[] triangles = mesh.GetTriangles(m);
-					for(int i = 0; i < triangles.Length; i += 3)
-					{
-						int temp = triangles[i + 0];
-						triangles[i + 0] = triangles[i + 1];
-						triangles[i + 1] = temp;
-					}
-					mesh.SetTriangles(triangles, m);
 				}
 			}
 		}

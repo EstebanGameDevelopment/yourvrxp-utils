@@ -39,7 +39,7 @@ namespace yourvrexperience.Utils
             }
         }
 
-		[SerializeField] private float DistanceScreen = 1.2f;
+		[SerializeField] private float distanceScreen = 1.2f;
 
         public GameObject[] Screens;
 
@@ -50,6 +50,10 @@ namespace yourvrexperience.Utils
         private Vector3 _position = Vector3.zero;
 		private float _scale = -1;
 
+		public float DistanceScreen
+		{
+			get { return distanceScreen; }
+		}
 
         void Start()
         {

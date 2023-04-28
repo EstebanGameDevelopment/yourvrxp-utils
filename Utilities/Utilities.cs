@@ -324,5 +324,69 @@ namespace yourvrexperience.Utils
 			list[i] = list[j];
 			list[j] = temp;
 		}
+
+		public static void ReverseNormals(GameObject gameObject)
+		{
+			// Renders interior of the overlay instead of exterior.
+			// Included for ease-of-use. 
+			// Public so you can use it, too.
+			MeshFilter filter = gameObject.GetComponent(typeof(MeshFilter)) as MeshFilter;
+			if(filter != null)
+			{
+				Mesh mesh = filter.mesh;
+				Vector3[] normals = mesh.normals;
+				for(int i = 0; i < normals.Length; i++)
+					normals[i] = -normals[i];
+				mesh.normals = normals;
+
+				for(int m = 0; m < mesh.subMeshCount; m++)
+				{
+					int[] triangles = mesh.GetTriangles(m);
+					for(int i = 0; i < triangles.Length; i += 3)
+					{
+						int temp = triangles[i + 0];
+						triangles[i + 0] = triangles[i + 1];
+						triangles[i + 1] = temp;
+					}
+					mesh.SetTriangles(triangles, m);
+				}
+			}
+		}
+
+		public static string GetFormattedTimeMinutes(int time)
+		{
+			int minutes = (int)time / 60;
+			int seconds = (int)time % 60;
+
+			// SECONDS
+			String secondsBuf;
+			if (seconds < 10)
+			{
+				secondsBuf = "0" + seconds;
+			}
+			else
+			{
+				secondsBuf = "" + seconds;
+			}
+
+			// MINUTES
+			String minutesBuf;
+			if (minutes < 10)
+			{
+				minutesBuf = "0" + minutes;
+			}
+			else
+			{
+				minutesBuf = "" + minutes;
+			}
+
+			return (minutesBuf + ":" + secondsBuf);
+		}
+
+		public static bool IsVisibleFrom(Bounds _bounds, Camera _camera)
+		{
+			Plane[] planes = GeometryUtility.CalculateFrustumPlanes(_camera);
+			return GeometryUtility.TestPlanesAABB(planes, _bounds);
+		}
 	}
 }
