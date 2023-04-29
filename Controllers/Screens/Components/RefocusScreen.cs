@@ -18,6 +18,7 @@ namespace yourvrexperience.Utils
         public void Activate(Camera targetCamera, float distance, float timeoutToRefocus = 4, float timeAnimation = 1)
 		{
 			_targetCamera = targetCamera;
+			_distance = distance;
 			_refocus = true;
 			_timeToRefocus = 0;
 			_timeoutToRefocus = timeoutToRefocus;
@@ -36,8 +37,8 @@ namespace yourvrexperience.Utils
 				_timeToRefocus += Time.deltaTime;
 				if (_timeToRefocus > _timeoutToRefocus)
 				{
-					Bounds canvasBounds = new Bounds(this.gameObject.transform.position, Vector3.one);
-					if (!Utilities.IsVisibleFrom(canvasBounds, _targetCamera))
+					Bounds canvasBounds = new Bounds(this.gameObject.transform.position, Vector3.one);					
+					if ((!Utilities.IsVisibleFrom(canvasBounds, _targetCamera)) || (Vector3.Distance(_targetCamera.transform.position, this.transform.position) > _distance * 2))
 					{
 						_timeToRefocus = -_timeAnimation;
 						Vector3 position = _targetCamera.transform.position + _targetCamera.transform.forward * _distance;
