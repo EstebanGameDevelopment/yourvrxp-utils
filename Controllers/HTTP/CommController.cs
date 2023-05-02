@@ -18,9 +18,6 @@ namespace yourvrexperience.Utils
 	 */
 	public class CommController : StateMachine
 	{
-		// ----------------------------------------------
-		// CONSTANTS
-		// ----------------------------------------------	
 		public const char TOKEN_SEPARATOR_COMA = ',';
         public const string TOKEN_SEPARATOR_BLOCKS = "<block>";
         public const string TOKEN_SEPARATOR_EVENTS = "<par>";
@@ -32,10 +29,6 @@ namespace yourvrexperience.Utils
 		public const int STATE_IDLE = 0;
 		public const int STATE_COMMUNICATION = 1;
 
-		// ----------------------------------------------
-		// SINGLETON
-		// ----------------------------------------------	
-
 		private static CommController _instance;
 
 		public static CommController Instance
@@ -45,35 +38,20 @@ namespace yourvrexperience.Utils
 				if (!_instance)
 				{
 					_instance = GameObject.FindObjectOfType(typeof(CommController)) as CommController;
-					if (!_instance)
-					{
-						GameObject container = new GameObject();
-                        DontDestroyOnLoad(container);
-                        container.name = "CommController";
-						_instance = container.AddComponent(typeof(CommController)) as CommController;
-					}
 				}
 				return _instance;
 			}
 		}
-
-		// ----------------------------------------------
-		// MEMBERS
-		// ----------------------------------------------
-		private string m_event;
-		private IHTTPComms m_commRequest;
-		private List<CommEventData> m_listTimedEvents = new List<CommEventData>();
-		private List<CommEventData> m_listQueuedEvents = new List<CommEventData>();
-		private List<CommEventData> m_priorityQueuedEvents = new List<CommEventData>();
-
-		private string m_inGameLog = "";
-
 		public bool ReloadXML = false;
 
-		// -------------------------------------------
-		/* 
-		 * Will delete from the text introduced by the user any special token that can break the comunication
-		 */
+		private string _event;
+		private IHTTPComms _commRequest;
+		private List<CommEventData> _listTimedEvents = new List<CommEventData>();
+		private List<CommEventData> _listQueuedEvents = new List<CommEventData>();
+		private List<CommEventData> _priorityQueuedEvents = new List<CommEventData>();
+
+		private string _inGameLog = "";
+
 		public static string FilterSpecialTokens(string _text)
 		{
 			string output = _text;
@@ -104,31 +82,16 @@ namespace yourvrexperience.Utils
 			return output;
 		}
 
-		// ----------------------------------------------
-		// CONSTRUCTOR
-		// ----------------------------------------------	
-		// -------------------------------------------
-		/* 
-		 * Constructor
-		 */
 		private CommController()
 		{
 			ChangeState(STATE_IDLE);
 		}
 
-		// -------------------------------------------
-		/* 
-		 * Init
-		 */
 		public void Init()
 		{
 			ChangeState(STATE_IDLE);
 		}
 
-        // -------------------------------------------
-        /* 
-		 * OnDestroy
-		 */
         void OnDestroy()
         {
 #if DESTROY_MEMORY_ALLOCATED
@@ -136,11 +99,6 @@ namespace yourvrexperience.Utils
 #endif            
         }
 
-
-        // -------------------------------------------
-        /* 
-		 * Destroy
-		 */
         public void Destroy()
 		{
 			if (_instance != null)
@@ -150,10 +108,6 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-        // -------------------------------------------
-        /* 
-		 * RequestHeader
-		 */
         public void RequestHeader(string _event, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, params object[] _list)
         {
             if (_state != STATE_IDLE)
@@ -165,11 +119,6 @@ namespace yourvrexperience.Utils
             RequestReal(_event, _headers, _isBinaryResponse, _list);
         }
 
-
-        // -------------------------------------------
-        /* 
-		 * Request
-		 */
         public void Request(string _event, bool _isBinaryResponse, params object[] _list)
 		{
             if (_state != STATE_IDLE)
@@ -181,10 +130,6 @@ namespace yourvrexperience.Utils
             RequestReal(_event, null, _isBinaryResponse, _list);
 		}
 
-		// -------------------------------------------
-		/* 
-		 * RequestPriority
-		 */
 		public void RequestPriority(string _event, bool _isBinaryResponse, params object[] _list)
 		{
 			if (_state != STATE_IDLE)
@@ -196,10 +141,6 @@ namespace yourvrexperience.Utils
 			RequestReal(_event, null, _isBinaryResponse, _list);
 		}
 
-		// -------------------------------------------
-		/* 
-		 * RequestNoQueue
-		 */
 		public void RequestNoQueue(string _event, bool _isBinaryResponse, params object[] _list)
 		{
 			if (_state != STATE_IDLE)
@@ -210,25 +151,21 @@ namespace yourvrexperience.Utils
 			RequestReal(_event, null, _isBinaryResponse, _list);
 		}
 
-		// -------------------------------------------
-		/* 
-		 * RequestReal
-		 */
 		private void RequestReal(string _event, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, params object[] _list)
 		{
-            m_event = _event;
-			m_commRequest = (IHTTPComms)Activator.CreateInstance(Type.GetType(m_event));
+            this._event = _event;
+            _commRequest = (IHTTPComms)Activator.CreateInstance(Type.GetType(this._event));
 
 			ChangeState(STATE_COMMUNICATION);
-			string data = m_commRequest.Build(_list);
+			string data = _commRequest.Build(_list);
 			if (DEBUG_LOG)
 			{
-                Utilities.DebugLogColor("CommController::RequestReal:URL=" + m_commRequest.UrlRequest, Color.red);
+                Utilities.DebugLogColor("CommController::RequestReal:URL=" + _commRequest.UrlRequest, Color.red);
                 Utilities.DebugLogColor("CommController::RequestReal:data=" + data, Color.red);
 			}
-			if (m_commRequest.Method == BaseDataHTTP.METHOD_GET)
+			if (_commRequest.Method == BaseDataHTTP.METHOD_GET)
 			{
-                UnityWebRequest www = UnityWebRequest.Get(m_commRequest.UrlRequest + data);
+                UnityWebRequest www = UnityWebRequest.Get(_commRequest.UrlRequest + data);
                 if (_headers != null)
                 {
                     for (int i = 0; i < _headers.Count; i++)
@@ -252,7 +189,7 @@ namespace yourvrexperience.Utils
 			}
 			else
 			{
-                UnityWebRequest www = UnityWebRequest.Post(m_commRequest.UrlRequest, m_commRequest.FormPost);
+                UnityWebRequest www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
 
                 if (_isBinaryResponse)
 				{
@@ -265,46 +202,26 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		// -------------------------------------------
-		/* 
-		 * DelayRequest
-		 */
 		public void DelayRequest(string _nameEvent, bool _isBinaryResponse, float _time, params object[] _list)
 		{
-			m_listTimedEvents.Add(new CommEventData(_nameEvent, null, _isBinaryResponse, _time, _list));
+			_listTimedEvents.Add(new CommEventData(_nameEvent, null, _isBinaryResponse, _time, _list));
 		}
 
-		// -------------------------------------------
-		/* 
-		 * QueuedRequest
-		 */
 		public void QueuedRequest(string _nameEvent, bool _isBinaryResponse, params object[] _list)
 		{
-            m_listQueuedEvents.Add(new CommEventData(_nameEvent, null, _isBinaryResponse, 0, _list));
+            _listQueuedEvents.Add(new CommEventData(_nameEvent, null, _isBinaryResponse, 0, _list));
 		}
 
-        // -------------------------------------------
-        /* 
-		 * QueuedRequest
-		 */
         public void QueuedRequest(string _nameEvent, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, params object[] _list)
         {
-            m_listQueuedEvents.Add(new CommEventData(_nameEvent, _headers, _isBinaryResponse, 0, _list));
+            _listQueuedEvents.Add(new CommEventData(_nameEvent, _headers, _isBinaryResponse, 0, _list));
         }
 
-        // -------------------------------------------
-        /* 
-		 * InsertRequest
-		 */
         public void InsertRequest(string _nameEvent, bool _isBinaryResponse, params object[] _list)
 		{
-			m_priorityQueuedEvents.Insert(0, new CommEventData(_nameEvent, null, _isBinaryResponse, 0, _list));
+			_priorityQueuedEvents.Insert(0, new CommEventData(_nameEvent, null, _isBinaryResponse, 0, _list));
 		}
 
-		// -------------------------------------------
-		/* 
-		* WaitForRequest
-		*/
 		IEnumerator WaitForRequest(WWW www)
 		{
 			yield return www;
@@ -315,12 +232,12 @@ namespace yourvrexperience.Utils
 			    if (www.error == null)
 			    {
 				    if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
-				    m_commRequest.Response(www.bytes);
+				    _commRequest.Response(www.bytes);
 			    }
 			    else
 			    {
 				    if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-				    m_commRequest.Response(Encoding.ASCII.GetBytes(www.error));
+				    _commRequest.Response(Encoding.ASCII.GetBytes(www.error));
 			    }
             } catch (Exception err)
             {
@@ -331,10 +248,6 @@ namespace yourvrexperience.Utils
 			ProcesQueuedComms();
 		}
 
-        // -------------------------------------------
-        /* 
-		* WaitForUnityWebRequest
-		*/
         IEnumerator WaitForUnityWebRequest(UnityWebRequest www)
         {
             yield return www.SendWebRequest();
@@ -343,12 +256,12 @@ namespace yourvrexperience.Utils
                 if (www.isNetworkError || www.isHttpError)
                 {
                     if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-                    m_commRequest.Response(Encoding.ASCII.GetBytes(www.error));
+                    _commRequest.Response(Encoding.ASCII.GetBytes(www.error));
                 }
                 else
                 {
                     if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.downloadHandler.text);
-                    m_commRequest.Response(www.downloadHandler.data);
+                    _commRequest.Response(www.downloadHandler.data);
                 }
             } catch (Exception err)
             {
@@ -360,10 +273,6 @@ namespace yourvrexperience.Utils
         }
         
 
-        // -------------------------------------------
-        /* 
-		* WaitForRequest
-		*/
         IEnumerator WaitForStringRequest(WWW www)
 		{
 			yield return www;
@@ -374,12 +283,12 @@ namespace yourvrexperience.Utils
                 if (www.error == null)
                 {
                     if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
-                    m_commRequest.Response(www.text);
+                    _commRequest.Response(www.text);
                 }
                 else
                 {
                     if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-                    m_commRequest.Response(Encoding.ASCII.GetBytes(www.error));
+                    _commRequest.Response(Encoding.ASCII.GetBytes(www.error));
                 }
             } catch (Exception err)
             {
@@ -390,10 +299,6 @@ namespace yourvrexperience.Utils
 			ProcesQueuedComms();
 		}
 
-        // -------------------------------------------
-        /* 
-		* WaitForUnityWebStringRequest
-		*/
         IEnumerator WaitForUnityWebStringRequest(UnityWebRequest www)
         {
             yield return www.SendWebRequest();
@@ -403,12 +308,12 @@ namespace yourvrexperience.Utils
                 if (www.isNetworkError || www.isHttpError)
                 {
                     if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-                    m_commRequest.Response(www.error);
+                    _commRequest.Response(www.error);
                 }
                 else
                 {
                     if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.downloadHandler.text);
-                    m_commRequest.Response(www.downloadHandler.text);
+                    _commRequest.Response(www.downloadHandler.text);
                 }
             } catch (Exception err)
             {
@@ -419,41 +324,29 @@ namespace yourvrexperience.Utils
             ProcesQueuedComms();
         }
 
-        // -------------------------------------------
-        /* 
-		 * DisplayLog
-		 */
         public void DisplayLog(string _data)
 		{
-			m_inGameLog = _data + "\n";
+			_inGameLog = _data + "\n";
 			if (DEBUG_LOG)
 			{
 				Debug.Log("CommController::DisplayLog::DATA=" + _data);
 			}
 		}
 
-		// -------------------------------------------
-		/* 
-		 * ClearLog
-		 */
 		public void ClearLog()
 		{
-			m_inGameLog = "";
+			_inGameLog = "";
 		}
 
 		private bool m_enableLog = true;
 
-		// -------------------------------------------
-		/* 
-		 * OnGUI
-		 */
 		void OnGUI()
 		{
 			if (DEBUG_LOG)
 			{
 				if (!m_enableLog)
 				{
-					if (m_inGameLog.Length > 0)
+					if (_inGameLog.Length > 0)
 					{
 						ClearLog();
 					}
@@ -461,10 +354,10 @@ namespace yourvrexperience.Utils
 
 				if (m_enableLog)
 				{
-					if (m_inGameLog.Length > 0)
+					if (_inGameLog.Length > 0)
 					{
 						GUILayout.BeginScrollView(Vector2.zero);
-						if (GUILayout.Button(m_inGameLog))
+						if (GUILayout.Button(_inGameLog))
 						{
 							ClearLog();
 						}
@@ -479,7 +372,7 @@ namespace yourvrexperience.Utils
 
 							case STATE_COMMUNICATION:
 								GUILayout.BeginScrollView(Vector2.zero);
-								GUILayout.Label("COMMUNICATION::Event=" + m_event);
+								GUILayout.Label("COMMUNICATION::Event=" + _event);
 								GUILayout.EndScrollView();
 								break;
 						}
@@ -488,22 +381,18 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		// -------------------------------------------
-		/* 
-		 * ProcessTimedEvents
-		 */
 		private void ProcessTimedEvents()
 		{
 			switch (_state)
 			{
 				case STATE_IDLE:
-					for (int i = 0; i < m_listTimedEvents.Count; i++)
+					for (int i = 0; i < _listTimedEvents.Count; i++)
 					{
-						CommEventData eventData = m_listTimedEvents[i];
+						CommEventData eventData = _listTimedEvents[i];
 						eventData.Time -= Time.deltaTime;
 						if (eventData.Time <= 0)
 						{
-							m_listTimedEvents.RemoveAt(i);
+							_listTimedEvents.RemoveAt(i);
 							Request(eventData.NameEvent, eventData.IsBinaryResponse, eventData.List);
 							eventData.Destroy();
 							break;
@@ -513,38 +402,30 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		// -------------------------------------------
-		/* 
-		 * ProcesQueuedComms
-		 */
 		private void ProcesQueuedComms()
 		{
 			// PRIORITY QUEUE
-			if (m_priorityQueuedEvents.Count > 0)
+			if (_priorityQueuedEvents.Count > 0)
 			{
 				int i = 0;
-				CommEventData eventData = m_priorityQueuedEvents[i];
-				m_priorityQueuedEvents.RemoveAt(i);
+				CommEventData eventData = _priorityQueuedEvents[i];
+				_priorityQueuedEvents.RemoveAt(i);
 				Request(eventData.NameEvent, eventData.IsBinaryResponse, eventData.List);
 				eventData.Destroy();
 				return;
 			}
 			// NORMAL QUEUE
-			if (m_listQueuedEvents.Count > 0)
+			if (_listQueuedEvents.Count > 0)
 			{
 				int i = 0;
-				CommEventData eventData = m_listQueuedEvents[i];
-				m_listQueuedEvents.RemoveAt(i);
+				CommEventData eventData = _listQueuedEvents[i];
+				_listQueuedEvents.RemoveAt(i);
 				Request(eventData.NameEvent, eventData.IsBinaryResponse, eventData.List);
 				eventData.Destroy();
 				return;
 			}
 		}
 
-		// -------------------------------------------
-		/* 
-		 * ProcessQueueEvents
-		 */
 		private void ProcessQueueEvents()
 		{
 			switch (_state)
@@ -557,10 +438,6 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		// -------------------------------------------
-		/* 
-		 * Update
-		 */
 		public void Update()
 		{
 			ProcessTimedEvents();
