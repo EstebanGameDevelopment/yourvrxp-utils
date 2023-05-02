@@ -12,10 +12,15 @@ namespace yourvrexperience.Utils
 		public const string EventBaseScreenViewDestroyed = "EventBaseScreenViewDestroyed";
 
 		protected Transform _content;
+		protected Transform _background;
 
 		public Transform Content
 		{ 
 			get { return _content; } 
+		}
+		public Transform Background
+		{ 
+			get { return _background; } 
 		}
 
 		public virtual string NameScreen 
@@ -26,6 +31,7 @@ namespace yourvrexperience.Utils
 		public virtual void Initialize(params object[] parameters)
 		{
 			_content = this.transform.Find("Content");
+			_background = this.transform.Find("Background");
 
 			Debug.Assert(_content != null);
 
