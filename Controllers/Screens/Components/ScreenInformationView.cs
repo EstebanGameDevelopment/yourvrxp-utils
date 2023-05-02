@@ -37,7 +37,11 @@ namespace yourvrexperience.Utils
 			{
 				cancelText = LanguageController.Instance.GetText("text.cancel");
 			}
-			ScreenController.Instance.CreateScreen(screenName, false, true, origin, customEvent, title, description, okText, cancelText);
+			bool shouldHidePrevious = true;
+#if !(ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+			shouldHidePrevious = false;
+#endif			
+			ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText);
 		}
 
         public override void Initialize(params object[] parameters)
@@ -46,7 +50,6 @@ namespace yourvrexperience.Utils
 
 			_origin = (GameObject)parameters[0];
             _customOutputEvent = (string)parameters[1];
-            _content = this.transform.Find("Content");
             _content.Find("Title").GetComponent<TextMeshProUGUI>().text = (string)parameters[2];
             _content.Find("Description").GetComponent<TextMeshProUGUI>().text = (string)parameters[3];
 			string textOk = (string)parameters[4];
@@ -78,6 +81,15 @@ namespace yourvrexperience.Utils
             {
                 _content.Find("ButtonCancel").GetComponent<Button>().onClick.AddListener(OnCancel);
             }
+
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+			if (_background != null)
+			{
+				_background.gameObject.SetActive(false);
+			}
+#else
+			this.GetComponent<Canvas>().sortingOrder = 1;			
+#endif
 
 			UIEventController.Instance.Event += OnUIEvent;
         }
