@@ -9,19 +9,19 @@ namespace yourvrexperience.Utils
 		public const int METHOD_GET = 0;
 		public const int METHOD_POST = 1;
 
-		protected string m_code;
-		protected string m_jsonResponse;
-		protected int m_method = METHOD_GET;
-		protected WWWForm m_formPost;
+		protected string _code;
+		protected string _jsonResponse;
+		protected int _method = METHOD_GET;
+		protected WWWForm _formPost;
 
 		public int Method
 		{
-			get { return m_method; }
+			get { return _method; }
 		}
 
 		public WWWForm FormPost
 		{
-			get { return m_formPost; }
+			get { return _formPost; }
 		}
 
 		public virtual Dictionary<string, string> GetHeaders()
@@ -30,9 +30,9 @@ namespace yourvrexperience.Utils
 			return headers;
 		}
 
-		private string CleanUndesiredTags(string _data)
+		private string CleanUndesiredTags(string data)
 		{
-			string output = _data;
+			string output = data;
 			if ((output.IndexOf("<br>") != -1) ||
 				(output.IndexOf("<br/>") != -1) ||
 				(output.IndexOf("<br />") != -1))
@@ -44,37 +44,37 @@ namespace yourvrexperience.Utils
 			return output;
 		}
 
-		public bool ResponseBase64Code(string _response)
+		public bool ResponseBase64Code(string response)
 		{
-			m_jsonResponse = _response;
+			_jsonResponse = response;
 
 			if (CommController.DEBUG_LOG)
 			{
-				Debug.Log("BaseDataJSON::ResponseBase64Code(BYTE)=" + m_jsonResponse);
+				Debug.Log("BaseDataJSON::ResponseBase64Code(BYTE)=" + _jsonResponse);
 			}
-			return (m_jsonResponse.IndexOf("Error::") == -1);
+			return (_jsonResponse.IndexOf("Error::") == -1);
 		}
 
-		public bool ResponseCode(byte[] _response)
+		public bool ResponseCode(byte[] response)
 		{
-			m_jsonResponse = Encoding.ASCII.GetString(_response);
-			m_jsonResponse = CleanUndesiredTags(m_jsonResponse);
+			_jsonResponse = Encoding.ASCII.GetString(response);
+			_jsonResponse = CleanUndesiredTags(_jsonResponse);
 			if (CommController.DEBUG_LOG)
 			{
-				Debug.Log("BaseDataJSON::ResponseCode(BYTE)=" + m_jsonResponse);
+				Debug.Log("BaseDataJSON::ResponseCode(BYTE)=" + _jsonResponse);
 			}
-			return (m_jsonResponse.IndexOf("Error::") == -1);
+			return (_jsonResponse.IndexOf("Error::") == -1);
 		}
 
-		public bool ResponseCode(string _response)
+		public bool ResponseCode(string response)
 		{
-			m_jsonResponse = _response;
-			m_jsonResponse = CleanUndesiredTags(m_jsonResponse);
+			_jsonResponse = response;
+			_jsonResponse = CleanUndesiredTags(_jsonResponse);
 			if (CommController.DEBUG_LOG)
 			{
-				Debug.Log("BaseDataJSON::ResponseCode(STRING)=" + m_jsonResponse);
+				Debug.Log("BaseDataJSON::ResponseCode(STRING)=" + _jsonResponse);
 			}
-			return (m_jsonResponse.IndexOf("Error::") == -1);
+			return (_jsonResponse.IndexOf("Error::") == -1);
 		}
 
 		public virtual void Response(byte[] _response)
