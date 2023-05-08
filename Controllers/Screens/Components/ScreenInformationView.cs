@@ -20,10 +20,12 @@ namespace yourvrexperience.Utils
 		public const string ScreenConfirmation = "ScreenConfirmation";
 		public const string ScreenInformationImage = "ScreenInformation";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
-		public const string ScreenLoading = "ScreenLoading";
+		public const string ScreenLoading = "ScreenInformationLoading";
+		public const string ScreenInput = "ScreenInformationInput";
 
 		private GameObject _origin;
         private string _customOutputEvent = "";
+		private CustomInput _inputValue;
 
 		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null)
 		{
@@ -50,10 +52,17 @@ namespace yourvrexperience.Utils
 
 			_origin = (GameObject)parameters[0];
             _customOutputEvent = (string)parameters[1];
-            _content.Find("Title").GetComponent<TextMeshProUGUI>().text = (string)parameters[2];
-            _content.Find("Description").GetComponent<TextMeshProUGUI>().text = (string)parameters[3];
+            if (_content.Find("Title") != null) _content.Find("Title").GetComponent<TextMeshProUGUI>().text = (string)parameters[2];
+			if (_content.Find("Description") != null) _content.Find("Description").GetComponent<TextMeshProUGUI>().text = (string)parameters[3];
 			string textOk = (string)parameters[4];
 			string textCancel = (string)parameters[5];
+
+			_inputValue = _content.GetComponentInChildren<CustomInput>();
+			if (_inputValue != null)
+			{
+				_inputValue.OnFocusEvent += OnFocusInputValue;
+				_inputValue.text = "";
+			}
 
 			if (_content.Find("Image") != null)
 			{
@@ -100,21 +109,49 @@ namespace yourvrexperience.Utils
 			{
 				_content = null;
 				_origin = null;
+				if (_inputValue != null)
+				{
+					_inputValue.OnFocusEvent -= OnFocusInputValue;
+				}				
+				_inputValue = null;
 				if (UIEventController.Instance != null) UIEventController.Instance.Event -= OnUIEvent;
 				base.Destroy();
 			}
         }
 
+        private void OnFocusInputValue()
+        {
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+			_content.gameObject.SetActive(false);
+			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  inputEmail.gameObject, inputEmail.text, 200);
+#endif			
+        }
+
+
         private void OnConfirmation()
         {
-            if (_customOutputEvent != null)
-            {
-                if (_customOutputEvent.Length > 0)
-                {
-                    SystemEventController.Instance.DispatchSystemEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm);
-                }
-            }
-			UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm);
+			if (_inputValue != null)
+			{
+				if (_customOutputEvent != null)
+				{
+					if (_customOutputEvent.Length > 0)
+					{
+						SystemEventController.Instance.DispatchSystemEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
+					}
+				}
+				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
+			}
+			else
+			{
+				if (_customOutputEvent != null)
+				{
+					if (_customOutputEvent.Length > 0)
+					{
+						SystemEventController.Instance.DispatchSystemEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm);
+					}
+				}
+				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm);
+			}			
             UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
         }
 
@@ -150,6 +187,15 @@ namespace yourvrexperience.Utils
 			{
 				UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
 			}
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
+			{
+				if (_inputValue.gameObject == (GameObject)parameters[0])
+				{
+					_inputValue.text = (string)parameters[1];
+				}
+			}
+#endif			
 		}
     }
 }
