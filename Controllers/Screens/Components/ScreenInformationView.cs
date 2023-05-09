@@ -5,6 +5,9 @@ using System.Xml;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+using yourvrexperience.VR;
+#endif
 
 namespace yourvrexperience.Utils
 {
@@ -123,7 +126,7 @@ namespace yourvrexperience.Utils
         {
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			_content.gameObject.SetActive(false);
-			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  inputEmail.gameObject, inputEmail.text, 200);
+			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  _inputValue.gameObject, _inputValue.text, 200);
 #endif			
         }
 
