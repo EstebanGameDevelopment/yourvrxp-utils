@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+using yourvrexperience.VR;
+#endif
 
 namespace yourvrexperience.Utils
 {
@@ -36,11 +39,17 @@ namespace yourvrexperience.Utils
 			Debug.Assert(_content != null);
 
 			SystemEventController.Instance.DispatchSystemEvent(EventBaseScreenViewCreated, this.gameObject);
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+			VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
+#endif			
 		}
 
 		public virtual void Destroy()
 		{
-			SystemEventController.Instance.DelaySystemEvent(EventBaseScreenViewDestroyed, 0.1f);			
+			SystemEventController.Instance.DelaySystemEvent(EventBaseScreenViewDestroyed, 0.1f);	
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+			VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
+#endif			
 		}
 	}
 }
