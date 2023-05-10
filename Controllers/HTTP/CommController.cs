@@ -241,7 +241,7 @@ namespace yourvrexperience.Utils
 			    }
             } catch (Exception err)
             {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForRequest::err=" + err.Message, Color.red);
+                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForRequest::stacktrace=" + err.StackTrace, Color.red);
             }
 
             ChangeState(STATE_IDLE);
@@ -265,7 +265,7 @@ namespace yourvrexperience.Utils
                 }
             } catch (Exception err)
             {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebRequest::err=" + err.Message, Color.red);
+                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebRequest::stacktrace=" + err.StackTrace, Color.red);
             }
 
             ChangeState(STATE_IDLE);
@@ -292,7 +292,7 @@ namespace yourvrexperience.Utils
                 }
             } catch (Exception err)
             {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForStringRequest::err=" + err.Message, Color.red);
+                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForStringRequest::stacktrace=" + err.StackTrace, Color.red);
             }
 
             ChangeState(STATE_IDLE);
@@ -317,7 +317,7 @@ namespace yourvrexperience.Utils
                 }
             } catch (Exception err)
             {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebStringRequest::err=" + err.Message, Color.red);
+                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebStringRequest::stacktrace=" + err.StackTrace, Color.red);
             }
 
             ChangeState(STATE_IDLE);
