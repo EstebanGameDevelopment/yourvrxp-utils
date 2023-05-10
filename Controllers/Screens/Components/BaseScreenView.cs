@@ -40,7 +40,7 @@ namespace yourvrexperience.Utils
 
 			SystemEventController.Instance.DispatchSystemEvent(EventBaseScreenViewCreated, this.gameObject);
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
-			VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
+			if (VRInputController.Instance != null) VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
 #endif			
 		}
 
@@ -48,7 +48,7 @@ namespace yourvrexperience.Utils
 		{
 			SystemEventController.Instance.DelaySystemEvent(EventBaseScreenViewDestroyed, 0.1f);	
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
-			VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
+			if (VRInputController.Instance != null) VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
 #endif			
 		}
 	}
