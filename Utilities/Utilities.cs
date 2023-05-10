@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace yourvrexperience.Utils
 {
@@ -254,7 +255,19 @@ namespace yourvrexperience.Utils
 				ApplyColor(item, color);
 			}
 		}
-		
+
+		public static void ApplyMaterialOnImages(Transform target, Material material)
+		{
+			if (target.GetComponent<Image>() != null)
+			{
+				target.GetComponent<Image>().material = material;
+			}
+			foreach (Transform item in target)
+			{
+				ApplyMaterialOnImages(item, material);
+			}
+		}
+
 		public static string GetFullPathNameGO(GameObject go)
 		{
 			if (go == null || go.transform == null)
