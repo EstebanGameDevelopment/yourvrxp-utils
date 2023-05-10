@@ -281,25 +281,30 @@ namespace yourvrexperience.Utils
 						newScreen.transform.parent = this.transform;
 						_screensCreated.Add(newScreen);
 						if (newScreen.GetComponent<IScreenView>() != null)  newScreen.GetComponent<IScreenView>().Initialize(parameters);
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
-						newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
-#if ENABLE_OCULUS
-						newScreen.AddComponent<OVRRaycaster>();
-#elif ENABLE_OPENXR
-						newScreen.AddComponent<TrackedDeviceGraphicRaycaster>();
-#elif ENABLE_ULTIMATEXR
-						if (newScreen.GetComponent<UxrCanvas>() == null) newScreen.AddComponent<UxrCanvas>();
-						if (newScreen.GetComponent<UxrLaserPointerRaycaster>() == null) newScreen.AddComponent<UxrLaserPointerRaycaster>();
-						newScreen.GetComponent<UxrCanvas>().CanvasInteractionType = UxrInteractionType.LaserPointers;
-						newScreen.GetComponentInChildren<Canvas>().renderMode = RenderMode.WorldSpace;									
-#endif
-						VRInputController.Instance.DispatchVREvent(EventScreenControllerRequestCameraData, newScreen);
-#endif
+						ApplyCanvas(newScreen);
 					}
 				}
             }
 			return newScreen;
         }
+
+		public void ApplyCanvas(GameObject newScreen)
+		{
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+#if ENABLE_OCULUS
+			newScreen.AddComponent<OVRRaycaster>();
+#elif ENABLE_OPENXR
+			newScreen.AddComponent<TrackedDeviceGraphicRaycaster>();
+#elif ENABLE_ULTIMATEXR
+			if (newScreen.GetComponent<UxrCanvas>() == null) newScreen.AddComponent<UxrCanvas>();
+			if (newScreen.GetComponent<UxrLaserPointerRaycaster>() == null) newScreen.AddComponent<UxrLaserPointerRaycaster>();
+			newScreen.GetComponent<UxrCanvas>().CanvasInteractionType = UxrInteractionType.LaserPointers;
+			newScreen.GetComponentInChildren<Canvas>().renderMode = RenderMode.WorldSpace;									
+#endif
+			VRInputController.Instance.DispatchVREvent(EventScreenControllerRequestCameraData, newScreen);
+#endif
+		}
 
         public void DestroyScreens()
         {
