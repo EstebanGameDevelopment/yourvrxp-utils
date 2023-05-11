@@ -49,6 +49,7 @@ namespace yourvrexperience.Utils
 		private Vector3 _forward = Vector3.zero;
         private Vector3 _position = Vector3.zero;
 		private float _scale = -1;
+		private float _defaultDistance = -1;
 
 		public float DistanceScreen
 		{
@@ -104,42 +105,40 @@ namespace yourvrexperience.Utils
             if (nameEvent.Equals(EventScreenControllerResponseCameraData))
             {
                 GameObject targetScreen = (GameObject)parameters[0];
-                if (_screensCreated.Contains(targetScreen))
-                {
-                    Vector3 positionCamera = (Vector3)parameters[1];
-                    Vector3 forwardCamera = (Vector3)parameters[2];
-                    targetScreen.transform.position = positionCamera + DistanceScreen * forwardCamera;
-                    targetScreen.transform.forward = forwardCamera;
-                    targetScreen.transform.localScale = new Vector3(SizeVRScreen, SizeVRScreen, SizeVRScreen);
+				Vector3 positionCamera = (Vector3)parameters[1];
+				Vector3 forwardCamera = (Vector3)parameters[2];
+				targetScreen.transform.position = positionCamera + ((_defaultDistance!=-1)?_defaultDistance:DistanceScreen) * forwardCamera;
+				targetScreen.transform.forward = forwardCamera;
+				targetScreen.transform.localScale = new Vector3(SizeVRScreen, SizeVRScreen, SizeVRScreen);
+				if (_forward != Vector3.zero)
+				{
+					targetScreen.transform.position = positionCamera + _forward * ((_defaultDistance!=-1)?_defaultDistance:DistanceScreen);
+					targetScreen.transform.forward = _forward;
+				}
+				if (_position != Vector3.zero)
+				{
+					targetScreen.transform.position = _position;
 					if (_forward != Vector3.zero)
-                    {
-                        targetScreen.transform.position = positionCamera + _forward * DistanceScreen;
-                        targetScreen.transform.forward = _forward;
-                    }
-                    if (_position != Vector3.zero)
-                    {
-                        targetScreen.transform.position = _position;
-						if (_forward != Vector3.zero)
-						{
-							targetScreen.transform.forward = _forward;
-						}
-						else
-						{
-							targetScreen.transform.forward = forwardCamera;
-						}                        
-                    }
-					if (_scale == -1)
 					{
-						targetScreen.transform.localScale = new Vector3(SizeVRScreen, SizeVRScreen, SizeVRScreen);
+						targetScreen.transform.forward = _forward;
 					}
 					else
 					{
-						targetScreen.transform.localScale = new Vector3(_scale, _scale, _scale);
-					}
-					_forward = Vector3.zero;
-					_scale = -1;
-					_position = Vector3.zero;
-                }
+						targetScreen.transform.forward = forwardCamera;
+					}                        
+				}
+				if (_scale == -1)
+				{
+					targetScreen.transform.localScale = new Vector3(SizeVRScreen, SizeVRScreen, SizeVRScreen);
+				}
+				else
+				{
+					targetScreen.transform.localScale = new Vector3(_scale, _scale, _scale);
+				}
+				_forward = Vector3.zero;
+				_scale = -1;
+				_position = Vector3.zero;
+				_defaultDistance = -1;
             }
 		}
 #endif			
@@ -288,8 +287,10 @@ namespace yourvrexperience.Utils
 			return newScreen;
         }
 
-		public void ApplyCanvas(GameObject newScreen)
+		public void ApplyCanvas(GameObject newScreen, float defaultDistance = -1)
 		{
+			_defaultDistance = defaultDistance;
+			newScreen.transform.parent = this.transform;
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
 #if ENABLE_OCULUS
