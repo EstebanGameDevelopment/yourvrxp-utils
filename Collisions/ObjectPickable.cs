@@ -40,6 +40,7 @@ namespace yourvrexperience.Utils
 #endif
 
 		protected bool _isGrabbed = false;
+		protected bool _isEnabled = true;
 
         protected Collider _collider;
         protected Rigidbody _rigidBody;
@@ -48,6 +49,11 @@ namespace yourvrexperience.Utils
 		protected int _floorMaskLayer = -1;
 
 
+		public bool IsEnabled
+		{
+			get { return _isEnabled; }
+			set { _isEnabled = value; }
+		}
 		public bool IsGrabbed
 		{
 			get { return _isGrabbed; }
@@ -175,16 +181,19 @@ namespace yourvrexperience.Utils
 
         protected virtual void Update()
         {
-			if (_isGrabbed)
+			if (_isEnabled)
 			{
-#if ENABLE_ULTIMATEXR
-				if (!_grabbableObject.IsBeingGrabbed)
+				if (_isGrabbed)
 				{
+	#if ENABLE_ULTIMATEXR
+					if (!_grabbableObject.IsBeingGrabbed)
+					{
+						MoveToPosition();
+					}
+	#else
 					MoveToPosition();
+	#endif
 				}
-#else
-				MoveToPosition();
-#endif
 			}
         }
 	}
