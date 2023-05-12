@@ -268,6 +268,30 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static void ApplyInteractivity(Transform target, bool interaction)
+		{
+			if (target.GetComponent<Selectable>() != null)
+			{
+				target.GetComponent<Selectable>().interactable = interaction;
+			}
+			foreach (Transform item in target)
+			{
+				ApplyInteractivity(item, interaction);
+			}
+		}
+
+		public static void ApplyEnabledInteraction(Transform target, bool interaction)
+		{
+			if (target.GetComponent<Selectable>() != null)
+			{
+				target.GetComponent<Selectable>().enabled = interaction;
+			}
+			foreach (Transform item in target)
+			{
+				ApplyEnabledInteraction(item, interaction);
+			}
+		}
+
 		public static string GetFullPathNameGO(GameObject go)
 		{
 			if (go == null || go.transform == null)
