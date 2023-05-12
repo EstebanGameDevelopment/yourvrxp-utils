@@ -221,6 +221,12 @@ namespace yourvrexperience.Utils
             CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
+		public void CreateDistanceScreen(string nameScreen, float distance, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        {
+            _defaultDistance = distance;
+            CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+        }
+
         public void CreatePositionScreen(string nameScreen, Vector3 position, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _position = position;
@@ -280,7 +286,7 @@ namespace yourvrexperience.Utils
 						newScreen.transform.parent = this.transform;
 						_screensCreated.Add(newScreen);
 						if (newScreen.GetComponent<IScreenView>() != null)  newScreen.GetComponent<IScreenView>().Initialize(parameters);
-						ApplyCanvas(newScreen);
+						ApplyCanvas(newScreen, _defaultDistance);
 					}
 				}
             }
