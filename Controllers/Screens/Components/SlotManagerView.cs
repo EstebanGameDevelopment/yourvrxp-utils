@@ -95,7 +95,10 @@ namespace yourvrexperience.Utils
 			if (_imageLoading != null) _imageLoading.gameObject.SetActive(true);
 			if (_textLoading != null) _textLoading.gameObject.SetActive(true);
 
-			_totalPages = _data.Count / _itemsEachPage;
+			if (_itemsEachPage > 0)
+			{
+				_totalPages = _data.Count / _itemsEachPage;
+			}			
 
 			LoadCurrentPage();
 		}
