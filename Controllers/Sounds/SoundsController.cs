@@ -61,7 +61,7 @@ namespace yourvrexperience.Utils
 			StopSoundsFx();
 		}
 
-		private void PlaySoundClipBackground(AudioClip audio, bool loop, float volume)
+		public void PlaySoundClipBackground(AudioClip audio, bool loop, float volume, bool is3D = false)
 		{
 			if (!EnableSound) return;
 
@@ -72,6 +72,7 @@ namespace yourvrexperience.Utils
 			_audioBackground.loop = loop;
 			_audioBackground.volume = volume;
 			_audioBackground.Play();
+			_audioBackground.spatialBlend = (is3D?1:0);
 		}
 
 		public void PauseSoundBackground()
@@ -101,8 +102,7 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-
-		private void PlaySoundClipFx(ChannelsAudio channel, AudioClip audio, bool loop, float volume)
+		public void PlaySoundClipFx(ChannelsAudio channel, AudioClip audio, bool loop, float volume, bool is3D = false)
 		{
 			if (!EnableSound) return;
 			if ((int)channel >= _audioSources.Length) return;
@@ -113,6 +113,7 @@ namespace yourvrexperience.Utils
 			_audioSources[(int)channel].loop = loop;
 			_audioSources[(int)channel].volume = volume;
 			_audioSources[(int)channel].Play();
+			_audioSources[(int)channel].spatialBlend = (is3D?1:0);
 		}
 
 		public void StopSoundsFx()
@@ -140,7 +141,7 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		public void PlaySoundFX(ChannelsAudio channel,string audioName, bool loop, float volume)
+		public void PlaySoundFX(ChannelsAudio channel, string audioName, bool loop, float volume)
 		{
 			for (int i = 0; i < Sounds.Length; i++)
 			{
