@@ -24,8 +24,6 @@ namespace yourvrexperience.Utils
         public const string EventAssetBundleLevelXML         = "EventAssetBundleLevelXML";
         public const string EventAssetBundleOneTimeLoadingAssets = "EventAssetBundleOneTimeLoadingAssets";
 
-        public const string CoockieLoadedAssetBundle = "CoockieLoadedAssetBundle";
-
         private static AssetBundleController _instance;
 
         public static AssetBundleController Instance
@@ -46,7 +44,7 @@ namespace yourvrexperience.Utils
         private bool _isLoadinAnAssetBundle = false;
         private List<ItemMultiObjectEntry> _loadBundles = new List<ItemMultiObjectEntry>();
         private List<string> _urlsBundle = new List<string>();
-        private List<AssetBundle> _assetBundle = new List<AssetBundle>();
+        private Dictionary<string, AssetBundle> _assetBundle = new Dictionary<string, AssetBundle>();
         private List<TimedEventData> listEvents = new List<TimedEventData>();
 
         private Dictionary<string, Object> _loadedObjects = new Dictionary<string, Object>();
@@ -79,12 +77,12 @@ namespace yourvrexperience.Utils
             if (AssetBundleEvent != null) AssetBundleEvent(nameEvent, parameters);
         }
 
-        public void DelayBasicSystemEvent(string nameEvent, float time, params object[] parameters)
+        public void DelayAssetBundleEvent(string nameEvent, float time, params object[] parameters)
         {
             listEvents.Add(new TimedEventData(nameEvent, time, parameters));
         }
 
-        public bool LoadAssetBundle(string url = "", int version = -1)
+        public bool LoadAssetBundle(string url = "", string nameAsset = "", int version = -1)
         {
 			string finalURL = url;
 			int finalVersion = version;
@@ -99,66 +97,45 @@ namespace yourvrexperience.Utils
             if (!_urlsBundle.Contains(finalURL))
             {
                 _urlsBundle.Add(finalURL);
-                DispatchAssetBundleEvent(EventAssetBundleOneTimeLoadingAssets);
-                CachedAssetBundle cacheBundle = new CachedAssetBundle();
-                StartCoroutine(WebRequestAssetBundle(UnityWebRequestAssetBundle.GetAssetBundle(finalURL, cacheBundle)));
+                _loadBundles.Add(new ItemMultiObjectEntry(finalURL, nameAsset, finalVersion));
                 return false;
             }
             else
             {
-                Invoke("AllAssetsLoaded", 0.01f);
+                if (IsAssetBundleLoaded(finalURL, nameAsset))
+                {
+                    AllAssetsLoaded(finalURL, nameAsset);
+                }                
                 return true;
             }            
         }
 
-        public bool LoadAssetBundles(string[] urls, int version)
+        private void DownloadAssetBundle(string finalURL, string nameAsset)
         {
-            for (int i = 0; i < urls.Length; i++)
+            DispatchAssetBundleEvent(EventAssetBundleOneTimeLoadingAssets);
+            CachedAssetBundle cacheBundle = new CachedAssetBundle();
+            StartCoroutine(WebRequestAssetBundle(UnityWebRequestAssetBundle.GetAssetBundle(finalURL, cacheBundle), finalURL, nameAsset));
+        }
+
+        public void AllAssetsLoaded(string urlSource, string nameAsset)
+        {
+            DelayAssetBundleEvent(EventAssetBundleAssetsLoaded, 0.1f, urlSource, nameAsset);
+            _isLoadinAnAssetBundle = false;            
+        }
+
+        private bool IsAssetBundleLoaded(string urlAssetBundle, string nameAsset)
+        {
+            foreach(KeyValuePair<string, AssetBundle> item in _assetBundle)
             {
-                if (!_urlsBundle.Contains(urls[i]))
+                if (item.Key.Equals(urlAssetBundle))
                 {
-                    _loadBundles.Add(new ItemMultiObjectEntry(urls[i], version));
+                    return true;
                 }
             }
-
-            if (_loadBundles.Count == 0)
-            {
-                Invoke("AllAssetsLoaded", 0.01f);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
-        public bool CheckAssetsCached()
-        {
-            return PlayerPrefs.GetInt(CoockieLoadedAssetBundle, -1) == 1;
-        }
-
-        public void AllAssetsLoaded()
-        {
-            _isLoadinAnAssetBundle = true;
-            if (_loadBundles.Count == 0)
-            {
-                PlayerPrefs.SetInt(CoockieLoadedAssetBundle, 1);
-                DispatchAssetBundleEvent(EventAssetBundleAssetsLoaded);
-            }
-        }
-
-        public IEnumerator DownloadAssetBundle(WWW www)
-        {
-            while (!www.isDone)
-            {
-                DispatchAssetBundleEvent(EventAssetBundleAssetsProgress, www.progress);
-                yield return new WaitForSeconds(.1f);
-            }
-            _assetBundle.Add(www.assetBundle);
-            Invoke("AllAssetsLoaded", 0.01f);
-        }
-
-        public IEnumerator WebRequestAssetBundle(UnityWebRequest www)
+        public IEnumerator WebRequestAssetBundle(UnityWebRequest www, string urlAssetBundle, string nameAsset)
         {
             DispatchAssetBundleEvent(EventAssetBundleAssetsUnknownProgress, 0);
             yield return www.SendWebRequest();
@@ -168,9 +145,30 @@ namespace yourvrexperience.Utils
             }
             else
             {
-                _assetBundle.Add(DownloadHandlerAssetBundle.GetContent(www));
+                _assetBundle.Add(urlAssetBundle, DownloadHandlerAssetBundle.GetContent(www));
             }
-            Invoke("AllAssetsLoaded", 0.01f);
+            AllAssetsLoaded(urlAssetBundle, nameAsset);
+        }
+
+        public Object GetObject(string name)
+        {
+#if UNITY_EDITOR
+            Utilities.DebugLogColor("AssetbundleController::CreateGameObject::_name=" + name, Color.red);
+#endif
+            if (_assetBundle.Count == 0) return null;
+
+            foreach (KeyValuePair<string,AssetBundle> item in _assetBundle)
+            {
+                if (item.Value.Contains(name))
+                {
+                    if (!_loadedObjects.ContainsKey(name))
+                    {
+                        _loadedObjects.Add(name, item.Value.LoadAsset(name));
+                    }
+                    return _loadedObjects[name];
+                }
+            }
+            return null;
         }
 
         public GameObject CreateGameObject(string name)
@@ -180,13 +178,13 @@ namespace yourvrexperience.Utils
 #endif
             if (_assetBundle.Count == 0) return null;
 
-            foreach (AssetBundle item in _assetBundle)
+            foreach (KeyValuePair<string,AssetBundle> item in _assetBundle)
             {
-                if (item.Contains(name))
+                if (item.Value.Contains(name))
                 {
                     if (!_loadedObjects.ContainsKey(name))
                     {
-                        _loadedObjects.Add(name, item.LoadAsset(name));
+                        _loadedObjects.Add(name, item.Value.LoadAsset(name));
                     }
                     return Instantiate(_loadedObjects[name]) as GameObject;
                 }
@@ -201,13 +199,13 @@ namespace yourvrexperience.Utils
 #endif
             if (_assetBundle.Count == 0) return null;
 
-            foreach (AssetBundle item in _assetBundle)
+            foreach (KeyValuePair<string,AssetBundle> item in _assetBundle)
             {
-                if (item.Contains(name))
+                if (item.Value.Contains(name))
                 {
                     if (!_loadedObjects.ContainsKey(name))
                     {
-                        _loadedObjects.Add(name, item.LoadAsset(name));
+                        _loadedObjects.Add(name, item.Value.LoadAsset(name));
                     }
                     return Instantiate(_loadedObjects[name]) as Sprite;
                 }
@@ -222,13 +220,13 @@ namespace yourvrexperience.Utils
 #endif
             if (_assetBundle.Count == 0) return null;
 
-            foreach (AssetBundle item in _assetBundle)
+            foreach (KeyValuePair<string,AssetBundle> item in _assetBundle)
             {
-                if (item.Contains(name))
+                if (item.Value.Contains(name))
                 {
                     if (!_loadedObjects.ContainsKey(name))
                     {
-                        _loadedObjects.Add(name, item.LoadAsset(name));
+                        _loadedObjects.Add(name, item.Value.LoadAsset(name));
                     }
                     return Instantiate(_loadedObjects[name]) as Texture2D;
                 }
@@ -244,13 +242,13 @@ namespace yourvrexperience.Utils
 #endif
             if (_assetBundle.Count == 0) return null;
 
-            foreach (AssetBundle item in _assetBundle)
+            foreach (KeyValuePair<string,AssetBundle> item in _assetBundle)
             {
-                if (item.Contains(name))
+                if (item.Value.Contains(name))
                 {
                     if (!_loadedObjects.ContainsKey(name))
                     {
-                        _loadedObjects.Add(name, item.LoadAsset(name));
+                        _loadedObjects.Add(name, item.Value.LoadAsset(name));
                     }
                     return Instantiate(_loadedObjects[name]) as Material;
                 }
@@ -263,13 +261,13 @@ namespace yourvrexperience.Utils
         {
             if (_assetBundle.Count == 0) return null;
 
-            foreach (AssetBundle item in _assetBundle)
+            foreach (KeyValuePair<string,AssetBundle> item in _assetBundle)
             {
-                if (item.Contains(name))
+                if (item.Value.Contains(name))
                 {
                     if (!_loadedObjects.ContainsKey(name))
                     {
-                        _loadedObjects.Add(name, item.LoadAsset(name));
+                        _loadedObjects.Add(name, item.Value.LoadAsset(name));
                     }
                     return Instantiate(_loadedObjects[name]) as AudioClip;
                 }
@@ -322,13 +320,11 @@ namespace yourvrexperience.Utils
                 if (_loadBundles.Count > 0)
                 {
                     string assetBundleURL = (string)_loadBundles[0].Objects[0];
-                    int assetBundleVersion = (int)_loadBundles[0].Objects[1];
+                    string assetName = (string)_loadBundles[0].Objects[1];
+                    int assetBundleVersion = (int)_loadBundles[0].Objects[2];
                     _loadBundles.RemoveAt(0);
                     _isLoadinAnAssetBundle = true;
-                    if (LoadAssetBundle(assetBundleURL, assetBundleVersion))
-                    {
-                        _isLoadinAnAssetBundle = false;
-                    }
+                    DownloadAssetBundle(assetBundleURL, assetName);
                 }
             }
 

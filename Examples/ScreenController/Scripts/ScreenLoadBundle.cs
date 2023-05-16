@@ -73,7 +73,7 @@ namespace yourvrexperience.Utils
                 progressDownload.text = LanguageController.Instance.GetText("message.downloading.assets.bundle") + " " + dotprogress;
 
                 int newDots = (dots + 1) % 4;
-                AssetBundleController.Instance.DelayBasicSystemEvent(AssetBundleController.EventAssetBundleAssetsUnknownProgress, 1, newDots);
+                AssetBundleController.Instance.DelayAssetBundleEvent(AssetBundleController.EventAssetBundleAssetsUnknownProgress, 1, newDots);
             }
         }
 	}
