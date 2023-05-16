@@ -292,6 +292,18 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static void SetIsTrigger(Transform target, bool isTrigger)
+		{
+			if (target.GetComponent<Collider>() != null)
+			{
+				target.GetComponent<Collider>().isTrigger = isTrigger;
+			}
+			foreach (Transform item in target)
+			{
+				SetIsTrigger(item, isTrigger);
+			}
+		}
+
 		public static string GetFullPathNameGO(GameObject go)
 		{
 			if (go == null || go.transform == null)
