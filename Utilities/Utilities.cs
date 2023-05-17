@@ -452,5 +452,17 @@ namespace yourvrexperience.Utils
 			string finalString = new String(stringChars);
 			return finalString;
 		}
+
+		public static Bounds GetMaxBounds(GameObject g) 
+		{
+			var renderers = g.GetComponentsInChildren<Renderer>();
+			if (renderers.Length == 0) return new Bounds(g.transform.position, Vector3.zero);
+			var b = renderers[0].bounds;
+			foreach (Renderer r in renderers) 
+			{
+				b.Encapsulate(r.bounds);
+			}
+			return b;
+		}
 	}
 }
