@@ -16,6 +16,9 @@ namespace yourvrexperience.Utils
 
 		void ActivatePhysics(bool activation);
 		void ForcePhysics(bool gravity, bool kinematic, bool trigger);
+		bool GetGravity();
+		bool GetKinematic();
+		bool GetIsTrigger();
 		bool ToggleControl();
 		void FloorAdjustment();
 	}
