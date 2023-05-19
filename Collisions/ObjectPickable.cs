@@ -104,6 +104,41 @@ namespace yourvrexperience.Utils
         {
         }
 
+       	public bool GetGravity()
+        {
+            if (_rigidBody != null)
+			{
+				return _rigidBody.useGravity;
+			}
+			else
+			{
+				return false;
+			}
+        }
+
+        public bool GetKinematic()
+        {
+            if (_rigidBody != null)
+			{
+				return _rigidBody.isKinematic;
+			}
+			else
+			{
+				return false;
+			}
+        }
+
+        public bool GetIsTrigger()
+        {
+            if (_collider != null)
+			{
+				return _collider.isTrigger;
+			}
+			else
+			{
+				return false;
+			}
+        }
 		public bool ToggleControl()
 		{
             SetIsGrabbed(!_isGrabbed);			
@@ -196,5 +231,5 @@ namespace yourvrexperience.Utils
 				}
 			}
         }
-	}
+   }
 }
