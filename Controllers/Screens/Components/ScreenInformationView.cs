@@ -20,6 +20,7 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationRequestAllScreensDestroyed = "EventScreenInformationRequestAllScreensDestroyed";
 
         public const string ScreenInformation = "ScreenInformation";
+		public const string ScreenInformationBig = "ScreenInformationBig";
 		public const string ScreenConfirmation = "ScreenConfirmation";
 		public const string ScreenInformationImage = "ScreenInformation";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
