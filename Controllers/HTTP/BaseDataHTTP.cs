@@ -13,10 +13,16 @@ namespace yourvrexperience.Utils
 		protected string _jsonResponse;
 		protected int _method = METHOD_GET;
 		protected WWWForm _formPost;
+		protected byte[] _rawData;
 
 		public int Method
 		{
 			get { return _method; }
+		}
+
+		public byte[] RawData 
+		{ 
+			get { return _rawData; } 
 		}
 
 		public WWWForm FormPost
@@ -29,6 +35,7 @@ namespace yourvrexperience.Utils
 			Dictionary<string, string> headers = new Dictionary<string, string>();
 			return headers;
 		}
+		
 
 		private string CleanUndesiredTags(string data)
 		{

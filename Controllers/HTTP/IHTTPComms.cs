@@ -7,6 +7,7 @@ namespace yourvrexperience.Utils
 
 	public interface IHTTPComms
 	{
+		byte[] RawData { get; }
 		string UrlRequest { get; }
 		WWWForm FormPost { get; }
 		int Method { get; }

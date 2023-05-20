@@ -172,11 +172,12 @@ namespace yourvrexperience.Utils
                     {
                         if (_headers[i].Items.Count > 1)
                         {
-                            www.SetRequestHeader(_headers[i].Items[0], _headers[i].Items[1]);
+							string type = _headers[i].Items[0];
+							string content = _headers[i].Items[1];
+                            www.SetRequestHeader(type, content);
                         }
                     }
-                }
-                
+                }                
 
                 if (_isBinaryResponse)
 				{
@@ -189,16 +190,54 @@ namespace yourvrexperience.Utils
 			}
 			else
 			{
-                UnityWebRequest www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
-
-                if (_isBinaryResponse)
+				if ((_commRequest.RawData != null) && (_commRequest.RawData.Length > 0))
 				{
-                    StartCoroutine(WaitForUnityWebRequest(www));
-                }
+					UnityWebRequest www = new UnityWebRequest(_commRequest.UrlRequest, "POST");					
+					www.uploadHandler = new UploadHandlerRaw(_commRequest.RawData);
+					www.downloadHandler = new DownloadHandlerBuffer();
+					www.disposeDownloadHandlerOnDispose = true;
+					www.disposeUploadHandlerOnDispose = true;
+					www.disposeCertificateHandlerOnDispose = true;
+					if (_headers != null)
+					{
+						for (int i = 0; i < _headers.Count; i++)
+						{
+							if (_headers[i].Items.Count > 1)
+							{
+								string type = _headers[i].Items[0];
+								string content = _headers[i].Items[1];
+								www.SetRequestHeader(type, content);
+							}
+						}
+					}      					
+
+					StartCoroutine(WaitForUnityWebStringRequest(www));
+				}
 				else
 				{
-                    StartCoroutine(WaitForUnityWebStringRequest(www));
-                }
+					UnityWebRequest www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
+					if (_headers != null)
+					{
+						for (int i = 0; i < _headers.Count; i++)
+						{
+							if (_headers[i].Items.Count > 1)
+							{
+								string type = _headers[i].Items[0];
+								string content = _headers[i].Items[1];
+								www.SetRequestHeader(type, content);
+							}
+						}
+					}                
+
+					if (_isBinaryResponse)
+					{
+						StartCoroutine(WaitForUnityWebRequest(www));
+					}
+					else
+					{
+						StartCoroutine(WaitForUnityWebStringRequest(www));
+					}
+				}
 			}
 		}
 
