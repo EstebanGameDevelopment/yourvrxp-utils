@@ -21,5 +21,6 @@ namespace yourvrexperience.Utils
 		bool GetIsTrigger();
 		bool ToggleControl();
 		void FloorAdjustment();
+		void ResetForces();
 	}
 }
