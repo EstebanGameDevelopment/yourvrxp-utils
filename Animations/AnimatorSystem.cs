@@ -39,9 +39,12 @@ namespace yourvrexperience.Utils
 
 		public void ChangeAnimation(string triggerAnimation)
 		{
-			_currentTriggerAnimation = triggerAnimation;
-			AnimatorComponent.SetTrigger(triggerAnimation);
-			DispatchAnimationChangedEvent(triggerAnimation);
+			if (_currentTriggerAnimation != triggerAnimation)
+			{
+				_currentTriggerAnimation = triggerAnimation;
+				AnimatorComponent.SetTrigger(triggerAnimation);
+				DispatchAnimationChangedEvent(triggerAnimation);
+			}
 		}
 	}
 }
