@@ -51,6 +51,7 @@ namespace yourvrexperience.Utils
 		private List<CommEventData> _priorityQueuedEvents = new List<CommEventData>();
 
 		private string _inGameLog = "";
+		private UnityWebRequest _currentWWW;
 
 		public static string FilterSpecialTokens(string _text)
 		{
@@ -103,8 +104,21 @@ namespace yourvrexperience.Utils
 		{
 			if (_instance != null)
 			{
+				_currentWWW = null;
 				Destroy(_instance.gameObject);
 				_instance = null;
+			}
+		}
+
+		public void AbortCurrentCommunication()
+		{
+			if (_currentWWW != null)
+			{
+				try {
+					UnityWebRequest currentWWW = _currentWWW;
+					_currentWWW = null;
+					currentWWW.Abort();
+				} catch (Exception err) {};
 			}
 		}
 
@@ -166,6 +180,7 @@ namespace yourvrexperience.Utils
 			if (_commRequest.Method == BaseDataHTTP.METHOD_GET)
 			{
                 UnityWebRequest www = UnityWebRequest.Get(_commRequest.UrlRequest + data);
+				_currentWWW = www;
                 if (_headers != null)
                 {
                     for (int i = 0; i < _headers.Count; i++)
@@ -193,6 +208,7 @@ namespace yourvrexperience.Utils
 				if ((_commRequest.RawData != null) && (_commRequest.RawData.Length > 0))
 				{
 					UnityWebRequest www = new UnityWebRequest(_commRequest.UrlRequest, "POST");					
+					_currentWWW = www;
 					www.uploadHandler = new UploadHandlerRaw(_commRequest.RawData);
 					www.downloadHandler = new DownloadHandlerBuffer();
 					www.disposeDownloadHandlerOnDispose = true;
@@ -216,6 +232,7 @@ namespace yourvrexperience.Utils
 				else
 				{
 					UnityWebRequest www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
+					_currentWWW = www;
 					if (_headers != null)
 					{
 						for (int i = 0; i < _headers.Count; i++)
@@ -307,6 +324,10 @@ namespace yourvrexperience.Utils
                 if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebRequest::stacktrace=" + err.StackTrace, Color.red);
             }
 
+			if (_currentWWW == www)
+			{
+				_currentWWW = null;
+			}
             ChangeState(STATE_IDLE);
             ProcesQueuedComms();
         }
@@ -358,6 +379,11 @@ namespace yourvrexperience.Utils
             {
                 if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebStringRequest::stacktrace=" + err.StackTrace, Color.red);
             }
+
+			if (_currentWWW == www)
+			{
+				_currentWWW = null;
+			}
 
             ChangeState(STATE_IDLE);
             ProcesQueuedComms();
