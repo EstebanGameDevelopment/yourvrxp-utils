@@ -131,7 +131,6 @@ namespace yourvrexperience.Utils
 #endif			
         }
 
-
         private void OnConfirmation()
         {
 			if (_inputValue != null)
@@ -140,7 +139,7 @@ namespace yourvrexperience.Utils
 				{
 					if (_customOutputEvent.Length > 0)
 					{
-						SystemEventController.Instance.DispatchSystemEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
+						UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
 					}
 				}
 				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
@@ -151,7 +150,7 @@ namespace yourvrexperience.Utils
 				{
 					if (_customOutputEvent.Length > 0)
 					{
-						SystemEventController.Instance.DispatchSystemEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm);
+						UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm);
 					}
 				}
 				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm);
