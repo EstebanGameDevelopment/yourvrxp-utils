@@ -59,7 +59,7 @@ namespace yourvrexperience.Utils
 		private void OnFocusEvent()
 		{
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
-			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  inputNameObject.gameObject, inputNameObject.text, 100);
+			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  inputNameObject.gameObject, inputNameObject, 100);
 #endif			
 		}
 

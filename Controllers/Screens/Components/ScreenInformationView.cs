@@ -127,7 +127,7 @@ namespace yourvrexperience.Utils
         {
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			_content.gameObject.SetActive(false);
-			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  _inputValue.gameObject, _inputValue.text, 200);
+			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  _inputValue.gameObject, _inputValue, 200);
 #endif			
         }
 
