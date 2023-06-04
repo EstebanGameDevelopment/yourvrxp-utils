@@ -7,8 +7,9 @@ namespace yourvrexperience.Utils
     {
         private Vector3 _velocity = Vector3.zero;
 
-        public void Move(Vector3 velocity, bool hasPhysics)
+        public void Move(Vector3 velocity, bool hasPhysics, bool reorient = false)
         {
+            if (reorient) this.transform.forward = velocity;
             Rigidbody rigidbodyObject = this.GetComponent<Rigidbody>();
             if (hasPhysics && (rigidbodyObject != null))
             {
