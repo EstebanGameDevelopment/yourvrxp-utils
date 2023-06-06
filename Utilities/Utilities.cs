@@ -464,5 +464,25 @@ namespace yourvrexperience.Utils
 			}
 			return b;
 		}
+
+		public static List<string> GetAnimationNames(GameObject target)
+		{
+			List<string> animations = new List<string>();
+			Animator animatorContainer = target.GetComponentInChildren<Animator>();
+			RuntimeAnimatorController runtimeAnimator = animatorContainer.runtimeAnimatorController;
+			AnimationClip[] animationClips = runtimeAnimator.animationClips;
+			foreach (AnimationClip item in animationClips)
+			{
+				string triggerAnimation = item.name;
+				// THIS CODE WON'T BE HERE BECAUSE THE ANIMATIONS WILL HAVE THE SAME NAME AS THE TRIGGERS
+				int indexSpecialAnimation = triggerAnimation.IndexOf('|');
+				if (indexSpecialAnimation != -1)
+				{
+					triggerAnimation = triggerAnimation.Substring(indexSpecialAnimation + 1, triggerAnimation.Length - (indexSpecialAnimation + 1));
+				}
+				animations.Add(triggerAnimation);
+			}
+			return animations;
+		}
 	}
 }
