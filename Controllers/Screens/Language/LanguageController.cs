@@ -78,6 +78,32 @@ namespace yourvrexperience.Utils
             }
         }
 
+        public string GetText(string _id, params object[] _list)
+		{
+			LoadGameTexts();
+			if (m_texts[_id] != null)
+			{
+				string buffer = ((TextEntry)m_texts[_id]).GetText(CodeLanguage);
+				string result = "";
+				for (int i = 0; i < _list.Length; i++)
+				{
+					string valueThing = (_list[i]).ToString();
+					int indexTag = buffer.IndexOf("~");
+					if (indexTag != -1)
+					{
+						result += buffer.Substring(0, indexTag) + valueThing;
+						buffer = buffer.Substring(indexTag + 1, buffer.Length - (indexTag + 1));
+					}
+				}
+				result += buffer;
+				return result;
+			}
+			else
+			{
+				return _id;
+			}
+		}        
+
         public void ChangeLanguage(string newCodeLanguage)
         {
             bool reportToSystemLanguageChange = false;
