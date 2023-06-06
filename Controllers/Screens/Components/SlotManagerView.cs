@@ -137,6 +137,7 @@ namespace yourvrexperience.Utils
             if (resetPage)
             {
                 _currentPage = 0;
+				this.gameObject.transform.Find("ScrollContent").GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
             }
         }
 
