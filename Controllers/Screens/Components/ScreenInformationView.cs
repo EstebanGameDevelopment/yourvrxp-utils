@@ -56,8 +56,34 @@ namespace yourvrexperience.Utils
 
 			_origin = (GameObject)parameters[0];
             _customOutputEvent = (string)parameters[1];
-            if (_content.Find("Title") != null) _content.Find("Title").GetComponent<TextMeshProUGUI>().text = (string)parameters[2];
-			if (_content.Find("Description") != null) _content.Find("Description").GetComponent<TextMeshProUGUI>().text = (string)parameters[3];
+            if (_content.Find("Title") != null)
+			{
+				if (_content.Find("Title").GetComponent<TextMeshProUGUI>() != null)
+				{
+					_content.Find("Title").GetComponent<TextMeshProUGUI>().text = (string)parameters[2];
+				}
+				else
+				{
+					if (_content.Find("Title").GetComponent<Text>() != null)
+					{
+						_content.Find("Title").GetComponent<Text>().text = (string)parameters[2];
+					}
+				}
+			} 
+			if (_content.Find("Description") != null)
+			{
+				if (_content.Find("Description").GetComponent<TextMeshProUGUI>() != null)
+				{
+					_content.Find("Description").GetComponent<TextMeshProUGUI>().text = (string)parameters[3];
+				}
+				else
+				{
+					if (_content.Find("Description").GetComponent<Text>() != null)
+					{
+						_content.Find("Description").GetComponent<Text>().text = (string)parameters[3];
+					}
+				}
+			} 
 			string textOk = (string)parameters[4];
 			string textCancel = (string)parameters[5];
 
@@ -77,17 +103,31 @@ namespace yourvrexperience.Utils
             if (_content.Find("ButtonOk") != null)
             {
                 _content.Find("ButtonOk").GetComponent<Button>().onClick.AddListener(OnConfirmation);
-				if (_content.Find("ButtonOk/Text") != null)
+				if (_content.Find("ButtonOk").GetComponentInChildren<TextMeshProUGUI>() != null)
 				{
-					_content.Find("ButtonOk/Text").GetComponent<TextMeshProUGUI>().text = textOk;
+					_content.Find("ButtonOk").GetComponentInChildren<TextMeshProUGUI>().text = textOk;
+				}
+				else
+				{
+					if (_content.Find("ButtonOk").GetComponentInChildren<Text>() != null)
+					{
+						_content.Find("ButtonOk").GetComponentInChildren<Text>().text = textOk;
+					}
 				}
             }
             if (_content.Find("ButtonDeny") != null)
             {
                 _content.Find("ButtonDeny").GetComponent<Button>().onClick.AddListener(OnCancel);
-				if (_content.Find("ButtonDeny/Text") != null)
+				if (_content.Find("ButtonDeny").GetComponentInChildren<TextMeshProUGUI>() != null)
 				{
-					_content.Find("ButtonDeny/Text").GetComponent<TextMeshProUGUI>().text = textCancel;
+					_content.Find("ButtonDeny").GetComponentInChildren<TextMeshProUGUI>().text = textCancel;
+				}
+				else
+				{
+					if (_content.Find("ButtonDeny").GetComponentInChildren<Text>() != null)
+					{
+						_content.Find("ButtonDeny").GetComponentInChildren<Text>().text = textCancel;
+					}
 				}
             }
             if (_content.Find("ButtonCancel") != null)
