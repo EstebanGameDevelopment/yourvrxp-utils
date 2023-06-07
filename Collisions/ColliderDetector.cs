@@ -39,34 +39,22 @@ namespace yourvrexperience.Utils
 
         void OnTriggerEnter(Collider collision)
         {
-			if (_isTrigger)
-			{
-				DispatchCollisionEnterEvent(this.gameObject, collision.gameObject);
-			}			
+			DispatchCollisionEnterEvent(this.gameObject, collision.gameObject);
         }
 
         void OnTriggerExit(Collider collision)
         {
-			if (_isTrigger)
-			{
-				DispatchCollisionExitEvent(this.gameObject, collision.gameObject);
-			}
+			DispatchCollisionExitEvent(this.gameObject, collision.gameObject);
 		}
 
         void OnCollisionEnter(Collision collision)
         {
-			if (!_isTrigger)
-			{
-				DispatchCollisionEnterEvent(this.gameObject, collision.gameObject);
-			}			
+			DispatchCollisionEnterEvent(this.gameObject, collision.gameObject);
         }
 
         void OnCollisionExit(Collision collision)
         {
-			if (!_isTrigger)
-			{
-				DispatchCollisionExitEvent(this.gameObject, collision.gameObject);
-			}
+			DispatchCollisionExitEvent(this.gameObject, collision.gameObject);
 		}
 	}
 }
