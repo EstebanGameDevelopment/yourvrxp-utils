@@ -465,22 +465,32 @@ namespace yourvrexperience.Utils
 			return b;
 		}
 
-		public static List<string> GetAnimationNames(GameObject target)
+		public static List<string> GetAnimationNames(GameObject target, string separator = "")
 		{
 			List<string> animations = new List<string>();
 			Animator animatorContainer = target.GetComponentInChildren<Animator>();
-			RuntimeAnimatorController runtimeAnimator = animatorContainer.runtimeAnimatorController;
-			AnimationClip[] animationClips = runtimeAnimator.animationClips;
-			foreach (AnimationClip item in animationClips)
+			if (animatorContainer != null)
 			{
-				string triggerAnimation = item.name;
-				// THIS CODE WON'T BE HERE BECAUSE THE ANIMATIONS WILL HAVE THE SAME NAME AS THE TRIGGERS
-				int indexSpecialAnimation = triggerAnimation.IndexOf('|');
-				if (indexSpecialAnimation != -1)
+				if (animatorContainer.runtimeAnimatorController != null)
 				{
-					triggerAnimation = triggerAnimation.Substring(indexSpecialAnimation + 1, triggerAnimation.Length - (indexSpecialAnimation + 1));
+					RuntimeAnimatorController runtimeAnimator = animatorContainer.runtimeAnimatorController;
+					AnimationClip[] animationClips = runtimeAnimator.animationClips;
+					foreach (AnimationClip item in animationClips)
+					{
+						string triggerAnimation = item.name;
+						// THIS CODE WON'T BE HERE BECAUSE THE ANIMATIONS WILL HAVE THE SAME NAME AS THE TRIGGERS
+						int indexSpecialAnimation = triggerAnimation.IndexOf(separator);
+						if (indexSpecialAnimation != -1)
+						{
+							triggerAnimation = triggerAnimation.Substring(indexSpecialAnimation + 1, triggerAnimation.Length - (indexSpecialAnimation + 1)).ToLower();
+						}
+						else
+						{
+							triggerAnimation = triggerAnimation.ToLower();
+						}
+						animations.Add(triggerAnimation);
+					}
 				}
-				animations.Add(triggerAnimation);
 			}
 			return animations;
 		}
