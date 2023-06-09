@@ -17,8 +17,6 @@ namespace yourvrexperience.Utils
 {
     public class ScreenController : MonoBehaviour
     {
-        public const float SizeVRScreen = 0.002f;
-
 		public const string EventScreenControllerStarted = "EventScreenControllerStarted";
         public const string EventScreenControllerRequestCameraData = "EventScreenControllerRequestCameraData";
         public const string EventScreenControllerResponseCameraData = "EventScreenControllerResponseCameraData";
@@ -40,6 +38,7 @@ namespace yourvrexperience.Utils
         }
 
 		[SerializeField] private float distanceScreen = 1.2f;
+		[SerializeField] private float sizeVRScreen = 0.002f;
 
         public GameObject[] Screens;
 
@@ -54,6 +53,10 @@ namespace yourvrexperience.Utils
 		public float DistanceScreen
 		{
 			get { return distanceScreen; }
+		}
+		public float SizeVRScreen
+		{
+			get { return sizeVRScreen; }
 		}
 
         void Start()
