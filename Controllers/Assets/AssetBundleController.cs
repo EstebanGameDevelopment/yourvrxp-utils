@@ -48,6 +48,14 @@ namespace yourvrexperience.Utils
         private List<TimedEventData> listEvents = new List<TimedEventData>();
 
         private Dictionary<string, Object> _loadedObjects = new Dictionary<string, Object>();
+
+        private bool _hasBeenLoaded = false;
+
+        public bool HasBeenLoaded
+        {
+            get { return _hasBeenLoaded; }
+            set { _hasBeenLoaded = value;}
+        }
 		
 		void Start()
 		{
@@ -108,6 +116,20 @@ namespace yourvrexperience.Utils
                 }                
                 return true;
             }            
+        }
+
+        public bool CheckCachedBundle(string nameBundle)
+        {
+            List<Hash128> cachedVersions = new List<Hash128>();
+            Caching.GetCachedVersions(nameBundle, cachedVersions);
+            for (int i = 0; i < cachedVersions.Count; i++)
+            {
+                if (Caching.IsVersionCached(nameBundle, cachedVersions[i]))
+                {
+                    return true;
+                }
+            }            
+            return false;
         }
 
         private void DownloadAssetBundle(string finalURL, string nameAsset)
