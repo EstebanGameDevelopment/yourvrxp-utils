@@ -18,6 +18,7 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationResponse = "EventScreenInformationResponse";
 		public const string EventScreenInformationDestroy = "EventScreenInformationDestroy";
 		public const string EventScreenInformationRequestAllScreensDestroyed = "EventScreenInformationRequestAllScreensDestroyed";
+		public const string EventScreenInformationUpdateInformation = "EventScreenInformationUpdateInformation";
 
         public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
@@ -56,34 +57,8 @@ namespace yourvrexperience.Utils
 
 			_origin = (GameObject)parameters[0];
             _customOutputEvent = (string)parameters[1];
-            if (_content.Find("Title") != null)
-			{
-				if (_content.Find("Title").GetComponent<TextMeshProUGUI>() != null)
-				{
-					_content.Find("Title").GetComponent<TextMeshProUGUI>().text = (string)parameters[2];
-				}
-				else
-				{
-					if (_content.Find("Title").GetComponent<Text>() != null)
-					{
-						_content.Find("Title").GetComponent<Text>().text = (string)parameters[2];
-					}
-				}
-			} 
-			if (_content.Find("Description") != null)
-			{
-				if (_content.Find("Description").GetComponent<TextMeshProUGUI>() != null)
-				{
-					_content.Find("Description").GetComponent<TextMeshProUGUI>().text = (string)parameters[3];
-				}
-				else
-				{
-					if (_content.Find("Description").GetComponent<Text>() != null)
-					{
-						_content.Find("Description").GetComponent<Text>().text = (string)parameters[3];
-					}
-				}
-			} 
+			UpdateTitle((string)parameters[2]);
+			UpdateDescription((string)parameters[3]);
 			string textOk = (string)parameters[4];
 			string textCancel = (string)parameters[5];
 
@@ -163,6 +138,42 @@ namespace yourvrexperience.Utils
 			}
         }
 
+		private void UpdateTitle(string title)
+		{
+			if (_content.Find("Title") != null)
+			{
+				if (_content.Find("Title").GetComponent<TextMeshProUGUI>() != null)
+				{
+					_content.Find("Title").GetComponent<TextMeshProUGUI>().text = title;
+				}
+				else
+				{
+					if (_content.Find("Title").GetComponent<Text>() != null)
+					{
+						_content.Find("Title").GetComponent<Text>().text = title;
+					}
+				}
+			} 
+		}
+
+		private void UpdateDescription(string description)
+		{
+			if (_content.Find("Description") != null)
+			{
+				if (_content.Find("Description").GetComponent<TextMeshProUGUI>() != null)
+				{
+					_content.Find("Description").GetComponent<TextMeshProUGUI>().text = description;
+				}
+				else
+				{
+					if (_content.Find("Description").GetComponent<Text>() != null)
+					{
+						_content.Find("Description").GetComponent<Text>().text = description;
+					}
+				}
+			} 
+		}
+
         private void OnFocusInputValue()
         {
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
@@ -229,6 +240,11 @@ namespace yourvrexperience.Utils
 			if (nameEvent.Equals(EventScreenInformationRequestAllScreensDestroyed))
 			{
 				UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
+			}
+			if (nameEvent.Equals(EventScreenInformationUpdateInformation))
+			{
+				UpdateTitle((string)parameters[0]);
+				UpdateDescription((string)parameters[1]);
 			}
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
