@@ -494,5 +494,20 @@ namespace yourvrexperience.Utils
 			}
 			return animations;
 		}
+
+		public static void TrimArray(string[] array)
+		{
+			for (int i = 0; i < array.Length; i++)
+			{
+				array[i] = array[i].Trim();
+			}
+		}
+		public static void TrimArray(List<string> array)
+		{
+			for (int i = 0; i < array.Count; i++)
+			{
+				array[i] = array[i].Trim();
+			}
+		}
 	}
 }
