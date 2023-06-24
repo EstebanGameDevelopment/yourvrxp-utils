@@ -49,7 +49,7 @@ namespace yourvrexperience.Utils
 		public virtual void Destroy()
 		{
 			if (UIEventController.Instance != null) UIEventController.Instance.Event -= OnUILocalEvent;
-			SystemEventController.Instance.DelaySystemEvent(EventBaseScreenViewDestroyed, 0.1f);	
+			SystemEventController.Instance.DelaySystemEvent(EventBaseScreenViewDestroyed, 0.1f, NameScreen);	
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			if (VRInputController.Instance != null) VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
 #endif			
