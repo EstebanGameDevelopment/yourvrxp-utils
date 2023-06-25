@@ -40,7 +40,7 @@ namespace yourvrexperience.Utils
 			Debug.Assert(_content != null);
 
 			UIEventController.Instance.Event += OnUILocalEvent;
-			SystemEventController.Instance.DispatchSystemEvent(EventBaseScreenViewCreated, this.gameObject);
+			SystemEventController.Instance.DispatchSystemEvent(EventBaseScreenViewCreated, this.gameObject, NameScreen);
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			if (VRInputController.Instance != null) VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
 #endif			
