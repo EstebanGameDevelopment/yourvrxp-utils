@@ -509,5 +509,12 @@ namespace yourvrexperience.Utils
 				array[i] = array[i].Trim();
 			}
 		}
+
+		public static string ReplaceTextPosition(string original, int start, int end, string replace)
+		{
+			int index = Mathf.Min(start, end);
+			int size = Mathf.Abs(end - start);
+			return original.Substring(0, index) + replace + original.Substring(index + size, original.Length - (index + size));
+		}
 	}
 }
