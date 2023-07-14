@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -502,6 +503,7 @@ namespace yourvrexperience.Utils
 				array[i] = array[i].Trim();
 			}
 		}
+		
 		public static void TrimArray(List<string> array)
 		{
 			for (int i = 0; i < array.Count; i++)
@@ -515,6 +517,11 @@ namespace yourvrexperience.Utils
 			int index = Mathf.Min(start, end);
 			int size = Mathf.Abs(end - start);
 			return original.Substring(0, index) + replace + original.Substring(index + size, original.Length - (index + size));
+		}
+
+		public static string RemoveNonStandardCharacters(string original)
+		{
+			  return Regex.Replace(original, @"[^a-zA-Z0-9]+", string.Empty);
 		}
 	}
 }
