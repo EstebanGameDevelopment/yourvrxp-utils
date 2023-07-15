@@ -523,5 +523,19 @@ namespace yourvrexperience.Utils
 		{
 			  return Regex.Replace(original, @"[^a-zA-Z0-9]+", string.Empty);
 		}
+
+		public static string ExtractXML(string tag, string data)
+		{
+			string startTag = "<" + tag + " ";
+			string endTag = "</" + tag + ">";
+			string buf = data;
+			string output = "";
+			while (buf.IndexOf(startTag) != -1)
+			{
+				output += buf.Substring(buf.IndexOf(startTag), (buf.IndexOf(endTag) + endTag.Length) - buf.IndexOf(startTag));
+				buf = buf.Substring(buf.IndexOf(endTag) + endTag.Length, buf.Length - (buf.IndexOf(endTag) + endTag.Length));
+			}
+			return output;
+		}
 	}
 }
