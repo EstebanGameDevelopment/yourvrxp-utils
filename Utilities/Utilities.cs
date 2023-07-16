@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -519,9 +521,24 @@ namespace yourvrexperience.Utils
 			return original.Substring(0, index) + replace + original.Substring(index + size, original.Length - (index + size));
 		}
 
+ 		public static string ReplaceWord(string text, string wordToReplace, string wordToReplaceWith)
+    	{
+			string pattern = string.Format(@"\b{0}\b", wordToReplace);
+			string replacedText = Regex.Replace(text, pattern, wordToReplaceWith, RegexOptions.IgnoreCase);
+			return replacedText;
+	    }
+
 		public static string RemoveNonStandardCharacters(string original)
 		{
 			  return Regex.Replace(original, @"[^a-zA-Z0-9]+", string.Empty);
+		}
+
+		public static string RemoveSpaces(string original)
+		{
+			string output = original;
+			output = output.Replace(" ", "");
+			output = output.Replace("\n", "");
+			return output;
 		}
 
 		public static string ExtractXML(string tag, string data)
@@ -537,5 +554,22 @@ namespace yourvrexperience.Utils
 			}
 			return output;
 		}
+
+		public static string CalculateChecksum(string input)
+		{
+			using (SHA256 sha256Hash = SHA256.Create())
+			{
+				// Convert the input string to a byte array and compute the hash.
+				byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+				// Convert byte array to a string.
+				StringBuilder builder = new StringBuilder();
+				for (int i = 0; i < bytes.Length; i++)
+				{
+					builder.Append(bytes[i].ToString("x2"));
+				}
+				return builder.ToString();
+			}
+		}		
 	}
 }
