@@ -63,12 +63,13 @@ namespace yourvrexperience.Utils
 
 		private void OnButtonConfirmChange()
 		{
-			UIEventController.Instance.DispatchUIEvent(ScreenInputDescriptionEnteredValue, _source, inputNameObject.text, inputDescriptionObject.text);
+			UIEventController.Instance.DispatchUIEvent(ScreenInputDescriptionEnteredValue, _source, true, inputNameObject.text, inputDescriptionObject.text);
 			UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
 		}
 
 		private void OnButtonCancel()
 		{
+			UIEventController.Instance.DispatchUIEvent(ScreenInputDescriptionEnteredValue, _source, false);
 			UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
 		}
 
