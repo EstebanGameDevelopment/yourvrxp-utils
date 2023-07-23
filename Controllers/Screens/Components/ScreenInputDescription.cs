@@ -20,7 +20,7 @@ namespace yourvrexperience.Utils
 		[SerializeField] private TextMeshProUGUI Title;
 		[SerializeField] private CustomInput inputNameObject;
 		[SerializeField] private TextMeshProUGUI Description;
-		[SerializeField] private CustomInput inputDescriptionObject;
+		[SerializeField] protected CustomInput inputDescriptionObject;
 		[SerializeField] private Button buttonConfirm;
 		[SerializeField] private Button buttonCancel;
 
@@ -37,13 +37,13 @@ namespace yourvrexperience.Utils
 
 			_source = (GameObject)parameters[0];			
 
-			Title.text = (string)parameters[1];
-			inputNameObject.text = (string)parameters[2];
+			if (Title != null) Title.text = (string)parameters[1];
+			if (inputNameObject != null) inputNameObject.text = (string)parameters[2];
 
-			Description.text = (string)parameters[3];
-			inputDescriptionObject.text = (string)parameters[4];
+			if (Description != null) Description.text = (string)parameters[3];
+			if (inputDescriptionObject != null) inputDescriptionObject.text = (string)parameters[4];
 
-			inputNameObject.OnFocusEvent += OnFocusEvent;
+			if (inputNameObject != null) inputNameObject.OnFocusEvent += OnFocusEvent;
 
 			buttonConfirm.onClick.AddListener(OnButtonConfirmChange);
 			buttonConfirm.transform.Find("Text").GetComponent<TextMeshProUGUI>().text = LanguageController.Instance.GetText("text.confirm");
@@ -56,14 +56,19 @@ namespace yourvrexperience.Utils
 
 		private void OnFocusEvent()
 		{
+			if (inputNameObject != null) 
+			{
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
-			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  inputNameObject.gameObject, inputNameObject, 100);
+				ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  inputNameObject.gameObject, inputNameObject, 100);
 #endif			
+			}
 		}
 
 		private void OnButtonConfirmChange()
 		{
-			UIEventController.Instance.DispatchUIEvent(ScreenInputDescriptionEnteredValue, _source, true, inputNameObject.text, inputDescriptionObject.text);
+			string finalName = ((inputNameObject != null)?inputNameObject.text:"");
+			string finalDescription = ((inputDescriptionObject != null)?inputDescriptionObject.text:"");
+			UIEventController.Instance.DispatchUIEvent(ScreenInputDescriptionEnteredValue, _source, true, finalName, finalDescription);
 			UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
 		}
 
@@ -83,12 +88,18 @@ namespace yourvrexperience.Utils
 
 		public void SetTitle(string title)
 		{
-			inputNameObject.text = title;
+			if (inputNameObject != null)
+			{
+				inputNameObject.text = title;
+			}			
 		}
 
 		public void SetDescription(string description)
 		{
-			inputDescriptionObject.text = description;
+			if (inputDescriptionObject != null)
+			{
+				inputDescriptionObject.text = description;
+			}
 		}
 
 		private void OnUIEvent(string nameEvent, object[] parameters)
@@ -96,10 +107,13 @@ namespace yourvrexperience.Utils
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR			
 			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
 			{
-				if (inputNameObject.gameObject == (GameObject)parameters[0])
+				if (inputNameObject != null)
 				{
-					inputNameObject.text = (string)parameters[1];
-				}				
+					if (inputNameObject.gameObject == (GameObject)parameters[0])
+					{
+						inputNameObject.text = (string)parameters[1];
+					}
+				}
 			}
 #endif			
 		}
