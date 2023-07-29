@@ -65,6 +65,11 @@ namespace yourvrexperience.Utils
 			set { grabbedObjectDistance = value; }
 		}
 
+        public Rigidbody GetRigidBody()
+        {
+            return _rigidBody;
+        }		
+
 		void Awake()
 		{
             _layer = this.gameObject.layer;
@@ -237,5 +242,6 @@ namespace yourvrexperience.Utils
 				}
 			}
         }
-   }
+
+    }
 }

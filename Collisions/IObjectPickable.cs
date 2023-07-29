@@ -22,5 +22,6 @@ namespace yourvrexperience.Utils
 		bool ToggleControl();
 		void FloorAdjustment();
 		void ResetForces();
+		Rigidbody GetRigidBody();
 	}
 }
