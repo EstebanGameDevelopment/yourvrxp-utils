@@ -73,14 +73,42 @@ namespace yourvrexperience.Utils
 			return Vector3.zero;
 		}
 
+		public static bool IsFreePathToTarget(GameObject origin, GameObject target, string ignoreLayer = "Floor")
+		{
+			Vector3 sizeOrigin = ColliderInfoExtensions.GetColliderSize(origin);
+			Vector3 sizeTarget = ColliderInfoExtensions.GetColliderSize(target);
+			
+			Vector3 normalToTarget = target.gameObject.transform.position - origin.gameObject.transform.position;
+			normalToTarget.Normalize();
+
+			Vector3 startingPoint = normalToTarget * (sizeOrigin.sqrMagnitude/2) + origin.gameObject.transform.position;
+			Vector3 endingPoint = target.gameObject.transform.position;
+
+			RaycastHit hitCollision = new RaycastHit();
+			float distance = Vector3.Distance(startingPoint, endingPoint);
+			if (Physics.Raycast(startingPoint, normalToTarget, out hitCollision, distance, ~LayerMask.GetMask(ignoreLayer)))
+			{
+				if (hitCollision.collider.gameObject == target)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}				
+			}
+
+			return true;
+		}
+
 		public static Vector3 GetRaycastOriginForwardIgnoreLayer(Vector3 origin, Vector3 forward, ref RaycastHit hitCollision, float distance, int mask = -1)
 		{
 			Vector3 fwd = forward.normalized;
 
 			if (mask != -1)
-			{
-				{
+			{				
 				if (Physics.Raycast(origin, fwd, out hitCollision, distance, ~mask))
+				{
 					return hitCollision.point;
 				}
 			}
