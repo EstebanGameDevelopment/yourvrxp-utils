@@ -307,6 +307,19 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static void ApplyLayer(Transform target, int layer)
+		{
+			if (target != null)
+			{
+				target.gameObject.layer = layer;
+			}
+			foreach (Transform item in target)
+			{
+				ApplyLayer(item, layer);
+			}
+		}
+
+
 		public static string GetFullPathNameGO(GameObject go)
 		{
 			if (go == null || go.transform == null)
