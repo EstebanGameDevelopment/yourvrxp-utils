@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+using yourvrexperience.VR;
+#endif
 
 namespace yourvrexperience.Utils
 {
@@ -179,6 +182,34 @@ namespace yourvrexperience.Utils
 			Vector3 currentCollisionPoint = RaycastingTools.GetMouseCollisionPoint(camera, ref collisionObject, Physics.DefaultRaycastLayers);
 			Vector3 currentForwardMouse = (currentCollisionPoint - camera.transform.position).normalized;
 			return camera.transform.position + currentForwardMouse * distanceCollision;
+		}
+
+        public static Vector3 GetPositionInteraction(RectTransform targetRect, bool debugObject = false)
+		{
+			Vector3 collidedPositionRaycast = Vector3.zero;
+			Vector3 screenPosition = Vector3.zero;
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+			Vector3 positionCurrentController = Vector3.zero;
+			Vector3 forwardCurrentController = Vector3.zero;
+			if (VRInputController.Instance.VRController.CurrentController != null)
+			{
+				positionCurrentController = VRInputController.Instance.VRController.CurrentController.transform.position;
+				forwardCurrentController = VRInputController.Instance.VRController.CurrentController.transform.forward;
+
+				RaycastHit hitPositionData = new RaycastHit();
+				Vector3 positionRaycast = RaycastingTools.GetRaycastOriginForward(positionCurrentController, forwardCurrentController, ref hitPositionData, 100);
+				collidedPositionRaycast = targetRect.InverseTransformPoint(positionRaycast);
+                if (debugObject)
+                {
+                    GameObject objReference = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    objReference.transform.position = positionRaycast;
+                    objReference.transform.localScale = new Vector3(0.05f,0.05f,0.05f);
+                }
+			}
+#else
+			collidedPositionRaycast = targetRect.InverseTransformPoint(Input.mousePosition);
+#endif
+			return collidedPositionRaycast;
 		}
 
 #if ENABLE_OCULUS
