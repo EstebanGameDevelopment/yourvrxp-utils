@@ -36,12 +36,31 @@ namespace yourvrexperience.Utils
         private bool _addedListenerNext = false;
         private bool _addedListenerPrevious = false;
 
+		private ScrollRect _scrollRectList = null;
+
         public List<ItemMultiObjectEntry> Data
         {
             get { return _data; }
         }
 
 		private GameObject[] _exitingItems;
+
+		public bool ScrollVertical 
+		{
+			get { return _scrollRectList.vertical; }
+			set { _scrollRectList.vertical = value; }
+		}
+
+		public bool ScrollHorizontal
+		{
+			get { return _scrollRectList.horizontal; }
+			set { _scrollRectList.horizontal = value; }
+		}
+
+		public GameObject Content 
+		{
+			get { return _content; }
+		}
 
         public void InitializeExisting(int itemsEachPage, List<ItemMultiObjectEntry> data, GameObject[] exitingItems)
 		{
@@ -56,6 +75,8 @@ namespace yourvrexperience.Utils
 			_data = data;
 			_slotPrefab = slotPrefab;
 			_createNewPrefab = createNewPrefab;
+
+			_scrollRectList = this.gameObject.transform.Find("ScrollContent").GetComponent<ScrollRect>();
 
 			_content = this.gameObject.transform.Find("ScrollContent/Entries").gameObject;
 			if (ButtonNext!=null) _buttonNext = ButtonNext.transform;
@@ -137,7 +158,10 @@ namespace yourvrexperience.Utils
             if (resetPage)
             {
                 _currentPage = 0;
-				this.gameObject.transform.Find("ScrollContent").GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
+				if (_scrollRectList != null)
+				{
+					_scrollRectList.verticalNormalizedPosition = 1;
+				}				
             }
         }
 
@@ -146,7 +170,7 @@ namespace yourvrexperience.Utils
 			if ((_buttonNext != null) && (_buttonPrevious != null) && (_data.Count > _itemsEachPage))
 			{
 				ClearCurrentGameObject(false);
-				this.gameObject.transform.Find("ScrollContent").GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
+				_scrollRectList.verticalNormalizedPosition = 1;
 
 				int initialItem = _currentPage * _itemsEachPage;
 				int finalItem = initialItem + _itemsEachPage;
