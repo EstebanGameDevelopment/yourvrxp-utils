@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace yourvrexperience.Utils
 {
@@ -204,6 +205,41 @@ namespace yourvrexperience.Utils
 					_audioBackground.volume = 0;
 					_activateFadeOut = false;
 					SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerFadeCompleted);
+				}
+			}
+		}
+
+		public void PlayRemoteBackground(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
+		{
+			StartCoroutine(LoadAudioFromServer(audioURL, true, channel, loop, volume, is3D));
+		}
+
+		public void PlayRemoteFX(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
+		{
+			StartCoroutine(LoadAudioFromServer(audioURL, false, channel, loop, volume, is3D));
+		}
+
+		private IEnumerator LoadAudioFromServer(string url, bool isBackground, ChannelsAudio channel, bool loop, float volume, bool is3D)
+		{
+			using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
+			{
+				yield return www.SendWebRequest();
+
+				if (www.result == UnityWebRequest.Result.ConnectionError)
+				{
+					Debug.LogError("Error while receiving audio clip: " + www.error);
+				}
+				else
+				{
+					AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
+					if (isBackground)
+					{
+						PlaySoundClipBackground(audioClip, loop, volume, is3D);
+					}
+					else
+					{
+						PlaySoundClipFx(channel, audioClip, loop, volume, is3D);
+					}					
 				}
 			}
 		}
