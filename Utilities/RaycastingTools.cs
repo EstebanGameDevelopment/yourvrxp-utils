@@ -212,6 +212,32 @@ namespace yourvrexperience.Utils
 			return collidedPositionRaycast;
 		}
 
+		public static Vector3 CheckCollisionPointUI(RectTransform area, ref Vector3 screenPosition, ref Vector3 collidedPositionRaycast, Transform content)
+		{
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+			Vector3 positionCurrentController = Vector3.zero;
+			Vector3 forwardCurrentController = Vector3.zero;
+			if (VRInputController.Instance.VRController.CurrentController != null)
+			{
+				positionCurrentController = VRInputController.Instance.VRController.CurrentController.transform.position;
+				forwardCurrentController = VRInputController.Instance.VRController.CurrentController.transform.forward;
+
+				RaycastHit hitPositionData = new RaycastHit();
+				collidedPositionRaycast = RaycastingTools.GetRaycastOriginForward(positionCurrentController, forwardCurrentController, ref hitPositionData, 100);
+				if (content != null)
+				{
+					collidedPositionRaycast = content.GetComponent<RectTransform>().InverseTransformPoint(collidedPositionRaycast);
+				}				
+			}
+#else
+			screenPosition = Input.mousePosition;
+			Vector2 localPosition = Vector2.zero;
+			RectTransformUtility.ScreenPointToLocalPointInRectangle(area, screenPosition, null, out localPosition);
+			collidedPositionRaycast = localPosition;
+#endif
+			return collidedPositionRaycast;
+		}
+
 #if ENABLE_OCULUS
 		public static void HandVRRaycastObject(bool rightHand, float distance = 10, string debugMessage = "", bool debugSphere = false, float debugTime = 4, float debugSphereSize = 0.05f)
 		{
