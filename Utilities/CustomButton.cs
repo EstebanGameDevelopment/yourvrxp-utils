@@ -37,6 +37,7 @@ namespace yourvrexperience.Utils
 		}
         public override void OnPointerUp(PointerEventData eventData)
 		{
+			base.OnPointerUp(eventData);
 			PointerUpButton?.Invoke(this);
 		}
     }
