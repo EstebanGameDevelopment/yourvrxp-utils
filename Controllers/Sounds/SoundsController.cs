@@ -244,6 +244,42 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public void Play3DSound(AudioClip audioClip, Vector3 position, float volume, GameObject objectSound = null, bool loop = false)
+        {
+			if (!EnableSound) return;
+            if (audioClip == null) return;
+
+            AudioSource audioSource;
+            GameObject soundGameObject = null;
+            if (objectSound == null)
+            {
+                soundGameObject = new GameObject("One Shot Sound");
+            }
+            else
+            {
+                soundGameObject = new GameObject("Passenger Object");
+                soundGameObject.AddComponent<PassengerObject>();
+                soundGameObject.GetComponent<PassengerObject>().MainObject = objectSound;
+                soundGameObject.transform.position = objectSound.transform.position;
+            }
+
+            soundGameObject.AddComponent<AudioSource>();
+            soundGameObject.transform.position = position;
+            audioSource = soundGameObject.GetComponent<AudioSource>();
+
+            audioSource.clip = audioClip;
+            audioSource.volume = volume;
+            audioSource.spatialBlend = 1;
+            audioSource.loop = loop;
+
+            audioSource.Play();
+
+            if (objectSound == null)
+            {
+                GameObject.Destroy(soundGameObject, audioSource.clip.length);
+            }                
+        }
+
 		void Update()
 		{
 			FadeInUpdate();
