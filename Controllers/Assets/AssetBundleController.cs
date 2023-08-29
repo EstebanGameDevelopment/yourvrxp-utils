@@ -159,8 +159,12 @@ namespace yourvrexperience.Utils
 
         public IEnumerator WebRequestAssetBundle(UnityWebRequest www, string urlAssetBundle, string nameAsset)
         {
-            DispatchAssetBundleEvent(EventAssetBundleAssetsUnknownProgress, 0);
-            yield return www.SendWebRequest();
+            www.SendWebRequest();
+            while (!www.isDone)
+            {
+                DispatchAssetBundleEvent(EventAssetBundleAssetsProgress, www.downloadProgress);
+                yield return new WaitForSeconds(.1f);
+            }
             if (www.isNetworkError || www.isHttpError)
             {
                 Debug.LogError(www.error);
