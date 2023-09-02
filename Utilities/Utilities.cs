@@ -307,6 +307,29 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static void EnableRenderers(Transform target, bool enabled)
+		{
+			if (target.GetComponent<Renderer>() != null)
+			{
+				target.GetComponent<Renderer>().enabled = enabled;
+			}
+			foreach (Transform item in target)
+			{
+				EnableRenderers(item, enabled);
+			}
+		}
+
+		public static void EnablerRenderers(Transform target, bool enabled)
+		{
+			if (target.GetComponent<EnablerRenderer>() != null)
+			{
+				target.GetComponent<EnablerRenderer>().Activate(enabled);
+			}
+			foreach (Transform item in target)
+			{
+				EnablerRenderers(item, enabled);
+			}
+		}
 		public static void ApplyLayer(Transform target, int layer)
 		{
 			if (target != null)
