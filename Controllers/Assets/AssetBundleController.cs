@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Video;
 
 namespace yourvrexperience.Utils
 {
@@ -302,6 +303,25 @@ namespace yourvrexperience.Utils
             return null;
         }
 
+        public VideoClip CreateVideoclip(string name)
+        {
+            if (_assetBundle.Count == 0) return null;
+
+            foreach (KeyValuePair<string, AssetBundle> item in _assetBundle)
+            {
+                if (item.Value.Contains(name))
+                {
+                    if (!_loadedObjects.ContainsKey(name))
+                    {
+                        _loadedObjects.Add(name, item.Value.LoadAsset(name));
+                    }
+                    return Instantiate(_loadedObjects[name]) as VideoClip;
+                }
+            }
+
+            return null;
+        }
+        
         public void ClearAssetBundleEvents(string _nameEvent = "")
         {
             if (_nameEvent.Length == 0)

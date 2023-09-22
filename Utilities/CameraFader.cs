@@ -34,6 +34,16 @@ namespace yourvrexperience.Utils
 
 		private bool _isFadeIn;
 
+		private bool _isEnabled = true;
+
+		public bool IsEnabled 
+		{
+			get { return _isEnabled; }
+			set { _isEnabled = value;
+				gameObject.GetComponent<Renderer>().enabled = _isEnabled;				
+			}
+		}
+
 		private void Awake()
 		{
 			_fading = false;

@@ -62,6 +62,11 @@ namespace yourvrexperience.Utils
 			StopSoundsFx();
 		}
 
+		public AudioSource GetChannelAudioSource(ChannelsAudio channelAudio)
+		{
+			return _audioSources[(int)channelAudio];
+		}
+
 		public void PlaySoundClipBackground(AudioClip audio, bool loop, float volume, bool is3D = false)
 		{
 			if (!EnableSound) return;
@@ -75,16 +80,26 @@ namespace yourvrexperience.Utils
 			_audioBackground.Play();
 			_audioBackground.spatialBlend = (is3D?1:0);
 		}
-
+		public void SetVolume(ChannelsAudio channel, float volume)
+		{
+			_audioSources[(int)channel].volume = volume;
+		}
 		public void PauseSoundBackground()
 		{
 			_audioBackground.Pause();
+		}
+		public void PauseSoundFX(ChannelsAudio channel)
+		{
+			_audioSources[(int)channel].Pause();
 		}
 		public void ResumeSoundBackground()
 		{
 			_audioBackground.UnPause();
 		}
-
+		public void ResumeSoundFX(ChannelsAudio channel)
+		{
+			_audioSources[(int)channel].UnPause();
+		}
 		public void StopSoundBackground()
 		{
 			_currentAudioMelodyPlaying = "";
@@ -129,6 +144,12 @@ namespace yourvrexperience.Utils
 				_audioSources[(int)ChannelsAudio.FX2].clip = null;
 				_audioSources[(int)ChannelsAudio.FX2].Stop();
 			}			
+		}
+
+		public void StopSoundFx(ChannelsAudio channel)
+		{
+			_audioSources[(int)channel].clip = null;
+			_audioSources[(int)channel].Stop();
 		}
 
 		public void PlaySoundFX(string audioName, bool loop, float volume)
@@ -209,44 +230,44 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		public void PlayRemoteBackground(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
-		{
-			StartCoroutine(LoadAudioFromServer(audioURL, true, channel, loop, volume, is3D));
-		}
-
-		public void PlayRemoteFX(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
-		{
-			StartCoroutine(LoadAudioFromServer(audioURL, false, channel, loop, volume, is3D));
-		}
-
-		private IEnumerator LoadAudioFromServer(string url, bool isBackground, ChannelsAudio channel, bool loop, float volume, bool is3D)
-		{
-			using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
-			{
-				yield return www.SendWebRequest();
-
-				if (www.result == UnityWebRequest.Result.ConnectionError)
-				{
-					Debug.LogError("Error while receiving audio clip: " + www.error);
-				}
-				else
-				{
-					AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
-					if (isBackground)
-					{
-						PlaySoundClipBackground(audioClip, loop, volume, is3D);
-					}
-					else
-					{
-						PlaySoundClipFx(channel, audioClip, loop, volume, is3D);
-					}					
-				}
-			}
-		}
-
-		public void Play3DSound(AudioClip audioClip, Vector3 position, float volume, GameObject objectSound = null, bool loop = false)
+        public void PlayRemoteBackground(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
         {
-			if (!EnableSound) return;
+            StartCoroutine(LoadAudioFromServer(audioURL, true, channel, loop, volume, is3D));
+        }
+
+        public void PlayRemoteFX(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
+        {
+            StartCoroutine(LoadAudioFromServer(audioURL, false, channel, loop, volume, is3D));
+        }
+
+        private IEnumerator LoadAudioFromServer(string url, bool isBackground, ChannelsAudio channel, bool loop, float volume, bool is3D)
+        {
+            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result == UnityWebRequest.Result.ConnectionError)
+                {
+                    Debug.LogError("Error while receiving audio clip: " + www.error);
+                }
+                else
+                {
+                    AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
+                    if (isBackground)
+                    {
+                        PlaySoundClipBackground(audioClip, loop, volume, is3D);
+                    }
+                    else
+                    {
+                        PlaySoundClipFx(channel, audioClip, loop, volume, is3D);
+                    }                    
+                }
+            }
+        }
+
+        public void Play3DSound(AudioClip audioClip, Vector3 position, float volume, GameObject objectSound = null, bool loop = false)
+        {
+            if (!EnableSound) return;
             if (audioClip == null) return;
 
             AudioSource audioSource;
@@ -279,7 +300,7 @@ namespace yourvrexperience.Utils
                 GameObject.Destroy(soundGameObject, audioSource.clip.length);
             }                
         }
-
+		
 		void Update()
 		{
 			FadeInUpdate();

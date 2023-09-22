@@ -102,6 +102,20 @@ namespace yourvrexperience.Utils
 			return Mathf.Sqrt((x * x) + (z * z));
 		}
 
+		public static float DistanceXY(Vector3 one, Vector3 two)
+		{
+			float x = (one.x - two.x);
+			float y = (one.y - two.y);
+			return Mathf.Sqrt((x * x) + (y * y));
+		}
+
+		public static float DistanceXZ(Vector2 one, Vector2 two)
+		{
+			float x = (one.x - two.x);
+			float y = (one.y - two.y);
+			return Mathf.Sqrt((x * x) + (y * y));
+		}		
+
 		public static List<Vector3> GetBoundaryPoints(Vector3 origin, Vector3 target)
 		{
 			List<Vector3> pointsPlane = new List<Vector3>();
@@ -477,6 +491,13 @@ namespace yourvrexperience.Utils
 			return GeometryUtility.TestPlanesAABB(planes, _bounds);
 		}
 
+		public static bool IsVisibleFrom(Vector3 worldPosition, Camera camera)
+		{
+			Vector3 viewportPoint = camera.WorldToViewportPoint(worldPosition);
+
+			return (viewportPoint.z > 0 && viewportPoint.x > 0 && viewportPoint.x < 1 && viewportPoint.y > 0 && viewportPoint.y < 1);
+		}		
+
 		public static string RandomCodeIV(int _size)
 		{
 			string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#!@+=-*";
@@ -607,5 +628,88 @@ namespace yourvrexperience.Utils
 				return builder.ToString();
 			}
 		}		
+
+		public static bool CheckInsideFrustrum(Collider targetObject, Camera cam)
+		{
+			Plane[] planes = GeometryUtility.CalculateFrustumPlanes(cam);
+			return GeometryUtility.TestPlanesAABB(planes, targetObject.bounds);
+		}
+
+		public static Vector3 ConvertToTargetSystem(Transform originalSystem, Transform targetSystem, Vector3 originalPoint)
+		{
+			Vector3 pointInWorldSpace = originalSystem.TransformPoint(originalPoint);
+			Vector3 pointInTargetSpace = targetSystem.InverseTransformPoint(pointInWorldSpace);
+			return pointInTargetSpace;
+		}
+
+		public static Vector3 ConvertToOriginalSystem(Transform originalSystem, Transform targetSystem, Vector3 targetPoint)
+		{
+			Vector3 pointInWorldSpace = targetSystem.TransformPoint(targetPoint);
+			Vector3 pointInOriginalSpace = originalSystem.InverseTransformPoint(pointInWorldSpace);
+			return pointInOriginalSpace;
+		}
+
+		public static Vector3 ProjectPointOntoPlane(Transform originalSystem, Transform targetSystem, Vector3 originalPoint)
+		{
+			Vector3 pointInTargetSystem = ConvertToTargetSystem(originalSystem, targetSystem, originalPoint);
+
+			pointInTargetSystem.y = 0;
+
+			Vector3 projectedPointInOriginalSystem = ConvertToOriginalSystem(originalSystem, targetSystem, pointInTargetSystem);
+
+			return projectedPointInOriginalSystem;
+		}
+
+		public static Vector3 ApplyTransformToPoint(Vector3 projectedPoint, Vector3 translation, Quaternion rotation)
+		{
+			GameObject tempContainer = new GameObject();
+
+			tempContainer.transform.position = projectedPoint;
+
+			tempContainer.transform.Translate(translation);
+
+			tempContainer.transform.Rotate(rotation.eulerAngles);
+
+			Vector3 finalPosition = tempContainer.transform.position;
+
+			GameObject.Destroy(tempContainer);
+
+			return finalPosition;
+		}
+
+		public static Vector3 SwapYZ(Vector3 v)
+		{
+			return new Vector3(v.x, v.z, v.y);
+		}
+
+		public static Vector3 ConvertToTargetSystemSwap(Transform originalSystem, Transform targetSystem, Vector3 originalPoint)
+		{
+			Vector3 pointInWorldSpace = originalSystem.TransformPoint(originalPoint);
+			Vector3 pointInWorldSpaceSwapped = SwapYZ(pointInWorldSpace);
+			Vector3 pointInTargetSpace = targetSystem.InverseTransformPoint(pointInWorldSpaceSwapped);
+
+			return pointInTargetSpace;
+		}
+
+		public static Vector3 ConvertToOriginalSystemSwap(Transform originalSystem, Transform targetSystem, Vector3 targetPoint)
+		{
+			Vector3 pointInWorldSpace = targetSystem.TransformPoint(targetPoint);
+			Vector3 pointInWorldSpaceSwapped = SwapYZ(pointInWorldSpace);
+			Vector3 pointInOriginalSpace = originalSystem.InverseTransformPoint(pointInWorldSpaceSwapped);
+
+			return pointInOriginalSpace;
+		}
+
+		public static Vector3 ProjectPointOntoPlaneSwap(Transform originalSystem, Transform targetSystem, Vector3 originalPoint)
+		{
+			Vector3 pointInTargetSystem = ConvertToTargetSystemSwap(originalSystem, targetSystem, originalPoint);
+
+			pointInTargetSystem.y = 0;
+
+			Vector3 projectedPointInOriginalSystem = ConvertToOriginalSystemSwap(originalSystem, targetSystem, pointInTargetSystem);
+
+			return projectedPointInOriginalSystem;
+		}
+
 	}
 }

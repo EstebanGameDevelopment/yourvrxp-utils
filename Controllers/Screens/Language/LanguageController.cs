@@ -11,6 +11,7 @@ namespace yourvrexperience.Utils
 
         public const string CodeLanguageEnglish = "en";
         public const string CodeLanguageSpanish = "es";
+        public const string CodeLanguageCatalan = "ca";
 
         private static LanguageController _instance;
         public static LanguageController Instance
