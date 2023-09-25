@@ -49,6 +49,7 @@ namespace yourvrexperience.Utils
         private Vector3 _position = Vector3.zero;
 		private float _scale = -1;
 		private float _defaultDistance = -1;
+		private bool _hasBeenInitialized = false;
 
 		public float DistanceScreen
 		{
@@ -59,22 +60,37 @@ namespace yourvrexperience.Utils
 			get { return sizeVRScreen; }
 		}
 
+		public void Initialize()
+		{
+			RunInitialization();
+		}
+
         void Start()
         {
-            SystemEventController.Instance.Event += OnSystemEvent;
-			UIEventController.Instance.Event += OnUIEvent;
-			
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
-			VRInputController.Instance.Event += OnVREvent;
-#endif			
-			SystemEventController.Instance.DispatchSystemEvent(EventScreenControllerStarted);
-
-			_isInGameDebugConsole = DebugLogManager.Instance != null;
-			if (_isInGameDebugConsole)
-			{
-				DebugLogManager.Instance.PopupEnabled = false;
-			}
+			RunInitialization();
         }
+
+		private void RunInitialization()
+		{
+			if (!_hasBeenInitialized)
+			{
+				_hasBeenInitialized = true;
+				
+				SystemEventController.Instance.Event += OnSystemEvent;
+				UIEventController.Instance.Event += OnUIEvent;
+				
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+				VRInputController.Instance.Event += OnVREvent;
+#endif			
+				SystemEventController.Instance.DispatchSystemEvent(EventScreenControllerStarted);
+
+				_isInGameDebugConsole = DebugLogManager.Instance != null;
+				if (_isInGameDebugConsole)
+				{
+					DebugLogManager.Instance.PopupEnabled = false;
+				}
+			}
+		}
 
         void OnDestroy()
         {
