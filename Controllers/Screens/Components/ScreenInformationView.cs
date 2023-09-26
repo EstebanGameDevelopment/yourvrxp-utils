@@ -70,45 +70,49 @@ namespace yourvrexperience.Utils
 				_inputValue.text = "";
 			}
 
-			if (_content.Find("Image") != null)
+			Transform contentImage = Utilities.FindNameInChildren(_content, "Image");
+			if (contentImage != null)
 			{
-				Image imageScreen = _content.Find("Image").GetComponent<Image>();
+				Image imageScreen =contentImage.GetComponent<Image>();
 				imageScreen.sprite = (Sprite)parameters[6];
 			}
 
-            if (_content.Find("ButtonOk") != null)
+			Transform contentButtonOk = Utilities.FindNameInChildren(_content, "ButtonOk");
+            if (contentButtonOk != null)
             {
-                _content.Find("ButtonOk").GetComponent<Button>().onClick.AddListener(OnConfirmation);
-				if (_content.Find("ButtonOk").GetComponentInChildren<TextMeshProUGUI>() != null)
+                contentButtonOk.GetComponent<Button>().onClick.AddListener(OnConfirmation);
+				if (contentButtonOk.GetComponentInChildren<TextMeshProUGUI>() != null)
 				{
-					_content.Find("ButtonOk").GetComponentInChildren<TextMeshProUGUI>().text = textOk;
+					contentButtonOk.GetComponentInChildren<TextMeshProUGUI>().text = textOk;
 				}
 				else
 				{
-					if (_content.Find("ButtonOk").GetComponentInChildren<Text>() != null)
+					if (contentButtonOk.GetComponentInChildren<Text>() != null)
 					{
-						_content.Find("ButtonOk").GetComponentInChildren<Text>().text = textOk;
+						contentButtonOk.GetComponentInChildren<Text>().text = textOk;
 					}
 				}
             }
-            if (_content.Find("ButtonDeny") != null)
+			Transform contentButtonDeny = Utilities.FindNameInChildren(_content, "ButtonDeny");
+            if (contentButtonDeny != null)
             {
-                _content.Find("ButtonDeny").GetComponent<Button>().onClick.AddListener(OnCancel);
-				if (_content.Find("ButtonDeny").GetComponentInChildren<TextMeshProUGUI>() != null)
+                contentButtonDeny.GetComponent<Button>().onClick.AddListener(OnCancel);
+				if (contentButtonDeny.GetComponentInChildren<TextMeshProUGUI>() != null)
 				{
-					_content.Find("ButtonDeny").GetComponentInChildren<TextMeshProUGUI>().text = textCancel;
+					contentButtonDeny.GetComponentInChildren<TextMeshProUGUI>().text = textCancel;
 				}
 				else
 				{
-					if (_content.Find("ButtonDeny").GetComponentInChildren<Text>() != null)
+					if (contentButtonDeny.GetComponentInChildren<Text>() != null)
 					{
-						_content.Find("ButtonDeny").GetComponentInChildren<Text>().text = textCancel;
+						contentButtonDeny.GetComponentInChildren<Text>().text = textCancel;
 					}
 				}
             }
-            if (_content.Find("ButtonCancel") != null)
+			Transform contentButtonCancel = Utilities.FindNameInChildren(_content, "ButtonCancel");
+            if (contentButtonCancel != null)
             {
-                _content.Find("ButtonCancel").GetComponent<Button>().onClick.AddListener(OnCancel);
+                contentButtonCancel.GetComponent<Button>().onClick.AddListener(OnCancel);
             }
 
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
@@ -141,17 +145,18 @@ namespace yourvrexperience.Utils
 
 		private void UpdateTitle(string title)
 		{
-			if (_content.Find("Title") != null)
+			Transform contentTitle = Utilities.FindNameInChildren(_content, "Title");
+			if (contentTitle != null)
 			{
-				if (_content.Find("Title").GetComponent<TextMeshProUGUI>() != null)
+				if (contentTitle.GetComponent<TextMeshProUGUI>() != null)
 				{
-					_content.Find("Title").GetComponent<TextMeshProUGUI>().text = title;
+					contentTitle.GetComponent<TextMeshProUGUI>().text = title;
 				}
 				else
 				{
-					if (_content.Find("Title").GetComponent<Text>() != null)
+					if (contentTitle.GetComponent<Text>() != null)
 					{
-						_content.Find("Title").GetComponent<Text>().text = title;
+						contentTitle.GetComponent<Text>().text = title;
 					}
 				}
 			} 
@@ -159,17 +164,18 @@ namespace yourvrexperience.Utils
 
 		private void UpdateDescription(string description)
 		{
-			if (_content.Find("Description") != null)
+			Transform contentDescription = Utilities.FindNameInChildren(_content, "Description");
+			if (contentDescription != null)
 			{
-				if (_content.Find("Description").GetComponent<TextMeshProUGUI>() != null)
+				if (contentDescription.GetComponent<TextMeshProUGUI>() != null)
 				{
-					_content.Find("Description").GetComponent<TextMeshProUGUI>().text = description;
+					contentDescription.GetComponent<TextMeshProUGUI>().text = description;
 				}
 				else
 				{
-					if (_content.Find("Description").GetComponent<Text>() != null)
+					if (contentDescription.GetComponent<Text>() != null)
 					{
-						_content.Find("Description").GetComponent<Text>().text = description;
+						contentDescription.GetComponent<Text>().text = description;
 					}
 				}
 			} 

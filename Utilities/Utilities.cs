@@ -711,5 +711,23 @@ namespace yourvrexperience.Utils
 			return projectedPointInOriginalSystem;
 		}
 
+		public static Transform FindNameInChildren(Transform target, string nameChild)
+		{
+			if (target.name.Equals(nameChild))
+			{
+				return target;
+			}
+			Transform output = null;
+			foreach (Transform item in target)
+			{
+				Transform result = FindNameInChildren(item, nameChild);
+				if (result != null)
+				{
+					output = result;
+				}
+			}
+			return output;
+		}
+
 	}
 }
