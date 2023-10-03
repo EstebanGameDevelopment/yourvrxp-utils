@@ -73,8 +73,14 @@ namespace yourvrexperience.Utils
 			Transform contentImage = Utilities.FindNameInChildren(_content, "Image");
 			if (contentImage != null)
 			{
-				Image imageScreen =contentImage.GetComponent<Image>();
-				imageScreen.sprite = (Sprite)parameters[6];
+				Image imageScreen = contentImage.GetComponent<Image>();
+				if (parameters.Length > 6)
+				{
+					if (parameters[6] != null)
+					{
+						imageScreen.sprite = (Sprite)parameters[6];
+					}					
+				}				
 			}
 
 			Transform contentButtonOk = Utilities.FindNameInChildren(_content, "ButtonOk");

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using IngameDebugConsole;
+using UnityEngine.UI;
 #if ENABLE_ULTIMATEXR
 using UltimateXR.UI.UnityInputModule;
 #endif
@@ -23,6 +24,8 @@ namespace yourvrexperience.Utils
 		public const string EventScreenControllerDestroyScreen = "EventScreenControllerDestroyScreen";
 		public const string EventScreenControllerDestroyAllScreens = "EventScreenControllerDestroyAllScreens";
 		public const string EventScreenControllerToggleInGameDebugConsole = "EventScreenControllerToggleInGameDebugConsole";
+		public const string EventScreenControllerCreateScreen = "EventScreenControllerCreateScreen";
+		public const string EventScreenControllerCreateInformationScreen = "EventScreenControllerCreateInformationScreen";
 
         private static ScreenController _instance;
         public static ScreenController Instance
@@ -179,6 +182,27 @@ namespace yourvrexperience.Utils
 
 		private void OnUIEvent(string nameEvent, object[] parameters)
         {
+			if (nameEvent.Equals(EventScreenControllerCreateScreen))
+			{
+				string nameScreen = (string)parameters[0];
+				bool destroyPreviousScreen = (bool)parameters[1];
+				bool hidePreviousScreen = (bool)parameters[2]; 
+				object[] extraParameters = (object[])parameters[3]; 
+				CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, extraParameters);
+			}
+			if (nameEvent.Equals(EventScreenControllerCreateInformationScreen))
+			{
+				string screenName = (string)parameters[0];
+				GameObject origin = (GameObject)parameters[1];
+				string title = (string)parameters[2];
+				string description = (string)parameters[3]; 
+				string customEvent = ((parameters.Length>4)?(string)parameters[4]:""); 
+				string ok = ((parameters.Length>5)?(string)parameters[5]:""); 
+				string cancel = ((parameters.Length>6)?(string)parameters[6]:""); 
+				Image infoImage = ((parameters.Length>7)?(Image)parameters[7]:null);
+
+				ScreenInformationView.CreateScreenInformation(screenName, origin, title, description, customEvent, ok, cancel, infoImage);
+			}
             if (nameEvent.Equals(EventScreenControllerDestroyScreen))
             {
                 GameObject screen = (GameObject)parameters[0];

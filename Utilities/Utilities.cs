@@ -729,5 +729,96 @@ namespace yourvrexperience.Utils
 			return output;
 		}
 
+		public static int StringToHash(string value, int range)
+		{
+			return (value.GetHashCode() & 0x7FFFFFFF) % range; 
+		}
+
+		public static void DebugLogError(string _message)
+		{
+			Debug.Log("<color=red>" + _message + "</color>");
+		}
+
+
+		public static void DebugLogWarning(string _message)
+		{
+			Debug.Log("<color=yellow>" + _message + "</color>");
+		}
+
+        public static int CastAsInteger(object _data)
+        {
+            if (_data is string)
+            {
+                return int.Parse(_data.ToString());
+            }
+            else if (_data is float)
+            {
+                return (int)((float)_data);
+            }
+            else if (_data is double)
+            {
+                return (int)((double)_data);
+            }
+            else if (_data is int)
+            {
+                return (int)_data;
+            }
+            else if (_data is long)
+            {
+                return (int)((long)_data);
+            }
+            return -1;
+        }
+
+        public static float CastAsFloat(object _data)
+        {
+            if (_data is string)
+            {
+                return float.Parse(_data.ToString());
+            }
+            else if (_data is float)
+            {
+                return (float)_data;
+            }
+            else if (_data is double)
+            {
+                return (float)((double)_data);
+            }
+            else if (_data is int)
+            {
+                return (float)_data;
+            }
+            else if (_data is long)
+            {
+                return (float)((long)_data);
+            }
+            return -1;
+        }
+
+        public static long CastAsLong(object _data)
+        {
+            if (_data is string)
+            {
+                return long.Parse(_data.ToString());
+            }
+            else if (_data is float)
+            {
+                return (long)((float)_data);
+            }
+            else if (_data is double)
+            {
+                return (long)((double)_data);
+            }
+            else if (_data is int)
+            {
+                return (long)((int)_data);
+            }
+            else if (_data is long)
+            {
+                return (long)_data;
+            }
+            return -1;
+        }
+
 	}
 }
