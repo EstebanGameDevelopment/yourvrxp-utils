@@ -319,12 +319,14 @@ namespace yourvrexperience.Utils
 				}
 			}
 
+			bool screenFound = false;
             for (int i = 0; i < Screens.Length; i++)
             {
 				if (Screens[i] != null)
 				{
 					if (Screens[i].name == nameScreen)
 					{
+						screenFound = true;
 						newScreen = Instantiate(Screens[i]);
 						newScreen.transform.parent = this.transform;
 						_screensCreated.Add(newScreen);
@@ -333,6 +335,10 @@ namespace yourvrexperience.Utils
 					}
 				}
             }
+			if (!screenFound)
+			{
+				throw new Exception("Screen with the name["+nameScreen+"] has not been found in ScreenController");
+			}
 			return newScreen;
         }
 

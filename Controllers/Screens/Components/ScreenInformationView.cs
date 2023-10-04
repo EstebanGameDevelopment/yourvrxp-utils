@@ -26,12 +26,13 @@ namespace yourvrexperience.Utils
 		public const string ScreenConfirmationBig = "ScreenConfirmationBig";
 		public const string ScreenInformationImage = "ScreenInformation";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
-		public const string ScreenLoading = "ScreenInformationLoading";
+		public const string ScreenLoading = "ScreenInfoLoading";
 		public const string ScreenInput = "ScreenInformationInput";
 
 		private GameObject _origin;
         private string _customOutputEvent = "";
 		private CustomInput _inputValue;
+		private string _nameScreen;
 
 		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null)
 		{
@@ -57,6 +58,7 @@ namespace yourvrexperience.Utils
             base.Initialize(parameters);
 
 			_origin = (GameObject)parameters[0];
+			_nameScreen = this.gameObject.name;
             _customOutputEvent = (string)parameters[1];
 			UpdateTitle((string)parameters[2]);
 			UpdateDescription((string)parameters[3]);
@@ -132,6 +134,11 @@ namespace yourvrexperience.Utils
 
 			UIEventController.Instance.Event += OnUIEvent;
         }
+
+		void OnDestroy()
+		{
+			Destroy();
+		}
 
 		public override void Destroy()
         {
