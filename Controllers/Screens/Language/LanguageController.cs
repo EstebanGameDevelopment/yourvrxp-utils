@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using UnityEngine;
 
@@ -33,6 +34,7 @@ namespace yourvrexperience.Utils
 
 		void Start()
 		{
+            DetectOSLanguage();
 			SystemEventController.Instance.Event += OnSystemEvent;
 		}
 
@@ -40,6 +42,21 @@ namespace yourvrexperience.Utils
 		{
 			if (SystemEventController.Instance != null) SystemEventController.Instance.Event -= OnSystemEvent;
 		}
+
+        private void DetectOSLanguage()
+        {
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+            CodeLanguage = currentCulture.TwoLetterISOLanguageName;
+            string cultureName = currentCulture.Name;
+
+            if (!CodeLanguage.Equals(CodeLanguageEnglish) && !CodeLanguage.Equals(CodeLanguageSpanish) && !CodeLanguage.Equals(CodeLanguageCatalan))
+            {
+                CodeLanguage = CodeLanguageEnglish;
+            }
+
+            Debug.Log("Language: " + CodeLanguage);
+            Debug.Log("Culture Name: " + cultureName);
+        }
 
 		private void Destroy()
 		{
@@ -115,7 +132,7 @@ namespace yourvrexperience.Utils
             CodeLanguage = newCodeLanguage;
             if (reportToSystemLanguageChange)
             {
-                SystemEventController.Instance.DispatchSystemEvent(EventLanguageControllerChangedCodeLanguage);
+                SystemEventController.Instance.DispatchSystemEvent(EventLanguageControllerChangedCodeLanguage, CodeLanguage);
             }
         }
 
