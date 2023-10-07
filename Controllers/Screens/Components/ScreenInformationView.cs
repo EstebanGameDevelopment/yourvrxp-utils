@@ -26,7 +26,7 @@ namespace yourvrexperience.Utils
 		public const string ScreenConfirmationBig = "ScreenConfirmationBig";
 		public const string ScreenInformationImage = "ScreenInformation";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
-		public const string ScreenLoading = "ScreenInfoLoading";
+		public const string ScreenLoading = "ScreenLoading";
 		public const string ScreenInput = "ScreenInformationInput";
 
 		private GameObject _origin;
