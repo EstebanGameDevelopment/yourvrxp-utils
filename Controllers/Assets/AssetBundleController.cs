@@ -213,7 +213,11 @@ namespace yourvrexperience.Utils
                     {
                         _loadedObjects.Add(name, item.Value.LoadAsset(name));
                     }
-                    return Instantiate(_loadedObjects[name]) as GameObject;
+                    GameObject newObject = Instantiate(_loadedObjects[name]) as GameObject;
+#if UNITY_EDITOR
+                    Utilities.ResetMaterials(newObject);
+#endif                    
+                    return newObject;
                 }
             }
             return null;

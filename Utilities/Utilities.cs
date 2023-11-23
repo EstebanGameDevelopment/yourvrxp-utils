@@ -820,5 +820,15 @@ namespace yourvrexperience.Utils
             return -1;
         }
 
+		public static void ResetMaterials(GameObject go)
+        {
+            foreach(var renderer in go.GetComponentsInChildren<Renderer>())
+            {
+                foreach(var m in renderer.materials)
+                {
+                    m.shader = Shader.Find(m.shader.name);
+                }
+            }
+        }
 	}
 }
