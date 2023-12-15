@@ -7,6 +7,8 @@ namespace yourvrexperience.Utils
 {
     public class FaceARCamera : MonoBehaviour
     {
+		public bool FaceNormalAxis = true;
+		
         void Update()
         {
             FaceTowardsCamera();
@@ -15,11 +17,14 @@ namespace yourvrexperience.Utils
         void FaceTowardsCamera()
         {
             Vector3 toCamera = Camera.main.transform.position - transform.position;
-#if UNITY_EDITOR
-            this.transform.localRotation = Quaternion.Euler(new Vector3(0,Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.z)),0));
-#else
-            this.transform.localRotation = Quaternion.Euler(new Vector3(0,Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.y)),0));
-#endif 
+			if (FaceNormalAxis)
+			{
+				this.transform.localRotation = Quaternion.Euler(new Vector3(0,Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.z)),0));
+			}
+			else
+			{
+				this.transform.localRotation = Quaternion.Euler(new Vector3(0,Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.y)),0));
+			}
         }
     }
 }

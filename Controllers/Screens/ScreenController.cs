@@ -328,7 +328,7 @@ namespace yourvrexperience.Utils
 					{
 						screenFound = true;
 						newScreen = Instantiate(Screens[i]);
-						newScreen.transform.parent = this.transform;
+						newScreen.transform.SetParent(this.transform);
 						_screensCreated.Add(newScreen);
 						if (newScreen.GetComponent<IScreenView>() != null)  newScreen.GetComponent<IScreenView>().Initialize(parameters);
 						ApplyCanvas(newScreen, _defaultDistance);
@@ -345,7 +345,7 @@ namespace yourvrexperience.Utils
 		public void ApplyCanvas(GameObject newScreen, float defaultDistance = -1)
 		{
 			_defaultDistance = defaultDistance;
-			newScreen.transform.parent = this.transform;
+			newScreen.transform.SetParent(this.transform);
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
 #if ENABLE_OCULUS
