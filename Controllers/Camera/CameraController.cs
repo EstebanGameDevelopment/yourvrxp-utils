@@ -15,6 +15,7 @@ namespace yourvrexperience.Utils
         public const string EventCameraSwitchedToFreeCamera = "EventCameraSwitchedToFreeCamera";
         
         public const string EventCameraPlayerReadyForCamera = "EventCameraPlayerReadyForCamera";
+        public const string EventCameraPlayerUnlinkCameraFromPlayer = "EventCameraPlayerUnlinkCameraFromPlayer";
 
         public enum CameraStates { Camera1stPerson = 0, Camera3rdPerson, CameraFrozen, CameraFree }
 
@@ -145,6 +146,10 @@ namespace yourvrexperience.Utils
                     _player = player;
 					LinkAvatarWithVRCamera();
                 }
+            }
+            if (nameEvent.Equals(EventCameraPlayerUnlinkCameraFromPlayer))
+            {                
+                _player = null;
             }
         }
 

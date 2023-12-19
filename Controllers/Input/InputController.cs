@@ -11,6 +11,7 @@ namespace yourvrexperience.Utils
         public const string EventInputControllerEnableMobileHUD = "EventInputControllerEnableMobileHUD";
         public const string EventInputControllerHasStarted = "EventInputControllerHasStarted";
 
+        private Camera _camera;
         private bool _isVR = false;
         private Transform _rayPointerVR;
         private MobileInputManager _mobileJoysticks;
@@ -37,10 +38,19 @@ namespace yourvrexperience.Utils
                 return _rayPointerVR;
             }
         }
-
+        
 		public virtual Camera Camera
 		{
-			get { return Camera.main; }
+			get { return _camera; }
+            set { 
+                if (_camera != value)
+                {
+                    _camera.tag = "Untagged";
+                    _camera.enabled = false;
+                }
+                _camera = value;
+                _camera.tag = "MainCamera";
+            }
 		}
 
         public float SpeedJoystickMovement 
@@ -51,6 +61,7 @@ namespace yourvrexperience.Utils
 
         void Start()
         {
+            _camera = Camera.main;
             SystemEventController.Instance.DispatchSystemEvent(EventInputControllerHasStarted, this.gameObject);
         }
 

@@ -11,7 +11,7 @@ namespace yourvrexperience.Utils
 
         public Transform RayPointerVR { get; }
 		public GameObject Content { get; }
-		public Camera Camera { get; }
+		public Camera Camera { get; set; }
         public float SpeedJoystickMovement { get; set; }
 
         void Initialize();
