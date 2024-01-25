@@ -24,6 +24,8 @@ namespace yourvrexperience.Utils
 		public const string TOKEN_SEPARATOR_LINES = "<line>";
         public const string TOKEN_SEPARATOR_USER_DATA = "<udata>";
 
+        public const string EVENT_COMM_GET_FILE_DATA       = "yourvrexperience.Utils.GetFileDataHTTP";
+
         public const bool DEBUG_LOG = false;
 
 		public const int STATE_IDLE = 0;
@@ -501,6 +503,11 @@ namespace yourvrexperience.Utils
 				case STATE_COMMUNICATION:
 					break;
 			}
+		}
+
+		public void GetFileData(string url)
+		{			
+			Request(EVENT_COMM_GET_FILE_DATA, false, url);
 		}
 
 		public void Update()
