@@ -42,6 +42,9 @@ namespace yourvrexperience.Utils
 
 		[SerializeField] private float distanceScreen = 1.2f;
 		[SerializeField] private float sizeVRScreen = 0.002f;
+		[SerializeField] private float scaleFactor = 0.5f;
+		[SerializeField] private float withVRScreen = 1920;
+		[SerializeField] private float heightVRScreen = 3414;
 
         public GameObject[] Screens;
 
@@ -348,6 +351,9 @@ namespace yourvrexperience.Utils
 			newScreen.transform.SetParent(this.transform);
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+			newScreen.GetComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+			newScreen.GetComponent<CanvasScaler>().scaleFactor = scaleFactor;			
+			newScreen.GetComponent<RectTransform>().sizeDelta = new Vector2(withVRScreen, heightVRScreen);			
 #if ENABLE_OCULUS
 			newScreen.AddComponent<OVRRaycaster>();
 #elif ENABLE_OPENXR
