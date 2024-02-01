@@ -68,6 +68,13 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+        public void SetGameTexts(TextAsset gameTexts)
+        {
+            GameTexts = gameTexts;
+            m_texts.Clear();
+            LoadGameTexts();
+        }
+
         private void LoadGameTexts()
         {
             if (m_texts.Count != 0) return;
