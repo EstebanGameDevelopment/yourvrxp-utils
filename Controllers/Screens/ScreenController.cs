@@ -353,7 +353,8 @@ namespace yourvrexperience.Utils
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
 			newScreen.GetComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
 			newScreen.GetComponent<CanvasScaler>().scaleFactor = scaleFactor;			
-			newScreen.GetComponent<RectTransform>().sizeDelta = new Vector2(withVRScreen, heightVRScreen);			
+			newScreen.GetComponent<RectTransform>().sizeDelta = new Vector2(withVRScreen, heightVRScreen);
+			Utilities.ApplyZTestTop(newScreen.transform);
 #if ENABLE_OCULUS
 			newScreen.AddComponent<OVRRaycaster>();
 #elif ENABLE_OPENXR

@@ -830,5 +830,77 @@ namespace yourvrexperience.Utils
                 }
             }
         }
+
+		public static bool ApplySingleZTestTop(Transform target)
+		{
+			Renderer rendererGraphic = null;
+			Graphic canvasGraphic = target.GetComponent<Graphic>();
+			bool applyNewComparison = false;
+			Material materialGraphic = null;
+			if (canvasGraphic == null)
+			{
+				applyNewComparison = false;
+				rendererGraphic = target.GetComponent<Renderer>();
+				if (rendererGraphic != null)
+				{
+					materialGraphic = rendererGraphic.sharedMaterial;
+					if (materialGraphic == null)
+					{
+						applyNewComparison = false;
+					}
+					else
+					{
+						applyNewComparison = true;
+					}
+				}
+			}
+			else
+			{
+				materialGraphic = canvasGraphic.materialForRendering;
+				if (materialGraphic == null)
+				{
+					applyNewComparison = false;
+				}
+				else
+				{
+					applyNewComparison = true;
+				}
+			}
+
+			if (applyNewComparison)
+			{
+				Material materialCopy = new Material(materialGraphic);
+				if (canvasGraphic != null)
+				{
+					materialCopy.SetInt("unity_GUIZTestMode", (int)UnityEngine.Rendering.CompareFunction.Always);
+					canvasGraphic.material = materialCopy;
+				}
+				else
+				{
+					if (rendererGraphic != null)
+					{
+						materialCopy.SetFloat("_ZTest", 0);						
+						rendererGraphic.sharedMaterial  = materialCopy;
+					}
+				}				
+			}
+			return applyNewComparison;
+		}
+
+		public static void ApplyZTestTop(Transform parent)
+		{
+			ApplySingleZTestTop(parent);
+
+			foreach (Transform child in parent)
+			{
+				ApplySingleZTestTop(child);
+
+				if (child.childCount > 0)
+				{
+					ApplyZTestTop(child);
+				}
+			}
+		}		
+
 	}
 }
