@@ -81,6 +81,11 @@ namespace yourvrexperience.Utils
             }
         }
 
+        public void ClearLocalCache()
+        {
+            Caching.ClearCache();
+        }
+
         public void DispatchAssetBundleEvent(string nameEvent, params object[] parameters)
         {
             if (AssetBundleEvent != null) AssetBundleEvent(nameEvent, parameters);
