@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using IngameDebugConsole;
 using UnityEngine.UI;
+#if ENABLE_NREAL
+using NRKernal;
+#endif
 #if ENABLE_ULTIMATEXR
 using UltimateXR.UI.UnityInputModule;
 #endif
 #if ENABLE_OPENXR
 using UnityEngine.XR.Interaction.Toolkit.UI;
 #endif
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 using yourvrexperience.VR;
 #endif
 
@@ -85,7 +88,7 @@ namespace yourvrexperience.Utils
 				SystemEventController.Instance.Event += OnSystemEvent;
 				UIEventController.Instance.Event += OnUIEvent;
 				
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 				VRInputController.Instance.Event += OnVREvent;
 #endif			
 				SystemEventController.Instance.DispatchSystemEvent(EventScreenControllerStarted);
@@ -111,7 +114,7 @@ namespace yourvrexperience.Utils
 				if (SystemEventController.Instance != null) SystemEventController.Instance.Event -= OnSystemEvent;
 				if (UIEventController.Instance != null) UIEventController.Instance.Event -= OnUIEvent;
 
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 				if (VRInputController.Instance != null) VRInputController.Instance.Event -= OnVREvent;
 #endif			
 
@@ -124,7 +127,7 @@ namespace yourvrexperience.Utils
 			return _screensCreated.Count;
 		}
 
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 		private void OnVREvent(string nameEvent, object[] parameters)
 		{
             if (nameEvent.Equals(EventScreenControllerResponseCameraData))
@@ -236,7 +239,7 @@ namespace yourvrexperience.Utils
 					if (!DebugLogManager.Instance.IsLogWindowVisible)
 					{							
 						DebugLogManager.Instance.ShowLogWindow();
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 						DebugLogManager.Instance.gameObject.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
 						DebugLogManager.Instance.gameObject.transform.position = VRInputController.Instance.VRController.HeadController.transform.position + VRInputController.Instance.VRController.HeadController.transform.forward.normalized + new Vector3(0,-0.5f,0);
 						DebugLogManager.Instance.gameObject.transform.forward = VRInputController.Instance.VRController.HeadController.transform.forward;
@@ -349,12 +352,14 @@ namespace yourvrexperience.Utils
 		{
 			_defaultDistance = defaultDistance;
 			newScreen.transform.SetParent(this.transform);
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
 			newScreen.GetComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
 			newScreen.GetComponent<CanvasScaler>().scaleFactor = scaleFactor;			
 			newScreen.GetComponent<RectTransform>().sizeDelta = new Vector2(withVRScreen, heightVRScreen);
+#if !ENABLE_NREAL
 			Utilities.ApplyZTestTop(newScreen.transform);
+#endif			
 #if ENABLE_OCULUS
 			newScreen.AddComponent<OVRRaycaster>();
 #elif ENABLE_OPENXR
@@ -364,6 +369,8 @@ namespace yourvrexperience.Utils
 			if (newScreen.GetComponent<UxrLaserPointerRaycaster>() == null) newScreen.AddComponent<UxrLaserPointerRaycaster>();
 			newScreen.GetComponent<UxrCanvas>().CanvasInteractionType = UxrInteractionType.LaserPointers;
 			newScreen.GetComponentInChildren<Canvas>().renderMode = RenderMode.WorldSpace;									
+#elif ENABLE_NREAL
+			newScreen.AddComponent<CanvasRaycastTarget>();					
 #endif
 			VRInputController.Instance.DispatchVREvent(EventScreenControllerRequestCameraData, newScreen);
 #endif

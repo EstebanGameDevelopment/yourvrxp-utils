@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 using yourvrexperience.VR;
 #endif
 
@@ -41,7 +41,7 @@ namespace yourvrexperience.Utils
 
 			UIEventController.Instance.Event += OnUILocalEvent;
 			SystemEventController.Instance.DispatchSystemEvent(EventBaseScreenViewCreated, this.gameObject, NameScreen);
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if (VRInputController.Instance != null) VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
 #endif			
 		}
@@ -50,7 +50,7 @@ namespace yourvrexperience.Utils
 		{
 			if (UIEventController.Instance != null) UIEventController.Instance.Event -= OnUILocalEvent;
 			SystemEventController.Instance.DelaySystemEvent(EventBaseScreenViewDestroyed, 0.1f, NameScreen);	
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if (VRInputController.Instance != null) VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerResetAllInputs);
 #endif			
 		}

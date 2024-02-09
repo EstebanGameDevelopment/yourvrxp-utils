@@ -5,7 +5,7 @@ using System.Xml;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 using yourvrexperience.VR;
 #endif
 
@@ -47,7 +47,7 @@ namespace yourvrexperience.Utils
 				cancelText = LanguageController.Instance.GetText("text.cancel");
 			}
 			bool shouldHidePrevious = true;
-#if !(ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+#if !(ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 			shouldHidePrevious = false;
 #endif			
 			ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText);
@@ -123,7 +123,7 @@ namespace yourvrexperience.Utils
                 contentButtonCancel.GetComponent<Button>().onClick.AddListener(OnCancel);
             }
 
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if (_background != null)
 			{
 				_background.gameObject.SetActive(false);
@@ -196,7 +196,7 @@ namespace yourvrexperience.Utils
 
         private void OnFocusInputValue()
         {
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			_content.gameObject.SetActive(false);
 			ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  _inputValue.gameObject, _inputValue, 200);
 #endif			
@@ -266,7 +266,7 @@ namespace yourvrexperience.Utils
 				UpdateTitle((string)parameters[0]);
 				UpdateDescription((string)parameters[1]);
 			}
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
 			{
 				if (_inputValue.gameObject == (GameObject)parameters[0])

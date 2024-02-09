@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 using yourvrexperience.VR;
 #endif
 
@@ -69,7 +69,7 @@ namespace yourvrexperience.Utils
         {
             get
             {
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 				if (InputControls.IsVR)
 				{
 					return VRInputController.Instance.CameraGO;
@@ -119,7 +119,7 @@ namespace yourvrexperience.Utils
 
 		private void LinkAvatarWithVRCamera()
 		{
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if ((_player != null) && (_inputControls != null))
 			{
 				VRInputController.Instance.DispatchVREvent(VRInputController.EventVRInputControllerLinkWithAvatar, _player.GetGameObject());

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 using yourvrexperience.VR;
 #endif
 #if ENABLE_ULTIMATEXR
@@ -186,7 +186,7 @@ namespace yourvrexperience.Utils
 
         public Vector3 GetPositionRaycastAgainstSurface(int layerMaskSurface, ref RaycastHit hitData)
         {
-#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
             Vector3 positionController = VRInputController.Instance.VRController.CurrentController.transform.position;
             Vector3 forwardController = VRInputController.Instance.VRController.CurrentController.transform.forward;
 
@@ -201,7 +201,7 @@ namespace yourvrexperience.Utils
         {
             Vector3 positionController = Camera.main.transform.position;
             Vector3 forwardController = Camera.main.transform.forward;
-#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
             positionController = VRInputController.Instance.VRController.CurrentController.transform.position;
             forwardController = VRInputController.Instance.VRController.CurrentController.transform.forward;
 #endif

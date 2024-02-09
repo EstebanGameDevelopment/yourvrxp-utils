@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 using yourvrexperience.VR;
 #endif
 
@@ -188,7 +188,7 @@ namespace yourvrexperience.Utils
 		{
 			Vector3 collidedPositionRaycast = Vector3.zero;
 			Vector3 screenPosition = Vector3.zero;
-#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 			Vector3 positionCurrentController = Vector3.zero;
 			Vector3 forwardCurrentController = Vector3.zero;
 			if (VRInputController.Instance.VRController.CurrentController != null)
@@ -214,7 +214,7 @@ namespace yourvrexperience.Utils
 
 		public static Vector3 CheckCollisionPointUI(RectTransform area, ref Vector3 screenPosition, ref Vector3 collidedPositionRaycast, Transform content)
 		{
-#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR)
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 			Vector3 positionCurrentController = Vector3.zero;
 			Vector3 forwardCurrentController = Vector3.zero;
 			if (VRInputController.Instance.VRController.CurrentController != null)

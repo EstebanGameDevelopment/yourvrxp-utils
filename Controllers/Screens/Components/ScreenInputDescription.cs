@@ -5,7 +5,7 @@ using yourvrexperience.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 using yourvrexperience.VR;
 #endif
 
@@ -58,7 +58,7 @@ namespace yourvrexperience.Utils
 		{
 			if (inputNameObject != null) 
 			{
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 				ScreenController.Instance.CreateScreen(ScreenVRKeyboardView.ScreenName, false, true,  inputNameObject.gameObject, inputNameObject, 100);
 #endif			
 			}
@@ -104,7 +104,7 @@ namespace yourvrexperience.Utils
 
 		private void OnUIEvent(string nameEvent, object[] parameters)
 		{
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR			
+#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR	|| ENABLE_NREAL		
 			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
 			{
 				if (inputNameObject != null)
