@@ -56,6 +56,7 @@ namespace yourvrexperience.Utils
 		private bool _isInGameDebugConsole = false;
 		private Vector3 _forward = Vector3.zero;
         private Vector3 _position = Vector3.zero;
+		private GameObject _anchor = null;
 		private float _scale = -1;
 		private float _defaultDistance = -1;
 		private bool _hasBeenInitialized = false;
@@ -291,6 +292,15 @@ namespace yourvrexperience.Utils
             CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
+        public void CreateScreen3DAnchor(string nameScreen, GameObject anchor, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        {
+            _position = position;
+            _scale = scale;
+			_forward = forward;
+			_anchor = anchor;
+            CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+        }
+
         public void CreateWorldScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             GameObject newScreen = CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
@@ -334,7 +344,6 @@ namespace yourvrexperience.Utils
 					{
 						screenFound = true;
 						newScreen = Instantiate(Screens[i]);
-						newScreen.transform.SetParent(this.transform);
 						_screensCreated.Add(newScreen);
 						if (newScreen.GetComponent<IScreenView>() != null)  newScreen.GetComponent<IScreenView>().Initialize(parameters);
 						ApplyCanvas(newScreen, _defaultDistance);
@@ -351,7 +360,15 @@ namespace yourvrexperience.Utils
 		public void ApplyCanvas(GameObject newScreen, float defaultDistance = -1)
 		{
 			_defaultDistance = defaultDistance;
-			newScreen.transform.SetParent(this.transform);
+			if (_anchor != null)
+			{
+				newScreen.transform.SetParent(_anchor.transform);
+			}
+			else
+			{
+				newScreen.transform.SetParent(this.transform);
+			}			
+			_anchor = null;
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
 			newScreen.GetComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
@@ -374,6 +391,28 @@ namespace yourvrexperience.Utils
 #endif
 			VRInputController.Instance.DispatchVREvent(EventScreenControllerRequestCameraData, newScreen);
 #endif
+		}
+
+		public void ApplyVRRayCasterOnCanvas(GameObject target)
+		{
+			Canvas targetCanvas = target.GetComponentInChildren<Canvas>();			
+			if (targetCanvas != null)
+			{
+#if (ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
+#if ENABLE_OCULUS
+                targetCanvas.gameObject.AddComponent<OVRRaycaster>();
+#elif ENABLE_OPENXR
+                targetCanvas.gameObject.AddComponent<TrackedDeviceGraphicRaycaster>();
+#elif ENABLE_ULTIMATEXR
+                if (targetCanvas.gameObjectGetComponent<UxrCanvas>() == null) targetCanvas.gameObjectAddComponent<UxrCanvas>();
+                if (targetCanvas.gameObjectGetComponent<UxrLaserPointerRaycaster>() == null) targetCanvas.gameObjectAddComponent<UxrLaserPointerRaycaster>();
+                targetCanvas.gameObject.GetComponent<UxrCanvas>().CanvasInteractionType = UxrInteractionType.LaserPointers;
+                targetCanvas.gameObject.GetComponentInChildren<Canvas>().renderMode = RenderMode.WorldSpace;									
+#elif ENABLE_NREAL
+                targetCanvas.gameObject.AddComponent<CanvasRaycastTarget>();					
+#endif
+#endif                    
+			}
 		}
 
         public void DestroyScreens()
