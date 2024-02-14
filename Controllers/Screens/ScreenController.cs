@@ -265,53 +265,54 @@ namespace yourvrexperience.Utils
 			}
         }
 
-        public void CreateForwardScreen(string nameScreen, Vector3 forward, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        public GameObject CreateForwardScreen(string nameScreen, Vector3 forward, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _forward = forward;
-            CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
-		public void CreateDistanceScreen(string nameScreen, float distance, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+		public GameObject CreateDistanceScreen(string nameScreen, float distance, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _defaultDistance = distance;
-            CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
-        public void CreatePositionScreen(string nameScreen, Vector3 position, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        public GameObject CreatePositionScreen(string nameScreen, Vector3 position, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _position = position;
             _scale = scale;
-            CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
-        public void CreatePositionForwardScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        public GameObject CreatePositionForwardScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _position = position;
             _scale = scale;
 			_forward = forward;
-            CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
-        public void CreateScreen3DAnchor(string nameScreen, GameObject anchor, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        public GameObject CreateScreen3DAnchor(string nameScreen, GameObject anchor, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _position = position;
             _scale = scale;
 			_forward = forward;
 			_anchor = anchor;
-            CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
         }
 
-        public void CreateWorldScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+        public GameObject CreateWorldScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             GameObject newScreen = CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
 			newScreen.transform.position = position;
 			newScreen.transform.forward = forward;
 			newScreen.transform.localScale = new Vector3(scale, scale, scale);
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+			return newScreen;
         }
-		public void CreateScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
+		public GameObject CreateScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
-			CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			return CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
 		}
         private GameObject CreateSingleScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
