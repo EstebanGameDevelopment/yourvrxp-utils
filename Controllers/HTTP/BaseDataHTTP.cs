@@ -73,6 +73,17 @@ namespace yourvrexperience.Utils
 			return (_jsonResponse.IndexOf("Error::") == -1);
 		}
 
+		public bool ResponseUTF8Code(byte[] response)
+		{
+			_jsonResponse = Encoding.UTF8.GetString(response);
+			_jsonResponse = CleanUndesiredTags(_jsonResponse);
+			if (CommController.DEBUG_LOG)
+			{
+				Debug.Log("BaseDataJSON::ResponseCode(BYTE)=" + _jsonResponse);
+			}
+			return (_jsonResponse.IndexOf("Error::") == -1);
+		}
+
 		public bool ResponseCode(string response)
 		{
 			_jsonResponse = response;
