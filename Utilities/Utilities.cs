@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace yourvrexperience.Utils
@@ -902,5 +903,36 @@ namespace yourvrexperience.Utils
 			}
 		}		
 
+		public static bool IsClickedOverUI()
+		{
+			bool worldInteraction = true;
+#if UNITY_ANDROID && !UNITY_EDITOR && !(ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
+			worldInteraction = EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
+#else
+			worldInteraction = EventSystem.current.IsPointerOverGameObject();
+#endif
+			return worldInteraction;
+		}
+
+        public static void SaveStringToFile(string filename, string dataToSave)
+        {
+            string path = System.IO.Path.Combine(Application.persistentDataPath, filename);
+            System.IO.File.WriteAllText(path, dataToSave, Encoding.UTF8);
+        }
+
+        public static string LoadStringFromFile(string filename)
+        {
+            string path = System.IO.Path.Combine(Application.persistentDataPath, filename);
+            
+            if (System.IO.File.Exists(path))
+            {
+                string buffer = System.IO.File.ReadAllText(path, Encoding.UTF8);
+                return buffer;
+            }
+            else
+            {
+                return "";
+            }
+        }
 	}
 }

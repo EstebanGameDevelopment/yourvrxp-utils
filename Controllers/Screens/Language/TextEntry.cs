@@ -52,5 +52,25 @@ namespace yourvrexperience.Utils
 				return null;
 			}
 		}
+
+		public void SetText(string language, string value)
+		{
+			if (_texts[language] != null)
+			{
+				_texts[language] = value;
+			}
+		}
+
+		public string GetXML()
+		{
+			string output = "";
+			foreach (DictionaryEntry entry in _texts)
+			{
+				output += "\n\t<" + entry.Key + ">";
+				output += _texts[entry.Key];
+				output += "</" + entry.Key + ">";
+			}
+			return output;
+		}
 	}
 }

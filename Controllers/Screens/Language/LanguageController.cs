@@ -29,6 +29,7 @@ namespace yourvrexperience.Utils
 
         public TextAsset GameTexts;
         public string CodeLanguage = "en";
+        public string[] SupportedLanguages;
 
         private Hashtable m_texts = new Hashtable();
 
