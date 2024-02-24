@@ -32,6 +32,15 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public TextEntry(params string[] parameters)
+		{
+			_texts = new Hashtable();
+			for (int i = 0; i < parameters.Length; i+=2)
+			{
+				_texts.Add(parameters[i], parameters[i+1]);
+			}
+		}
+
 		public string GetText(string language)
 		{
 			if (_texts[language] != null)
