@@ -46,6 +46,11 @@ namespace yourvrexperience.Utils
 #endif			
 		}
 
+		public virtual void ActivateContent(bool value)
+		{
+			Content.gameObject.SetActive(value);
+		}
+
 		public virtual void Destroy()
 		{
 			if (UIEventController.Instance != null) UIEventController.Instance.Event -= OnUILocalEvent;

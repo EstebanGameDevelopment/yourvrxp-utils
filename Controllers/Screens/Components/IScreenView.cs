@@ -12,5 +12,6 @@ namespace yourvrexperience.Utils
 
 		void Initialize(params object[] _list);
 		void Destroy();
+		void ActivateContent(bool value);
 	}
 }

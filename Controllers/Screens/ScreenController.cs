@@ -224,7 +224,7 @@ namespace yourvrexperience.Utils
 						IScreenView screenInterface =  _screensCreated[_screensCreated.Count - 1].GetComponent<IScreenView>();
 						if (screenInterface != null)
 						{
-							screenInterface.Content.gameObject.SetActive(true);
+							screenInterface.ActivateContent(true);
 						}
 					}
                 }
