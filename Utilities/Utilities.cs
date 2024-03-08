@@ -869,7 +869,7 @@ namespace yourvrexperience.Utils
 			}
 
 			if (applyNewComparison)
-			{
+			{				
 				Material materialCopy = new Material(materialGraphic);
 				if (canvasGraphic != null)
 				{
@@ -890,6 +890,8 @@ namespace yourvrexperience.Utils
 
 		public static void ApplyZTestTop(Transform parent)
 		{
+			if (parent.GetComponent<DontApplyZTestIgnoring>() != null) return;
+			
 			ApplySingleZTestTop(parent);
 
 			foreach (Transform child in parent)
