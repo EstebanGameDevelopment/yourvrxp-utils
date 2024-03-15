@@ -357,6 +357,44 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static void DisableGraphicRaycaster(Transform target)
+		{
+			if (target.GetComponent<GraphicRaycaster>() != null)
+			{
+				target.GetComponent<GraphicRaycaster>().enabled = false;
+			}
+#if ENABLE_OCULUS
+			if (target.GetComponent<OVRRaycaster>() != null)
+			{
+				target.GetComponent<OVRRaycaster>().enabled = false;
+			}
+#elif ENABLE_OPENXR
+			if (target.GetComponent<TrackedDeviceGraphicRaycaster>() != null)
+			{
+				target.GetComponent<TrackedDeviceGraphicRaycaster>().enabled = false;
+			}
+#elif ENABLE_ULTIMATEXR
+			if (target.GetComponent<UxrCanvas>() != null)
+			{
+				target.GetComponent<UxrCanvas>().enabled = false;
+			}
+			if (target.GetComponent<UxrLaserPointerRaycaster>() != null)
+			{
+				target.GetComponent<UxrLaserPointerRaycaster>().enabled = false;
+			}
+#elif ENABLE_NREAL
+			if (target.GetComponent<CanvasRaycastTarget>() != null)
+			{
+				target.GetComponent<CanvasRaycastTarget>().enabled = false;
+			}
+#endif
+
+			foreach (Transform item in target)
+			{
+				DisableGraphicRaycaster(item);
+			}
+		}
+
 
 		public static string GetFullPathNameGO(GameObject go)
 		{
