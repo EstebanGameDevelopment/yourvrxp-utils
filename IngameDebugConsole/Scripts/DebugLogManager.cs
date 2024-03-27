@@ -609,7 +609,8 @@ namespace IngameDebugConsole
 			else
 				ShowLogWindow();
 
-			PopupEnabled = enablePopup;
+			PopupEnabled = enablePopup;			
+			popupManager.gameObject.SetActive(true);
 		}
 
 		private void OnDestroy()
@@ -654,7 +655,9 @@ namespace IngameDebugConsole
 		}
 
 		private void Update()
-		{
+		{			
+			popupManager.gameObject.SetActive(true);
+			
 #if !IDG_OMIT_ELAPSED_TIME
 			lastElapsedSeconds = Time.realtimeSinceStartup;
 #endif
