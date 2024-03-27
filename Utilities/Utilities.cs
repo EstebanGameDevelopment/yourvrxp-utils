@@ -534,9 +534,16 @@ namespace yourvrexperience.Utils
 		{
 			Vector3 viewportPoint = camera.WorldToViewportPoint(worldPosition);
 
-			return (viewportPoint.z > 0 && viewportPoint.x > 0 && viewportPoint.x < 1 && viewportPoint.y > 0 && viewportPoint.y < 1);
+			return (viewportPoint.z > 0 && viewportPoint.x >= 0 && viewportPoint.x <= 1 && viewportPoint.y >= 0 && viewportPoint.y <= 1);
 		}		
 
+		public static bool IsInsideFrustrum(Vector3 worldPosition, Vector3 size, Camera camera)
+		{
+			Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+			Bounds bounds = new Bounds(worldPosition, size);
+			return GeometryUtility.TestPlanesAABB(planes, bounds);
+		}
+        
 		public static string RandomCodeIV(int _size)
 		{
 			string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#!@+=-*";
