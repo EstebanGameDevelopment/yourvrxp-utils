@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+#if ENABLE_OPENXR
+using UnityEngine.XR.Interaction.Toolkit.UI;
+#endif
 
 namespace yourvrexperience.Utils
 {
