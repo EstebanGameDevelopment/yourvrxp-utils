@@ -21,6 +21,28 @@ namespace yourvrexperience.Utils
 			return (target - origin).normalized;
 		}
 
+		public static Vector2 ClonePoint(Vector2 point)
+		{
+			return new Vector2(point.x, point.y);
+		}
+
+		public static Vector3 ClonePoint(Vector3 point)
+		{
+			return new Vector3(point.x, point.y, point.z);
+		}
+
+		public static Vector2 GetLocalCoordsUIObject(Vector2 coords, GameObject gameObj)
+		{
+			return gameObj.transform.InverseTransformPoint(coords);
+		}
+
+		public static bool AreCoordsWithinUiObject(Vector2 coords, GameObject gameObj)
+		{
+			Vector2 localPos = gameObj.transform.InverseTransformPoint(coords);
+			// if (GameConfig.ENABLE_SHOW_ALL_DEBUG_MESSAGES) Debug.LogError("AreCoordsWithinUiObject=" + localPos.ToString());
+			return ((RectTransform)gameObj.transform).rect.Contains(localPos);
+		}		
+		
 		public static float IsInsideCone(GameObject source, float angle, GameObject objective, float rangeDetection, float angleDetection)
 		{
 			float distance = Vector3.Distance(new Vector3(source.transform.position.x, 0, source.transform.position.z),
