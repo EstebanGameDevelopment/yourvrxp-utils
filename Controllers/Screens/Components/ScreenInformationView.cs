@@ -129,7 +129,7 @@ namespace yourvrexperience.Utils
 				_background.gameObject.SetActive(false);
 			}
 #else
-			this.GetComponent<Canvas>().sortingOrder = 1;			
+			this.GetComponent<Canvas>().sortingOrder = 1000;			
 #endif
 
 			UIEventController.Instance.Event += OnUIEvent;
