@@ -16,6 +16,28 @@ namespace yourvrexperience.Utils
 	{
 		public const string SeparatorBasicTypes = ";";
 
+		public static string CleanXMLText(string text)
+		{
+			string output = text;
+			output = output.Replace('"','\t');
+			output = output.Replace('>','\t');
+			output = output.Replace('<','\t');
+			output = output.Replace('/','\t');
+			output = output.Replace('\\','\t');
+			output = output.Replace("\t", "");
+			output = output.Replace("\n", "");
+			return output;
+		}
+
+		public static string RemoveXmlTags(string input)
+		{
+			if (string.IsNullOrEmpty(input))
+				return input;
+
+			string pattern = "<.*?>";
+			return Regex.Replace(input, pattern, string.Empty);
+		}
+
 		public static Vector3 GetDirection(Vector3 target, Vector3 origin)
 		{
 			return (target - origin).normalized;
