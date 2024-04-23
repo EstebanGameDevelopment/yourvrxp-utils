@@ -38,6 +38,17 @@ namespace yourvrexperience.Utils
 			return Regex.Replace(input, pattern, string.Empty);
 		}
 
+		public static string RemoveBrokenTags(string input)
+		{
+			// Regex to find unclosed or improperly closed tags
+			string pattern = @"<[^>]+?(?=<|$)";
+			
+			// Replace broken tags with an empty string
+			string result = Regex.Replace(input, pattern, string.Empty);
+			
+			return result;
+		}
+
 		public static Vector3 GetDirection(Vector3 target, Vector3 origin)
 		{
 			return (target - origin).normalized;
