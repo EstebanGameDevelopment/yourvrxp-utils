@@ -75,8 +75,15 @@ namespace yourvrexperience.Utils
 
 		public bool ResponseUTF8Code(byte[] response)
 		{
-			_jsonResponse = Encoding.UTF8.GetString(response);
-			_jsonResponse = CleanUndesiredTags(_jsonResponse);
+			if (response != null)
+			{
+				_jsonResponse = Encoding.UTF8.GetString(response);
+				_jsonResponse = CleanUndesiredTags(_jsonResponse);
+			}
+			else
+			{
+				_jsonResponse = "Error::";
+			}
 			if (CommController.DEBUG_LOG)
 			{
 				Debug.Log("BaseDataJSON::ResponseCode(BYTE)=" + _jsonResponse);
