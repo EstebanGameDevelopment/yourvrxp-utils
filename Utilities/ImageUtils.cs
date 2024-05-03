@@ -89,6 +89,14 @@ namespace yourvrexperience.Utils
 			_image.overrideSprite = ToSprite(tex);
 		}
 
+		public static void LoadBytesSprite(Image _image, byte[] _pvrtcBytes)
+		{
+			Texture2D tex = new Texture2D(2, 2);
+			tex.LoadImage(_pvrtcBytes);
+			tex.Apply();
+			_image.overrideSprite = ToSprite(tex);
+		}
+
 		public static void LoadBytesImage(RawImage _image, int _with, int _height, byte[] _pvrtcBytes)
 		{
 			Texture2D tex = new Texture2D(_with, _height);
