@@ -9,7 +9,6 @@ namespace yourvrexperience.Utils
 	{
 		public const string EventSoundsControllerFadeCompleted = "EventSoundsControllerFadeCompleted";
 
-		public const string EventSoundsControllerGetFilePathAudioData = "EventSoundsControllerGetFilePathAudioData";
 
 		public enum ChannelsAudio { Background = 0, FX1, FX2 }
 
@@ -145,7 +144,7 @@ namespace yourvrexperience.Utils
 			{
 				_audioSources[(int)ChannelsAudio.FX2].clip = null;
 				_audioSources[(int)ChannelsAudio.FX2].Stop();
-			}			
+			}		
 		}
 
 		public void StopSoundFx(ChannelsAudio channel)
@@ -311,74 +310,62 @@ namespace yourvrexperience.Utils
 			return clip;
 		}
 
-		public void ExtractBytesAudioFile(string filename)
+		public void DownloadAudioFile(string eventName, int id, string extension, string urlData)
 		{
-			StartCoroutine(LoadMusic(filename));
+			StartCoroutine(LoadMusic(eventName, id, extension, urlData));
 		}
 
-		private IEnumerator LoadMusic(string fileAudioPath) 
+		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath) 
 		{
-        	if (System.IO.File.Exists(fileAudioPath)) 
+			AudioType typeAudio = AudioType.UNKNOWN;
+			if (extension.IndexOf("mp3") != -1)
 			{
-				AudioType typeAudio = AudioType.UNKNOWN;
-				if (fileAudioPath.IndexOf(".mp3") != -1)
-				{
-					typeAudio = AudioType.MPEG;
-				}
-				else if (fileAudioPath.IndexOf(".wav") != -1)
-				{
-					typeAudio = AudioType.WAV;
-				}
-				else if (fileAudioPath.IndexOf(".ogg") != -1)
-				{
-					typeAudio = AudioType.OGGVORBIS;
-				}
-				if (typeAudio == AudioType.UNKNOWN)
-				{
-					SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerGetFilePathAudioData, false);
-				}
-				else
-				{
-					using (var uwr = UnityWebRequestMultimedia.GetAudioClip("file://" + fileAudioPath, typeAudio))
-					{
-						((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = false;
-
-						yield return uwr.SendWebRequest();
-
-						if (uwr.isNetworkError || uwr.isHttpError)
-						{
-							Debug.LogError(uwr.error);
-							yield break;
-						}
-
-						DownloadHandlerAudioClip dlHandler = (DownloadHandlerAudioClip)uwr.downloadHandler;
-
-						if (dlHandler.isDone)
-						{
-							AudioClip audioClip = dlHandler.audioClip;
-
-							if (audioClip != null)
-							{
-								AudioClip targetAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
-								float[] data = new float[targetAudioClip.samples * targetAudioClip.channels];														
-								targetAudioClip.GetData(data, 0);
-								byte[] finalData = Utilities.ConvertFloatToByte(data);
-								SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerGetFilePathAudioData, true, targetAudioClip.samples, targetAudioClip.channels, targetAudioClip.frequency, finalData);
-								Debug.LogError("AUDIO DATA::samples["+targetAudioClip.samples+"], channels["+targetAudioClip.channels+"], frequency["+targetAudioClip.frequency+"], finalData["+finalData.Length+"]");
-							}
-							else
-							{
-								// Debug.LogError("Couldn't find a valid AudioClip :(");
-								SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerGetFilePathAudioData, false);
-							}
-						}
-					}
-				}
+				typeAudio = AudioType.MPEG;
+			}
+			else if (extension.IndexOf("wav") != -1)
+			{
+				typeAudio = AudioType.WAV;
+			}
+			else if (extension.IndexOf("ogg") != -1)
+			{
+				typeAudio = AudioType.OGGVORBIS;
+			}
+			if (typeAudio == AudioType.UNKNOWN)
+			{
+				SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 			}
 			else
 			{
-				// Debug.LogError("Unable to locate converted song file.");
-				SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerGetFilePathAudioData, false);
+				using (var uwr = UnityWebRequestMultimedia.GetAudioClip(urlAudioPath, typeAudio))
+				{
+					((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = false;
+
+					yield return uwr.SendWebRequest();
+
+					if (uwr.isNetworkError || uwr.isHttpError)
+					{
+						Debug.LogError(uwr.error);
+						yield break;
+					}
+
+					DownloadHandlerAudioClip dlHandler = (DownloadHandlerAudioClip)uwr.downloadHandler;
+
+					if (dlHandler.isDone)
+					{
+						AudioClip audioClip = dlHandler.audioClip;
+						if (audioClip != null)
+						{
+							AudioClip targetAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
+							SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, targetAudioClip);
+							// Debug.LogError("AUDIO DATA::targetAudioClip["+targetAudioClip.samples+"], channels["+targetAudioClip.channels+"], frequency["+targetAudioClip.frequency+"]");
+						}
+						else
+						{
+							// Debug.LogError("Couldn't find a valid AudioClip :(");
+							SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+						}
+					}
+				}
 			}
 	    }
 
