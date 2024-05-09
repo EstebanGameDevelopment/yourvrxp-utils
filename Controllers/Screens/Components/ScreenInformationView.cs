@@ -34,7 +34,7 @@ namespace yourvrexperience.Utils
 		private CustomInput _inputValue;
 		private string _nameScreen;
 
-		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null)
+		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard)
 		{
 			string okText = ok;
 			if (okText.Length == 0)
@@ -50,7 +50,7 @@ namespace yourvrexperience.Utils
 #if !(ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 			shouldHidePrevious = false;
 #endif			
-			ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText);
+			ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText, infoImage, contentType);
 		}
 
         public override void Initialize(params object[] parameters)
@@ -70,6 +70,11 @@ namespace yourvrexperience.Utils
 			{
 				_inputValue.OnFocusEvent += OnFocusInputValue;
 				_inputValue.text = "";
+				_inputValue.contentType = TMP_InputField.ContentType.Standard;
+				if (parameters.Length > 7)
+				{
+					_inputValue.contentType = (TMP_InputField.ContentType)parameters[7];
+				}
 			}
 
 			Transform contentImage = Utilities.FindNameInChildren(_content, "Image");
