@@ -33,11 +33,13 @@ namespace yourvrexperience.Utils
 
         public void DispatchUIEvent(string nameEvent, params object[] parameters)
         {
+			// Debug.LogError("UIEventController::DISPATCH::nameEvent="+nameEvent);
             if (Event != null) Event(nameEvent, parameters);
         }
 
 		public void DelayUIEvent(string nameEvent, float time, params object[] list)
 		{
+			// Debug.LogError("UIEventController::DELAY::nameEvent="+nameEvent);
             m_listEvents.Add(new TimedEventData(nameEvent, -1, -1, time, list));
 		}
 
