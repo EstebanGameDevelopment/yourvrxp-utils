@@ -227,9 +227,16 @@ namespace yourvrexperience.Utils
 								www.SetRequestHeader(type, content);
 							}
 						}
-					}      					
+					}
 
-					StartCoroutine(WaitForUnityWebStringRequest(www));
+					if (_isBinaryResponse)
+					{
+						StartCoroutine(WaitForUnityWebRequest(www));
+					}
+					else
+					{
+						StartCoroutine(WaitForUnityWebStringRequest(www));
+					}
 				}
 				else
 				{
