@@ -157,9 +157,12 @@ namespace yourvrexperience.Utils
 		{
 			for (int i = 0; i < Sounds.Length; i++)
 			{
-				if (Sounds[i].name == audioName)
-				{
-					PlaySoundClipFx(ChannelsAudio.FX1, Sounds[i], loop, volume);
+				if (Sounds[i] != null)
+                {
+					if (Sounds[i].name == audioName)
+					{
+						PlaySoundClipFx(ChannelsAudio.FX1, Sounds[i], loop, volume);
+					}
 				}
 			}
 		}
