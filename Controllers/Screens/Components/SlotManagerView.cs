@@ -272,6 +272,16 @@ namespace yourvrexperience.Utils
 			UIEventController.Instance.DispatchUIEvent(EventSlotManagerNewPageLoaded, this.gameObject, _currentPage);
 		}
 
+		public void AddItem(ItemMultiObjectEntry item)
+		{
+			_data.Add(item);
+			_itemsEachPage++;
+			_totalPages = 1;
+			GameObject newSlot = Utilities.AddChild(_content.transform, _slotPrefab);
+			newSlot.GetComponent<ISlotView>().Initialize(item);
+			_gameObjects.Add(newSlot);
+		}
+
 		public void DisplayNoRecords()
         {
 			if (LoadingIcon != null) _imageLoading = LoadingIcon.transform;
