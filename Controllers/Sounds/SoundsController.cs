@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -355,16 +356,28 @@ namespace yourvrexperience.Utils
 
 					if (dlHandler.isDone)
 					{
-						AudioClip audioClip = dlHandler.audioClip;
-						if (audioClip != null)
-						{
-							AudioClip targetAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
-							SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, targetAudioClip);
-							// Debug.LogError("AUDIO DATA::targetAudioClip["+targetAudioClip.samples+"], channels["+targetAudioClip.channels+"], frequency["+targetAudioClip.frequency+"]");
-						}
-						else
-						{
-							// Debug.LogError("Couldn't find a valid AudioClip :(");
+						try
+                        {
+							AudioClip audioClip = dlHandler.audioClip;
+							if (audioClip != null)
+							{
+								AudioClip targetAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
+								if (targetAudioClip.samples == 0)
+                                {
+									SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+								}
+								else
+                                {
+									SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, targetAudioClip);
+								}								
+								// Debug.LogError("AUDIO DATA::targetAudioClip["+targetAudioClip.samples+"], channels["+targetAudioClip.channels+"], frequency["+targetAudioClip.frequency+"]");
+							}
+							else
+							{
+								SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+							}
+						} catch (Exception err)
+                        {
 							SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 						}
 					}
