@@ -19,8 +19,9 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationDestroy = "EventScreenInformationDestroy";
 		public const string EventScreenInformationRequestAllScreensDestroyed = "EventScreenInformationRequestAllScreensDestroyed";
 		public const string EventScreenInformationUpdateInformation = "EventScreenInformationUpdateInformation";
+		public const string EventScreenInformationSetInputText = "EventScreenInformationSetInputText";
 
-        public const string ScreenInformation = "ScreenInformation";
+		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
 		public const string ScreenConfirmation = "ScreenConfirmation";
 		public const string ScreenConfirmationBig = "ScreenConfirmationBig";
@@ -273,6 +274,13 @@ namespace yourvrexperience.Utils
 				UpdateTitle((string)parameters[0]);
 				UpdateDescription((string)parameters[1]);
 			}
+			if (nameEvent.Equals(EventScreenInformationSetInputText))
+			{
+				if (_inputValue != null)
+				{
+					_inputValue.text = (string)parameters[0];
+				}
+			}
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
 			{
@@ -281,7 +289,7 @@ namespace yourvrexperience.Utils
 					_inputValue.text = (string)parameters[1];
 				}
 			}
-#endif			
+#endif
 		}
-    }
+	}
 }
