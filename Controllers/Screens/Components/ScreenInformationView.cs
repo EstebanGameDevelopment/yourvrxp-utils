@@ -17,6 +17,8 @@ namespace yourvrexperience.Utils
     {
 		public const string EventScreenInformationResponse = "EventScreenInformationResponse";
 		public const string EventScreenInformationDestroy = "EventScreenInformationDestroy";
+		public const string EventScreenInformationInited = "EventScreenInformationInited";
+		public const string EventScreenInformationDestroyed = "EventScreenInformationDestroyed";
 		public const string EventScreenInformationRequestAllScreensDestroyed = "EventScreenInformationRequestAllScreensDestroyed";
 		public const string EventScreenInformationUpdateInformation = "EventScreenInformationUpdateInformation";
 		public const string EventScreenInformationSetInputText = "EventScreenInformationSetInputText";
@@ -141,6 +143,7 @@ namespace yourvrexperience.Utils
 #endif
 
 			UIEventController.Instance.Event += OnUIEvent;
+			UIEventController.Instance.DelayUIEvent(EventScreenInformationInited, 0.1f);
         }
 
 		void OnDestroy()
@@ -161,6 +164,8 @@ namespace yourvrexperience.Utils
 				_inputValue = null;
 				if (UIEventController.Instance != null) UIEventController.Instance.Event -= OnUIEvent;
 				base.Destroy();
+
+				UIEventController.Instance.DispatchUIEvent(EventScreenInformationDestroyed);
 			}
         }
 
