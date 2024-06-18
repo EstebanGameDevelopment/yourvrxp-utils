@@ -14,6 +14,8 @@ namespace yourvrexperience.Utils
         public const string CodeLanguageSpanish = "es";
         public const string CodeLanguageCatalan = "ca";
 
+        public enum TranslationTypes { English = 0, Spanish, Catalan }
+
         private static LanguageController _instance;
         public static LanguageController Instance
         {
@@ -69,6 +71,47 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+        public string GetCodeLanguageByType(TranslationTypes translation)
+        {
+            switch (translation)
+            {
+                case TranslationTypes.English:
+                    return CodeLanguageEnglish;
+                case TranslationTypes.Spanish:
+                    return CodeLanguageSpanish;
+                case TranslationTypes.Catalan:
+                    return CodeLanguageCatalan;
+            }
+            return CodeLanguageEnglish;
+        }
+
+        public TranslationTypes GetTypeLanguageByCode(string code)
+        {
+            switch (code)
+            {
+                case CodeLanguageEnglish:
+                    return TranslationTypes.English;
+                case CodeLanguageSpanish:
+                    return TranslationTypes.Spanish;
+                case CodeLanguageCatalan:
+                    return TranslationTypes.Catalan;
+            }
+            return TranslationTypes.English;
+        }
+
+        public string GetNameLanguageByCode(string code)
+        {
+            switch (code)
+            {
+                case CodeLanguageEnglish:
+                    return LanguageController.Instance.GetText("language.name.english");
+                case CodeLanguageSpanish:
+                    return LanguageController.Instance.GetText("language.name.spanish");
+                case CodeLanguageCatalan:
+                    return LanguageController.Instance.GetText("language.name.catalan");
+            }
+            return LanguageController.Instance.GetText("language.name.english");
+        }
         public void SetGameTexts(TextAsset gameTexts)
         {
             GameTexts = gameTexts;
