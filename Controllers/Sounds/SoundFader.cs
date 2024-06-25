@@ -11,10 +11,11 @@ namespace yourvrexperience.Utils
 		private float _timeToFade = 0;
 		private float _originalTimeToFade = 0;
 		private int _iteration = 0;
+		private float _target = 0;
 
 		private AudioSource _audioSource;
 
-		public static void CreateSoundFader(AudioSource audioSource, bool isFadeIn, float timeToFade)
+		public static void CreateSoundFader(AudioSource audioSource, bool isFadeIn, float timeToFade, float target)
         {
 			GameObject soundFader = new GameObject();
 			soundFader.name = "SOUND_FADER";
@@ -22,11 +23,11 @@ namespace yourvrexperience.Utils
 			fader.Init(audioSource);
 			if (isFadeIn)
             {
-				fader.FadeIn(timeToFade);
+				fader.FadeIn(timeToFade, target);
 			}
 			else
             {
-				fader.FadeOut(timeToFade);
+				fader.FadeOut(timeToFade, target);
 			}
 		}
 
@@ -43,18 +44,20 @@ namespace yourvrexperience.Utils
 			_audioSource = null;
 		}
 
-        public void FadeOut(float timeToFade)
+        public void FadeOut(float timeToFade, float target)
 		{
 			_activateFadeOut = true;
 			_timeToFade = timeToFade;
 			_originalTimeToFade = _timeToFade;
+			_target = target;
 			// _audioSource.volume = 1;
 		}
-		public void FadeIn(float timeToFade)
+		public void FadeIn(float timeToFade, float target)
 		{
 			_activateFadeIn = true;
 			_timeToFade = timeToFade;
 			_originalTimeToFade = _timeToFade;
+			_target = target;
 			_audioSource.volume = 0;
 		}
 
@@ -67,11 +70,11 @@ namespace yourvrexperience.Utils
 					_timeToFade -= Time.fixedDeltaTime;
 					if (_timeToFade > 0)
 					{
-						_audioSource.volume = (_originalTimeToFade - _timeToFade) / _originalTimeToFade;
+						_audioSource.volume = _target * ((_originalTimeToFade - _timeToFade) / _originalTimeToFade);
 					}
 					else
 					{
-						_audioSource.volume = 1;
+						_audioSource.volume = _target;
 						_activateFadeIn = false;
 						_audioSource = null;
 						SystemEventController.Instance.DispatchSystemEvent(SoundsController.EventSoundsControllerFadeCompleted);
@@ -96,13 +99,13 @@ namespace yourvrexperience.Utils
 					{
 						if (_iteration == 0)
 						{
-							_audioSource.volume = 1;
+							_audioSource.volume = _target;
 						}
 						_iteration++;
 						_timeToFade -= Time.fixedDeltaTime;
 						if (_timeToFade > 0)
 						{
-							_audioSource.volume = (_timeToFade / _originalTimeToFade);
+							_audioSource.volume = _target * (_timeToFade / _originalTimeToFade);
 						}
 						else
 						{
