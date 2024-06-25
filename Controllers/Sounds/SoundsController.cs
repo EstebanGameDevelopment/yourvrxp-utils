@@ -10,7 +10,6 @@ namespace yourvrexperience.Utils
 	{
 		public const string EventSoundsControllerFadeCompleted = "EventSoundsControllerFadeCompleted";
 
-
 		public enum ChannelsAudio { Background = 0, FX1, FX2 }
 
 		private static SoundsController _instance;
@@ -31,10 +30,6 @@ namespace yourvrexperience.Utils
 
 		private AudioSource[] _audioSources;
 		private AudioSource _audioBackground;
-
-		private bool _activateFadeOut;
-		private bool _activateFadeIn;
-		private float _timeToFade = 0;
 
 		private string _currentAudioMelodyPlaying = "";
 
@@ -73,7 +68,7 @@ namespace yourvrexperience.Utils
 		{
 			if (!EnableSound) return;
 
-			ResetFade();
+			// ResetFade();
 
 			_currentAudioMelodyPlaying = audio.name;
 			_audioBackground.clip = audio;
@@ -125,7 +120,7 @@ namespace yourvrexperience.Utils
 			if (!EnableSound) return;
 			if ((int)channel >= _audioSources.Length) return;
 
-			ResetFade();
+			// ResetFade();
 
 			_audioSources[(int)channel].clip = audio;
 			_audioSources[(int)channel].loop = loop;
@@ -179,61 +174,6 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		private void ResetFade()
-		{
-			_activateFadeOut = false;
-			_activateFadeIn = false;
-			_timeToFade = 0;
-		}
-
-		public void FadeOut(float timeToFade)
-		{
-			_activateFadeOut = true;
-			_timeToFade = timeToFade;
-			_audioBackground.volume = 1;
-		}
-		public void FadeIn(float timeToFade)
-		{
-			_activateFadeIn = true;
-			_timeToFade = timeToFade;
-			_audioBackground.volume = 0;
-		}
-
-		private void FadeInUpdate()
-		{
-			if (_activateFadeIn)
-			{
-				_timeToFade -= Time.deltaTime;
-				if (_timeToFade > 0)
-				{
-					_audioBackground.volume += Time.deltaTime/_timeToFade;
-				}
-				else
-				{
-					_audioBackground.volume = 0;
-					_activateFadeIn = false;
-					SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerFadeCompleted);
-				}
-			}
-		}
-
-		private void FadeOutUpdate()
-		{
-			if (_activateFadeOut)
-			{
-				_timeToFade -= Time.deltaTime;
-				if (_timeToFade > 0)
-				{
-					_audioBackground.volume -= Time.deltaTime/_timeToFade;
-				}
-				else
-				{
-					_audioBackground.volume = 0;
-					_activateFadeOut = false;
-					SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerFadeCompleted);
-				}
-			}
-		}
 
         public void PlayRemoteBackground(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
         {
@@ -384,12 +324,5 @@ namespace yourvrexperience.Utils
 				}
 			}
 	    }
-
-
-		void Update()
-		{
-			FadeInUpdate();
-			FadeOutUpdate();
-		}
 	}
 }
