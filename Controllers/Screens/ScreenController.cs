@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using IngameDebugConsole;
 using UnityEngine.UI;
+using TMPro;
 #if ENABLE_NREAL
 using NRKernal;
 #endif
@@ -21,6 +22,14 @@ namespace yourvrexperience.Utils
 {
     public class ScreenController : MonoBehaviour
     {
+
+		[System.Serializable]
+		public class GameFontAsset
+		{
+			[SerializeField] public string Name;
+			[SerializeField] public TMP_FontAsset Font;
+		}
+
 		public const string EventScreenControllerStarted = "EventScreenControllerStarted";
         public const string EventScreenControllerRequestCameraData = "EventScreenControllerRequestCameraData";
         public const string EventScreenControllerResponseCameraData = "EventScreenControllerResponseCameraData";
@@ -48,8 +57,9 @@ namespace yourvrexperience.Utils
 		[SerializeField] private float scaleFactor = 0.5f;
 		[SerializeField] private float withVRScreen = 1920;
 		[SerializeField] private float heightVRScreen = 3414;
+		[SerializeField] private GameFontAsset[] Fonts;
 
-        public GameObject[] Screens;
+		public GameObject[] Screens;
 
         private List<GameObject> _screensCreated = new List<GameObject>();
 
@@ -79,6 +89,23 @@ namespace yourvrexperience.Utils
         {
 			RunInitialization();
         }
+
+		public GameFontAsset[] GetFonts()
+        {
+			return Fonts;
+        }
+
+		public TMP_FontAsset GetFontByName(string nameFont)
+		{
+			for (int i = 0; i < Fonts.Length; i++)
+			{
+				if (Fonts[i].Name.Equals(nameFont))
+                {
+					return Fonts[i].Font;
+				}
+			}
+			return null;
+		}
 
 		private void RunInitialization()
 		{
