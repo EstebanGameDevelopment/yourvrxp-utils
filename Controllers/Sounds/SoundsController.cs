@@ -10,6 +10,8 @@ namespace yourvrexperience.Utils
 	{
 		public const string EventSoundsControllerFadeCompleted = "EventSoundsControllerFadeCompleted";
 
+		public const bool FORCE_VOLUME_ZERO = false;
+
 		public enum ChannelsAudio { Background = 0, FX1, FX2 }
 
 		private static SoundsController _instance;
@@ -76,10 +78,13 @@ namespace yourvrexperience.Utils
 			_audioBackground.volume = volume;
 			_audioBackground.Play();
 			_audioBackground.spatialBlend = (is3D?1:0);
+
+			if (FORCE_VOLUME_ZERO) _audioBackground.volume = 0;
 		}
 		public void SetVolume(ChannelsAudio channel, float volume)
 		{
 			_audioSources[(int)channel].volume = volume;
+			if (FORCE_VOLUME_ZERO) _audioSources[(int)channel].volume = 0;
 		}
 		public void PauseSoundBackground()
 		{
@@ -127,6 +132,8 @@ namespace yourvrexperience.Utils
 			_audioSources[(int)channel].volume = volume;
 			_audioSources[(int)channel].Play();
 			_audioSources[(int)channel].spatialBlend = (is3D?1:0);
+
+			if (FORCE_VOLUME_ZERO) _audioSources[(int)channel].volume = 0;
 		}
 
 		public void StopSoundsFx()
