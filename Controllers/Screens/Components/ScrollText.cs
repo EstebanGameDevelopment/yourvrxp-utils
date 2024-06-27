@@ -19,6 +19,7 @@ namespace yourvrexperience.Utils
         private TextMeshProUGUI _textMeshPro;
         private float _scrollDuration;
         private float _totalHeight;
+        private float _startHeight;
 
         private IEnumerator _thread;
 
@@ -34,8 +35,9 @@ namespace yourvrexperience.Utils
             _textMeshPro = textMeshPro;
             _scrollDuration = scrollDuration;
 
-            ResizeTextMeshPro();
-            Vector2 startPosition = Vector2.zero - new Vector2(0, _totalHeight/2);
+            _totalHeight = ResizeTextMeshPro(_textMeshPro);
+            _startHeight = (_totalHeight / 2) + 10;
+            Vector2 startPosition = Vector2.zero - new Vector2(0, _startHeight);
             _scrollRect.content.anchoredPosition = startPosition;
             _thread = WaitBeforeScrollCoroutine(delayToStart);
             StartCoroutine(_thread);
@@ -62,19 +64,21 @@ namespace yourvrexperience.Utils
             }
         }
 
-        private void ResizeTextMeshPro()
+        public static float ResizeTextMeshPro(TextMeshProUGUI textMeshPro)
         {
             Canvas.ForceUpdateCanvases();
 
-            _textMeshPro.ForceMeshUpdate();
-            RectTransform textRectTransform = _textMeshPro.GetComponent<RectTransform>();
+            textMeshPro.ForceMeshUpdate();
+            RectTransform textRectTransform = textMeshPro.GetComponent<RectTransform>();
 
-            Vector2 preferredValues = _textMeshPro.GetPreferredValues(_textMeshPro.text, textRectTransform.rect.width, 0);
-            _totalHeight = preferredValues.y;
+            Vector2 preferredValues = textMeshPro.GetPreferredValues(textMeshPro.text, textRectTransform.rect.width, 0);
+            float totalHeight = preferredValues.y;
             
             // Debug.LogError(" //////////////////////// RESIZE["+ textRectTransform.rect.width + "," + _totalHeight + "]");
 
-            textRectTransform.sizeDelta = new Vector2(textRectTransform.sizeDelta.x, _totalHeight);
+            textRectTransform.sizeDelta = new Vector2(textRectTransform.sizeDelta.x, totalHeight);
+            
+            return totalHeight;
         }
 
         private IEnumerator WaitBeforeScrollCoroutine(float delayToStart)
@@ -87,18 +91,28 @@ namespace yourvrexperience.Utils
         private IEnumerator ScrollCoroutine()
         {
             float elapsedTime = 0f;
-            Vector2 startPosition = Vector2.zero - new Vector2(0, _totalHeight / 2);
+            Vector2 startPosition = Vector2.zero - new Vector2(0, _startHeight);
             Vector2 endPosition = new Vector2(0, _totalHeight / 2);
 
             while (elapsedTime < _scrollDuration)
             {
                 elapsedTime += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsedTime / _scrollDuration);
-                _scrollRect.content.anchoredPosition = Vector2.Lerp(startPosition, endPosition, t);
+                if (_scrollRect != null)
+                {
+                    _scrollRect.content.anchoredPosition = Vector2.Lerp(startPosition, endPosition, t);
+                }
+                else
+                {
+                    elapsedTime = _scrollDuration;
+                }                
                 yield return null;
             }
 
-            _scrollRect.content.anchoredPosition = endPosition;
+            if (_scrollRect != null)
+            {
+                _scrollRect.content.anchoredPosition = endPosition;
+            }            
         }
     }
 }
