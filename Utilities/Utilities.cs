@@ -716,6 +716,25 @@ namespace yourvrexperience.Utils
 			return output;
 		}
 
+		public static int FindStartingTagXML(string tag, string data)
+		{
+			string startTag = "<" + tag;
+			return data.IndexOf(startTag);
+		}
+
+		public static string ExtractColorTagXML(string data)
+		{
+			string startTag = "<color=";
+			int index = data.IndexOf(startTag) + startTag.Length;
+			return data.Substring(index, 7);
+		}
+
+		public static int FindEndingTagXML(string tag, string data)
+		{
+			string endTag = "</" + tag + ">";
+			return data.IndexOf(endTag);
+		}
+
 		public static string CalculateChecksum(string input)
 		{
 			using (SHA256 sha256Hash = SHA256.Create())
