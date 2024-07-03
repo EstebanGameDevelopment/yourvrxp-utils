@@ -16,6 +16,18 @@ namespace yourvrexperience.Utils
 	{
 		public const string SeparatorBasicTypes = ";";
 
+		public static string ReplaceNonAlphanumericWithSpace(string input)
+		{
+			if (input == null) throw new ArgumentNullException(nameof(input));
+			return Regex.Replace(input, "[^a-zA-Z0-9]", " ");
+		}
+
+		public static string RemoveSpaces(string input)
+		{
+			if (input == null) throw new ArgumentNullException(nameof(input));
+			return input.Replace(" ", string.Empty);
+		}
+
 		public static string CleanXMLText(string text)
 		{
 			string output = text;
@@ -692,14 +704,6 @@ namespace yourvrexperience.Utils
 		public static string RemoveNonStandardCharacters(string original)
 		{
 			  return Regex.Replace(original, @"[^a-zA-Z0-9]+", string.Empty);
-		}
-
-		public static string RemoveSpaces(string original)
-		{
-			string output = original;
-			output = output.Replace(" ", "");
-			output = output.Replace("\n", "");
-			return output;
 		}
 
 		public static string ExtractXML(string tag, string data)
