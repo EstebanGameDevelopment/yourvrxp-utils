@@ -54,6 +54,7 @@ namespace yourvrexperience.Utils
 
 		private string _inGameLog = "";
 		private UnityWebRequest _currentWWW;
+		private bool _cancelNextResponse = false;
 
 		public static string FilterSpecialTokens(string _text)
 		{
@@ -106,22 +107,22 @@ namespace yourvrexperience.Utils
 		{
 			if (_instance != null)
 			{
-				_currentWWW = null;
+				_currentWWW = null;				
 				Destroy(_instance.gameObject);
 				_instance = null;
 			}
 		}
 
-		public void AbortCurrentCommunication()
-		{
-			if (_currentWWW != null)
+		public void StopCurrentComm()
+        {
+			try
 			{
-				try {
-					UnityWebRequest currentWWW = _currentWWW;
-					_currentWWW = null;
-					currentWWW.Abort();
-				} catch (Exception err) {};
+				_cancelNextResponse = true;
+				_listTimedEvents.Clear();
+				_listQueuedEvents.Clear();
+				_priorityQueuedEvents.Clear();
 			}
+			catch (Exception err) { }
 		}
 
         public void RequestHeader(string _event, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, params object[] _list)
@@ -272,6 +273,11 @@ namespace yourvrexperience.Utils
 			_listTimedEvents.Add(new CommEventData(_nameEvent, null, _isBinaryResponse, _time, _list));
 		}
 
+		public void DelayRequestHeader(string _nameEvent, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, float _time, params object[] _list)
+		{
+			_listTimedEvents.Add(new CommEventData(_nameEvent, _headers, _isBinaryResponse, _time, _list));
+		}
+
 		public void QueuedRequest(string _nameEvent, bool _isBinaryResponse, params object[] _list)
 		{
             _listQueuedEvents.Add(new CommEventData(_nameEvent, null, _isBinaryResponse, 0, _list));
@@ -291,25 +297,30 @@ namespace yourvrexperience.Utils
 		{
 			yield return www;
 
-            // check for errors
-            try
-            {
-			    if (www.error == null)
-			    {
-				    if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
-				    _commRequest.Response(www.bytes);
-			    }
-			    else
-			    {
-				    if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-				    _commRequest.Response(Encoding.ASCII.GetBytes(www.error));
-			    }
-            } catch (Exception err)
-            {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForRequest::stacktrace=" + err.StackTrace, Color.red);
-            }
+			if (!_cancelNextResponse)
+			{
+				// check for errors
+				try
+				{
+					if (www.error == null)
+					{
+						if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
+						_commRequest.Response(www.bytes);
+					}
+					else
+					{
+						if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
+						_commRequest.Response(Encoding.ASCII.GetBytes(www.error));
+					}
+				}
+				catch (Exception err)
+				{
+					if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForRequest::stacktrace=" + err.StackTrace, Color.red);
+				}
+			}
+			_cancelNextResponse = false;
 
-            ChangeState(STATE_IDLE);
+			ChangeState(STATE_IDLE);
 			ProcesQueuedComms();
 		}
 
@@ -317,21 +328,27 @@ namespace yourvrexperience.Utils
         {
             yield return www.SendWebRequest();
 
-            try { 
-                if (www.isNetworkError || www.isHttpError)
-                {
-                    if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-                    _commRequest.Response(Encoding.ASCII.GetBytes(www.error));
-                }
-                else
-                {
-                    if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.downloadHandler.text);
-                    _commRequest.Response(www.downloadHandler.data);
-                }
-            } catch (Exception err)
-            {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebRequest::stacktrace=" + err.StackTrace, Color.red);
-            }
+			if (!_cancelNextResponse)
+			{
+				try
+				{
+					if (www.isNetworkError || www.isHttpError)
+					{
+						if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
+						_commRequest.Response(Encoding.ASCII.GetBytes(www.error));
+					}
+					else
+					{
+						if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.downloadHandler.text);
+						_commRequest.Response(www.downloadHandler.data);
+					}
+				}
+				catch (Exception err)
+				{
+					if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebRequest::stacktrace=" + err.StackTrace, Color.red);
+				}
+			}
+			_cancelNextResponse = false;
 
 			if (_currentWWW == www)
 			{
@@ -346,25 +363,30 @@ namespace yourvrexperience.Utils
 		{
 			yield return www;
 
-            // check for errors
-            try
-            {
-                if (www.error == null)
-                {
-                    if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
-                    _commRequest.Response(www.text);
-                }
-                else
-                {
-                    if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-                    _commRequest.Response(Encoding.ASCII.GetBytes(www.error));
-                }
-            } catch (Exception err)
-            {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForStringRequest::stacktrace=" + err.StackTrace, Color.red);
-            }
+			if (!_cancelNextResponse)
+			{
+				// check for errors
+				try
+				{
+					if (www.error == null)
+					{
+						if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
+						_commRequest.Response(www.text);
+					}
+					else
+					{
+						if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
+						_commRequest.Response(Encoding.ASCII.GetBytes(www.error));
+					}
+				}
+				catch (Exception err)
+				{
+					if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForStringRequest::stacktrace=" + err.StackTrace, Color.red);
+				}
+			}
+			_cancelNextResponse = false;
 
-            ChangeState(STATE_IDLE);
+			ChangeState(STATE_IDLE);
 			ProcesQueuedComms();
 		}
 
@@ -372,22 +394,27 @@ namespace yourvrexperience.Utils
         {
             yield return www.SendWebRequest();
 
-            try
-            { 
-                if (www.isNetworkError || www.isHttpError)
-                {
-                    if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-                    _commRequest.Response(www.error);
-                }
-                else
-                {
-                    if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.downloadHandler.text);
-                    _commRequest.Response(www.downloadHandler.text);
-                }
-            } catch (Exception err)
-            {
-                if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebStringRequest::stacktrace=" + err.StackTrace, Color.red);
-            }
+			if (!_cancelNextResponse)
+			{
+				try
+				{
+					if (www.isNetworkError || www.isHttpError)
+					{
+						if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
+						_commRequest.Response(www.error);
+					}
+					else
+					{
+						if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.downloadHandler.text);
+						_commRequest.Response(www.downloadHandler.text);
+					}
+				}
+				catch (Exception err)
+				{
+					if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebStringRequest::stacktrace=" + err.StackTrace, Color.red);
+				}
+			}
+			_cancelNextResponse = false;
 
 			if (_currentWWW == www)
 			{
@@ -466,8 +493,8 @@ namespace yourvrexperience.Utils
 						eventData.Time -= Time.deltaTime;
 						if (eventData.Time <= 0)
 						{
-							_listTimedEvents.RemoveAt(i);
-							Request(eventData.NameEvent, eventData.IsBinaryResponse, eventData.List);
+							_listTimedEvents.RemoveAt(i);							
+							RequestReal(eventData.NameEvent, eventData.Headers, eventData.IsBinaryResponse, eventData.List);
 							eventData.Destroy();
 							break;
 						}
@@ -484,7 +511,7 @@ namespace yourvrexperience.Utils
 				int i = 0;
 				CommEventData eventData = _priorityQueuedEvents[i];
 				_priorityQueuedEvents.RemoveAt(i);
-				Request(eventData.NameEvent, eventData.IsBinaryResponse, eventData.List);
+				RequestReal(eventData.NameEvent, eventData.Headers, eventData.IsBinaryResponse, eventData.List);
 				eventData.Destroy();
 				return;
 			}
@@ -494,7 +521,7 @@ namespace yourvrexperience.Utils
 				int i = 0;
 				CommEventData eventData = _listQueuedEvents[i];
 				_listQueuedEvents.RemoveAt(i);
-				Request(eventData.NameEvent, eventData.IsBinaryResponse, eventData.List);
+				RequestReal(eventData.NameEvent, eventData.Headers, eventData.IsBinaryResponse, eventData.List);
 				eventData.Destroy();
 				return;
 			}
