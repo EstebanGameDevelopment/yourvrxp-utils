@@ -173,6 +173,8 @@ namespace yourvrexperience.Utils
             this._event = _event;
             _commRequest = (IHTTPComms)Activator.CreateInstance(Type.GetType(this._event));
 
+			_cancelNextResponse = false;
+
 			ChangeState(STATE_COMMUNICATION);
 			string data = _commRequest.Build(_list);
 			if (DEBUG_LOG)
