@@ -130,6 +130,16 @@ namespace yourvrexperience.Utils
 			_gameObjects = null;
 		}
 
+		public void SetVerticalScroll(float value)
+        {
+			_scrollRectList.verticalNormalizedPosition = value;
+		}
+
+		public void SetHorizontalScroll(float value)
+		{
+			_scrollRectList.horizontalNormalizedPosition = value;
+		}
+
 		public void ClearCurrentGameObject(bool resetPage)
 		{
             for (int i = 0; i < _gameObjects.Count; i++)

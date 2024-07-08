@@ -16,6 +16,7 @@ namespace yourvrexperience.Utils
 		string Build(params object[] _list);
 		void Response(byte[] _response);
 		void Response(string _response);
+		void CancelResponse();
 	}
 
 }

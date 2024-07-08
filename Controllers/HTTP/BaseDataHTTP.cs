@@ -15,6 +15,8 @@ namespace yourvrexperience.Utils
 		protected WWWForm _formPost;
 		protected byte[] _rawData;
 
+		protected bool _cancelResponse = false;
+
 		public int Method
 		{
 			get { return _method; }
@@ -108,6 +110,11 @@ namespace yourvrexperience.Utils
 
 		public virtual void Response(string _response)
 		{
+		}
+
+		public virtual void CancelResponse()
+		{
+			_cancelResponse = true;
 		}
 	}
 }

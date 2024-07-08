@@ -21,7 +21,9 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationDestroyed = "EventScreenInformationDestroyed";
 		public const string EventScreenInformationRequestAllScreensDestroyed = "EventScreenInformationRequestAllScreensDestroyed";
 		public const string EventScreenInformationUpdateInformation = "EventScreenInformationUpdateInformation";
+		public const string EventScreenInformationAddInformation = "EventScreenInformationAddInformation";
 		public const string EventScreenInformationSetInputText = "EventScreenInformationSetInputText";
+		public const string EventScreenInformationAddInputText = "EventScreenInformationAddInputText";		
 
 		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
@@ -207,7 +209,26 @@ namespace yourvrexperience.Utils
 			} 
 		}
 
-        private void OnFocusInputValue()
+		private void AddToDescription(string description)
+		{
+			Transform contentDescription = Utilities.FindNameInChildren(_content, "Description");
+			if (contentDescription != null)
+			{
+				if (contentDescription.GetComponent<TextMeshProUGUI>() != null)
+				{
+					contentDescription.GetComponent<TextMeshProUGUI>().text += description;
+				}
+				else
+				{
+					if (contentDescription.GetComponent<Text>() != null)
+					{
+						contentDescription.GetComponent<Text>().text += description;
+					}
+				}
+			}
+		}
+
+		private void OnFocusInputValue()
         {
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			_content.gameObject.SetActive(false);
@@ -285,6 +306,17 @@ namespace yourvrexperience.Utils
 				{
 					_inputValue.text = (string)parameters[0];
 				}
+			}
+			if (nameEvent.Equals(EventScreenInformationAddInputText))
+			{
+				if (_inputValue != null)
+				{
+					_inputValue.text += (string)parameters[0];
+				}
+			}
+			if (nameEvent.Equals(EventScreenInformationAddInformation))
+			{
+				AddToDescription((string)parameters[0]);
 			}
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
