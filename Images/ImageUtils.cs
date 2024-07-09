@@ -185,5 +185,47 @@ namespace yourvrexperience.Utils
             tex.Apply();
             return tex;
         }
-    }
+
+		public static Vector2Int GetImageResolution(byte[] _imageBytes)
+		{
+			// Load the image into a Texture2D
+			Texture2D texture = new Texture2D(2, 2);
+			texture.LoadImage(_imageBytes);
+
+			// Get the width and height of the texture
+			int width = texture.width;
+			int height = texture.height;
+
+			return new Vector2Int(width, height);
+		}
+
+		public static byte[] ResizeImage(byte[] _imageBytes, int targetWidth, int targetHeight)
+		{
+			// Load the image into a Texture2D
+			Texture2D sourceTexture = new Texture2D(2, 2);
+			sourceTexture.LoadImage(_imageBytes);
+
+			// Create a new Texture2D with the target size
+			Texture2D resizedTexture = new Texture2D(targetWidth, targetHeight, sourceTexture.format, false);
+
+			// Resize the image
+			Color[] pixels = sourceTexture.GetPixels(0, 0, sourceTexture.width, sourceTexture.height);
+			Color[] resizedPixels = new Color[targetWidth * targetHeight];
+
+			float incX = (1.0f / (float)targetWidth);
+			float incY = (1.0f / (float)targetHeight);
+
+			for (int px = 0; px < resizedPixels.Length; px++)
+			{
+				resizedPixels[px] = sourceTexture.GetPixelBilinear(incX * ((float)px % targetWidth), incY * ((float)Mathf.Floor(px / targetWidth)));
+			}
+
+			resizedTexture.SetPixels(resizedPixels);
+			resizedTexture.Apply();
+
+			// Convert the resized texture to a byte array
+			byte[] resizedImageBytes = resizedTexture.EncodeToPNG();
+			return resizedImageBytes;
+		}
+	}
 }
