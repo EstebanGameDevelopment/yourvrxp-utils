@@ -269,7 +269,7 @@ namespace yourvrexperience.Utils
             {
                 if (_customOutputEvent.Length > 0)
                 {
-                    SystemEventController.Instance.DispatchSystemEvent(_customOutputEvent, _origin, ScreenInformationResponses.Cancel);
+					UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Cancel);
                 }
             }
 			UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Cancel);
