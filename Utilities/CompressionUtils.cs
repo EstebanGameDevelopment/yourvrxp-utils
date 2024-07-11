@@ -30,6 +30,29 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static byte[] CompressWithBrotli(byte[] data)
+		{
+			using (var compressedStream = new MemoryStream())
+			{
+				using (var brotliStream = new BrotliStream(compressedStream, CompressionMode.Compress))
+				{
+					brotliStream.Write(data, 0, data.Length);
+				}
+				return compressedStream.ToArray();
+			}
+		}
+
+		public static byte[] DecompressWithBrotli(byte[] compressedData)
+		{
+			using (var compressedStream = new MemoryStream(compressedData))
+			using (var brotliStream = new BrotliStream(compressedStream, CompressionMode.Decompress))
+			using (var resultStream = new MemoryStream())
+			{
+				brotliStream.CopyTo(resultStream);
+				return resultStream.ToArray();
+			}
+		}
+
 		public static void CompressFile(string sourceFile, string compressedFile)
 		{
 			using (FileStream sourceFileStream = File.OpenRead(sourceFile))
