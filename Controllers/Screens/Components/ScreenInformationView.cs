@@ -238,30 +238,34 @@ namespace yourvrexperience.Utils
 
         private void OnConfirmation()
         {
-			if (_inputValue != null)
+			try
 			{
-				if (_customOutputEvent != null)
+				if (_inputValue != null)
 				{
-					if (_customOutputEvent.Length > 0)
+					if (_customOutputEvent != null)
 					{
-						UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
+						if (_customOutputEvent.Length > 0)
+						{
+							UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
+						}
 					}
+					UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
 				}
-				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm, _inputValue.text);
+				else
+				{
+					if (_customOutputEvent != null)
+					{
+						if (_customOutputEvent.Length > 0)
+						{
+							UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm);
+						}
+					}
+					UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm);
+				}
+				UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
 			}
-			else
-			{
-				if (_customOutputEvent != null)
-				{
-					if (_customOutputEvent.Length > 0)
-					{
-						UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Confirm);
-					}
-				}
-				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Confirm);
-			}			
-            UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
-        }
+			catch (Exception err) { };
+		}
 
 		private void OnCancel()
         {
