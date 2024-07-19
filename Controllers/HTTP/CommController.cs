@@ -243,7 +243,16 @@ namespace yourvrexperience.Utils
 				}
 				else
 				{
-					UnityWebRequest www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
+					UnityWebRequest www = null;
+					if (_commRequest.FormPost != null)
+                    {
+						www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
+					}
+					else
+                    {
+						www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormData);
+					}
+
 					_currentWWW = www;
 					if (_headers != null)
 					{

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace yourvrexperience.Utils
 {
@@ -13,6 +14,7 @@ namespace yourvrexperience.Utils
 		protected string _jsonResponse;
 		protected int _method = METHOD_GET;
 		protected WWWForm _formPost;
+		protected List<IMultipartFormSection> _formData;
 		protected byte[] _rawData;
 
 		protected bool _cancelResponse = false;
@@ -30,6 +32,10 @@ namespace yourvrexperience.Utils
 		public WWWForm FormPost
 		{
 			get { return _formPost; }
+		}
+		public List<IMultipartFormSection> FormData
+		{
+			get { return _formData; }
 		}
 
 		public virtual Dictionary<string, string> GetHeaders()

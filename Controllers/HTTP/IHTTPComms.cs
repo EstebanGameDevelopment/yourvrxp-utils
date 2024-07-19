@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Networking;
 
 namespace yourvrexperience.Utils
 {
@@ -10,6 +10,7 @@ namespace yourvrexperience.Utils
 		byte[] RawData { get; }
 		string UrlRequest { get; }
 		WWWForm FormPost { get; }
+		List<IMultipartFormSection> FormData { get; }
 		int Method { get; }
 		Dictionary<string, string> GetHeaders();
 
