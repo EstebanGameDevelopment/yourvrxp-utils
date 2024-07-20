@@ -36,10 +36,10 @@ namespace yourvrexperience.Utils
 		public const string ScreenMediumInput = "ScreenInformationMediumInput";
 		public const string ScreenLongInput = "ScreenInformationLongInput";
 
-		private GameObject _origin;
-        private string _customOutputEvent = "";
-		private CustomInput _inputValue;
-		private string _nameScreen;
+		protected GameObject _origin;
+		protected string _customOutputEvent = "";
+		protected CustomInput _inputValue;
+		protected string _nameScreen;
 
 		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard)
 		{
@@ -236,7 +236,7 @@ namespace yourvrexperience.Utils
 #endif			
         }
 
-        private void OnConfirmation()
+        protected virtual void OnConfirmation()
         {
 			try
 			{
@@ -267,7 +267,7 @@ namespace yourvrexperience.Utils
 			catch (Exception err) { };
 		}
 
-		private void OnCancel()
+		protected virtual void OnCancel()
         {
             if (_customOutputEvent != null)
             {
@@ -280,7 +280,7 @@ namespace yourvrexperience.Utils
             UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
         }
 
-		private void OnUIEvent(string nameEvent, object[] parameters)
+		protected virtual void OnUIEvent(string nameEvent, object[] parameters)
 		{
 			if (nameEvent.Equals(EventScreenInformationDestroy))
 			{
