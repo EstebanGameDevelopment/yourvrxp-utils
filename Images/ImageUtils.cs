@@ -227,5 +227,39 @@ namespace yourvrexperience.Utils
 			byte[] resizedImageBytes = resizedTexture.EncodeToPNG();
 			return resizedImageBytes;
 		}
+
+		// Call this function to flip the image horizontally
+		public static byte[] FlipImageHorizontally(byte[] imageBytes)
+		{
+			// Step 1: Convert byte array to Texture2D
+			Texture2D originalTexture = new Texture2D(2, 2);
+			originalTexture.LoadImage(imageBytes);
+
+			// Step 2: Flip the Texture2D horizontally
+			Texture2D flippedTexture = FlipTextureHorizontally(originalTexture);
+
+			// Step 3: Convert the flipped Texture2D back to byte array
+			byte[] flippedImageBytes = flippedTexture.EncodeToPNG(); // or EncodeToJPG(), depending on your format
+
+			return flippedImageBytes;
+		}
+
+		public static Texture2D FlipTextureHorizontally(Texture2D original)
+		{
+			int width = original.width;
+			int height = original.height;
+			Texture2D flipped = new Texture2D(width, height);
+
+			for (int i = 0; i < width; i++)
+			{
+				for (int j = 0; j < height; j++)
+				{
+					flipped.SetPixel(i, j, original.GetPixel(width - i - 1, j));
+				}
+			}
+
+			flipped.Apply();
+			return flipped;
+		}
 	}
 }
