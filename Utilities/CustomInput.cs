@@ -10,6 +10,8 @@ namespace yourvrexperience.Utils
         public delegate void FocusEvent();
         public event FocusEvent OnFocusEvent;
         public event FocusEvent OnFocusDownEvent;
+        public event FocusEvent OnFocusOverEvent;
+        public event FocusEvent OnFocusOutEvent;
 
         public void DispatchFocusEvent()
         {
@@ -31,5 +33,16 @@ namespace yourvrexperience.Utils
         {
             DispatchFocusEvent();
         }
+
+        public override void OnPointerEnter(PointerEventData eventData)
+        {
+            if (OnFocusOverEvent != null) OnFocusOverEvent();
+        }
+
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            if (OnFocusOutEvent != null) OnFocusOutEvent();
+        }
+
     }
 }

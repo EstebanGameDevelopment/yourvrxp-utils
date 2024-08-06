@@ -61,6 +61,14 @@ namespace yourvrexperience.Utils
 			return result;
 		}
 
+		public static string ColorToHexString(Color color)
+		{
+			int r = Mathf.RoundToInt(color.r * 255);
+			int g = Mathf.RoundToInt(color.g * 255);
+			int b = Mathf.RoundToInt(color.b * 255);
+			return $"#{r:X2}{g:X2}{b:X2}";
+		}
+
 		public static Vector3 GetDirection(Vector3 target, Vector3 origin)
 		{
 			return (target - origin).normalized;
