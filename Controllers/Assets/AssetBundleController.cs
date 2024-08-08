@@ -83,7 +83,9 @@ namespace yourvrexperience.Utils
 
         public void ClearLocalCache()
         {
+#if !UNITY_WEBGL || UNITY_EDITOR
             Caching.ClearCache();
+#endif
         }
 
         public void DispatchAssetBundleEvent(string nameEvent, params object[] parameters)
@@ -126,6 +128,9 @@ namespace yourvrexperience.Utils
 
         public bool CheckCachedBundle(string nameBundle)
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return false;
+#else
             List<Hash128> cachedVersions = new List<Hash128>();
             Caching.GetCachedVersions(nameBundle, cachedVersions);
             for (int i = 0; i < cachedVersions.Count; i++)
@@ -136,6 +141,7 @@ namespace yourvrexperience.Utils
                 }
             }            
             return false;
+#endif
         }
 
         private void DownloadAssetBundle(string finalURL, string nameAsset)
@@ -221,7 +227,7 @@ namespace yourvrexperience.Utils
                     GameObject newObject = Instantiate(_loadedObjects[name]) as GameObject;
 #if UNITY_EDITOR
                     Utilities.ResetMaterials(newObject);
-#endif                    
+#endif
                     return newObject;
                 }
             }
