@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,6 +12,20 @@ namespace yourvrexperience.Utils
 
         public delegate void ClosedEvent();
         public event ClosedEvent OnClosedEvent;
+
+        public Action<CustomDropdown> PointerEnterButton;
+        public Action<CustomDropdown> PointerExitButton;
+
+        public override void OnPointerEnter(PointerEventData eventData)
+        {
+            base.OnPointerEnter(eventData);
+            PointerEnterButton?.Invoke(this);
+        }
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            base.OnPointerExit(eventData);
+            PointerExitButton?.Invoke(this);
+        }
 
         public void DispatchOpenedEvent()
         {
