@@ -147,6 +147,19 @@ namespace yourvrexperience.Utils
             }
         }
 
+        public string GetTextForLanguage(string id, string code)
+        {
+            LoadGameTexts();
+            if (m_texts[id] != null)
+            {
+                return ((TextEntry)m_texts[id]).GetText(code);
+            }
+            else
+            {
+                return id;
+            }
+        }
+
         public string GetText(string _id, params object[] _list)
 		{
 			LoadGameTexts();
