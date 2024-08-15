@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1094,6 +1095,39 @@ namespace yourvrexperience.Utils
 					Array.Reverse(byteArr, i * 4, 4);
 			}
 			return byteArr;
+		}
+
+		public static int CountCharacterOccurrences(string input, char character)
+		{
+			return input.Count(c => c == character);
+		}
+
+		public static string RemoveSingleNewlines(string text)
+		{
+			string filteredText = text.Replace("\r", "");
+			string[] textParagraphs = filteredText.Split('\n');
+
+			string output = "";
+			for (int i = 0; i < textParagraphs.Length; i++)
+			{
+				string token = textParagraphs[i] + " ";
+				output += token;
+				/*                
+                List<char> specials = token.Where(c => !char.IsLetterOrDigit(c)).Distinct().ToList();
+                foreach (var ch in specials)
+                {
+                    Debug.LogError("ch="+ ch + "::number="+ (int)ch);
+                }
+                */
+				textParagraphs[i] = textParagraphs[i].Trim();
+				if (textParagraphs[i].Length == 0)
+				{
+					output += "\n\n";
+					// Debug.LogError("FOUND DOUBLE CR");
+				}
+			}
+
+			return output;
 		}
 	}
 }
