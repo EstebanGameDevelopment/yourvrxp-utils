@@ -12,7 +12,7 @@ namespace yourvrexperience.Utils
 
 		public const bool FORCE_VOLUME_ZERO = false;
 
-		public enum ChannelsAudio { Background = 0, FX1, FX2 }
+		public enum ChannelsAudio { Background = 0, FX1, FX2, FX3 }
 
 		private static SoundsController _instance;
 		public static SoundsController Instance
@@ -59,6 +59,17 @@ namespace yourvrexperience.Utils
 		{
 			StopSoundBackground();
 			StopSoundsFx();
+		}
+
+		public void SwitchMuteAll(bool shouldMute)
+		{ 
+			foreach (AudioSource audioSource in _audioSources)
+            {
+				if (audioSource != null)
+                {
+					audioSource.volume = (shouldMute ? 0 : 1);
+				}
+            }
 		}
 
 		public AudioSource GetChannelAudioSource(ChannelsAudio channelAudio)
@@ -141,6 +152,21 @@ namespace yourvrexperience.Utils
 			if (FORCE_VOLUME_ZERO) _audioSources[(int)channel].volume = 0;
 		}
 
+		public void PlayOneShootSoundClipFx(ChannelsAudio channel, AudioClip audio, bool loop, float volume, bool is3D = false)
+		{
+			if (!EnableSound) return;
+			if ((int)channel >= _audioSources.Length) return;
+
+			// ResetFade();
+
+			_audioSources[(int)channel].loop = loop;
+			_audioSources[(int)channel].volume = volume;
+			_audioSources[(int)channel].spatialBlend = (is3D ? 1 : 0);
+			_audioSources[(int)channel].PlayOneShot(audio);
+
+			if (FORCE_VOLUME_ZERO) _audioSources[(int)channel].volume = 0;
+		}
+
 		public void StopSoundsFx()
 		{
 			if ((int)ChannelsAudio.FX1 < _audioSources.Length) 
@@ -152,7 +178,12 @@ namespace yourvrexperience.Utils
 			{
 				_audioSources[(int)ChannelsAudio.FX2].clip = null;
 				_audioSources[(int)ChannelsAudio.FX2].Stop();
-			}		
+			}
+			if ((int)ChannelsAudio.FX3 < _audioSources.Length)
+			{
+				_audioSources[(int)ChannelsAudio.FX3].clip = null;
+				_audioSources[(int)ChannelsAudio.FX3].Stop();
+			}
 		}
 
 		public void StopSoundFx(ChannelsAudio channel)
