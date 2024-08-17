@@ -109,6 +109,11 @@ namespace yourvrexperience.Utils
 			_audioBackground.Stop();
 		}
 
+		public void SeekPosition(ChannelsAudio channel, AudioClip clip, float progress)
+        {
+			_audioSources[(int)channel].time = clip.length * progress;
+		}
+
 		public void PlaySoundBackground(string audioName, bool loop, float volume)
 		{
 			for (int i = 0; i < Sounds.Length; i++)
