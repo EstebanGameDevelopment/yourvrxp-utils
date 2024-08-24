@@ -123,6 +123,7 @@ namespace yourvrexperience.Utils
 				_listTimedEvents.Clear();
 				_listQueuedEvents.Clear();
 				_priorityQueuedEvents.Clear();
+				ChangeState(STATE_IDLE);
 			}
 			catch (Exception err) { }
 		}
