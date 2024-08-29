@@ -120,12 +120,12 @@ namespace yourvrexperience.Utils
                     eventData.Time -= Time.deltaTime;
                     if (eventData.Time <= 0)
                     {
-                        if ((eventData != null) && (Event != null))
+						_listEvents.RemoveAt(i);
+						if ((eventData != null) && (Event != null))
                         {
                             Event(eventData.NameEvent, eventData.Parameters);
                             eventData.Destroy();
-                        }
-                        _listEvents.RemoveAt(i);
+                        }                        
                         break;
                     }
                 }

@@ -404,12 +404,12 @@ namespace yourvrexperience.Utils
                     eventData.Time -= Time.deltaTime;
                     if (eventData.Time <= 0)
                     {
+                        listEvents.RemoveAt(i);
                         if ((eventData != null) && (AssetBundleEvent != null))
                         {
                             AssetBundleEvent(eventData.NameEvent, eventData.Parameters);
                             eventData.Destroy();
-                        }
-                        listEvents.RemoveAt(i);
+                        }                        
                         break;
                     }
                 }
