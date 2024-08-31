@@ -1129,5 +1129,19 @@ namespace yourvrexperience.Utils
 
 			return output;
 		}
+
+		public static bool IsNameContained(string source, string target)
+        {
+			if ((source.Length > 0) && (target.Length > 0))
+            {
+				if (source.ToUpperInvariant().IndexOf(target.ToUpperInvariant()) != -1) return true;
+				if (target.ToUpperInvariant().IndexOf(source.ToUpperInvariant()) != -1) return true;
+				return false;
+			}
+			else
+            {
+				return false;
+            }
+        }
 	}
 }
