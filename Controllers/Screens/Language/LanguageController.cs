@@ -13,8 +13,12 @@ namespace yourvrexperience.Utils
         public const string CodeLanguageEnglish = "en";
         public const string CodeLanguageSpanish = "es";
         public const string CodeLanguageCatalan = "ca";
+        public const string CodeLanguageGerman = "de";
+        public const string CodeLanguageFrench = "fr";
+        public const string CodeLanguageItalian = "it";
+        public const string CodeLanguageRussian = "ru";
 
-        public enum TranslationTypes { English = 0, Spanish, Catalan }
+        public enum TranslationTypes { English = 0, Spanish, German, French, Italian, Russian }
 
         private static LanguageController _instance;
         public static LanguageController Instance
@@ -79,8 +83,14 @@ namespace yourvrexperience.Utils
                     return CodeLanguageEnglish;
                 case TranslationTypes.Spanish:
                     return CodeLanguageSpanish;
-                case TranslationTypes.Catalan:
-                    return CodeLanguageCatalan;
+                case TranslationTypes.German:
+                    return CodeLanguageGerman;
+                case TranslationTypes.French:
+                    return CodeLanguageFrench;
+                case TranslationTypes.Italian:
+                    return CodeLanguageItalian;
+                case TranslationTypes.Russian:
+                    return CodeLanguageRussian;
             }
             return CodeLanguageEnglish;
         }
@@ -93,8 +103,14 @@ namespace yourvrexperience.Utils
                     return TranslationTypes.English;
                 case CodeLanguageSpanish:
                     return TranslationTypes.Spanish;
-                case CodeLanguageCatalan:
-                    return TranslationTypes.Catalan;
+                case CodeLanguageGerman:
+                    return TranslationTypes.German;
+                case CodeLanguageFrench:
+                    return TranslationTypes.French;
+                case CodeLanguageItalian:
+                    return TranslationTypes.Italian;
+                case CodeLanguageRussian:
+                    return TranslationTypes.Russian;
             }
             return TranslationTypes.English;
         }
