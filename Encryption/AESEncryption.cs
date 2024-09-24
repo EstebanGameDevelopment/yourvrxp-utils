@@ -115,5 +115,13 @@ namespace yourvrexperience.Utils
 				iv = aes.IV;
 			}
 		}
+
+		public static string GenerateIVFromPassword(string password)
+		{
+			using (SHA256 sha256 = SHA256.Create())
+			{
+				return sha256.ComputeHash(Encoding.UTF8.GetBytes(password)).Take(16).ToString(); // 16-byte IV
+			}
+		}
 	}
 }
