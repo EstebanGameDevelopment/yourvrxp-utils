@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace yourvrexperience.Utils
 {
-    public class LanguageController : MonoBehaviour
+    [CreateAssetMenu(menuName = "Game/LanguageController")]
+    public class LanguageController : ScriptableObject
     {
         public const string EventLanguageControllerChangedCodeLanguage = "EventLanguageControllerChangedCodeLanguage";
 
@@ -25,10 +26,6 @@ namespace yourvrexperience.Utils
         {
             get
             {
-                if (!_instance)
-                {
-                    _instance = GameObject.FindObjectOfType<LanguageController>();
-                }
                 return _instance;
             }
         }
@@ -39,8 +36,9 @@ namespace yourvrexperience.Utils
 
         private Hashtable m_texts = new Hashtable();
 
-		void Start()
+		public void Initialize()
 		{
+            _instance = this;
             DetectOSLanguage();
 			SystemEventController.Instance.Event += OnSystemEvent;
 		}
@@ -71,7 +69,6 @@ namespace yourvrexperience.Utils
 			{
 				LanguageController reference = _instance;
 				_instance = null;
-				GameObject.Destroy(reference.gameObject);
 			}
 		}
 
@@ -222,13 +219,6 @@ namespace yourvrexperience.Utils
             {
                 Destroy();
             }		
-			if (nameEvent.Equals(SystemEventController.EventSystemEventControllerDontDestroyOnLoad))
-			{
-				if (Instance)
-				{
-					DontDestroyOnLoad(Instance.gameObject);
-				}
-			}
         }
     }
 }
