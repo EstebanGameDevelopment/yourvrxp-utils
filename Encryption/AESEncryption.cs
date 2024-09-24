@@ -33,6 +33,24 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static AESEncryptedText Encrypt(byte[] plainData, string password, byte[] iv)
+		{
+			using (var aes = Aes.Create())
+			{
+				aes.Key = ConvertToKeyBytes(aes, password);
+				aes.IV = iv;
+
+				var aesEncryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+				var encryptedBytes = aesEncryptor.TransformFinalBlock(plainData, 0, plainData.Length);
+
+				return new AESEncryptedText
+				{
+					IV = Convert.ToBase64String(aes.IV),
+					EncryptedData = encryptedBytes
+				};
+			}
+		}
+
 		public static byte[] Decrypt(byte[] encryptedData, string iv, string password)
 		{
 			using (Aes aes = Aes.Create())
@@ -120,7 +138,10 @@ namespace yourvrexperience.Utils
 		{
 			using (SHA256 sha256 = SHA256.Create())
 			{
-				return sha256.ComputeHash(Encoding.UTF8.GetBytes(password)).Take(16).ToString(); // 16-byte IV
+				byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(password)).Take(16).ToArray();
+
+				// Convert the byte array to a Base64 string
+				return Convert.ToBase64String(hash);
 			}
 		}
 	}
