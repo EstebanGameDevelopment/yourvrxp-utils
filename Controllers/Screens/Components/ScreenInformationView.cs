@@ -145,7 +145,7 @@ namespace yourvrexperience.Utils
 #endif
 
 			UIEventController.Instance.Event += OnUIEvent;
-			UIEventController.Instance.DelayUIEvent(EventScreenInformationInited, 0.1f);
+			UIEventController.Instance.DelayUIEvent(EventScreenInformationInited, 0.1f, _nameScreen, (_inputValue != null));
         }
 
 		void OnDestroy()
@@ -159,6 +159,7 @@ namespace yourvrexperience.Utils
 			{
 				_content = null;
 				_origin = null;
+				bool wasInput = (_inputValue != null);
 				if (_inputValue != null)
 				{
 					_inputValue.OnFocusEvent -= OnFocusInputValue;
@@ -167,7 +168,7 @@ namespace yourvrexperience.Utils
 				if (UIEventController.Instance != null) UIEventController.Instance.Event -= OnUIEvent;
 				base.Destroy();
 
-				UIEventController.Instance.DispatchUIEvent(EventScreenInformationDestroyed);
+				UIEventController.Instance.DispatchUIEvent(EventScreenInformationDestroyed, _nameScreen, wasInput);
 			}
         }
 
