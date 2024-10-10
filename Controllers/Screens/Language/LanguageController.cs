@@ -19,7 +19,7 @@ namespace yourvrexperience.Utils
         public const string CodeLanguageItalian = "it";
         public const string CodeLanguageRussian = "ru";
 
-        public enum TranslationTypes { English = 0, Spanish, German, French, Italian, Russian }
+        public enum TranslationTypes { English = 0, Spanish, German, French, Italian, Russian, Catalan }
 
         private static LanguageController _instance;
         public static LanguageController Instance
@@ -54,7 +54,7 @@ namespace yourvrexperience.Utils
             CodeLanguage = currentCulture.TwoLetterISOLanguageName;
             string cultureName = currentCulture.Name;
 
-            if (!CodeLanguage.Equals(CodeLanguageEnglish) && !CodeLanguage.Equals(CodeLanguageSpanish) && !CodeLanguage.Equals(CodeLanguageCatalan))
+            if (!CodeLanguage.Equals(CodeLanguageEnglish) && !CodeLanguage.Equals(CodeLanguageSpanish))
             {
                 CodeLanguage = CodeLanguageEnglish;
             }
@@ -88,6 +88,8 @@ namespace yourvrexperience.Utils
                     return CodeLanguageItalian;
                 case TranslationTypes.Russian:
                     return CodeLanguageRussian;
+                case TranslationTypes.Catalan:
+                    return CodeLanguageCatalan;
             }
             return CodeLanguageEnglish;
         }
@@ -108,6 +110,8 @@ namespace yourvrexperience.Utils
                     return TranslationTypes.Italian;
                 case CodeLanguageRussian:
                     return TranslationTypes.Russian;
+                case CodeLanguageCatalan:
+                    return TranslationTypes.Catalan;
             }
             return TranslationTypes.English;
         }
@@ -120,6 +124,14 @@ namespace yourvrexperience.Utils
                     return LanguageController.Instance.GetText("language.name.english");
                 case CodeLanguageSpanish:
                     return LanguageController.Instance.GetText("language.name.spanish");
+                case CodeLanguageGerman:
+                    return LanguageController.Instance.GetText("language.name.german");
+                case CodeLanguageFrench:
+                    return LanguageController.Instance.GetText("language.name.french");
+                case CodeLanguageItalian:
+                    return LanguageController.Instance.GetText("language.name.italian");
+                case CodeLanguageRussian:
+                    return LanguageController.Instance.GetText("language.name.russian");
                 case CodeLanguageCatalan:
                     return LanguageController.Instance.GetText("language.name.catalan");
             }
