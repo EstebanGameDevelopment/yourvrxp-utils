@@ -17,6 +17,14 @@ namespace yourvrexperience.Utils
 	{
 		public const string SeparatorBasicTypes = ";";
 
+		public static string ScreenShotName(int width, int height)
+		{
+			return string.Format("{0}/screen{1}x{2}{3}.png",
+								 Application.persistentDataPath,
+								 width, height,
+								 System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+		}
+
 		public static string ReplaceNonAlphanumericWithSpace(string input)
 		{
 			if (input == null) throw new ArgumentNullException(nameof(input));
