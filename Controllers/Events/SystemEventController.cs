@@ -11,7 +11,10 @@ namespace yourvrexperience.Utils
 		public const string EventSystemEventControllerDontDestroyOnLoad = "EventSystemEventControllerDontDestroyOnLoad";
 		public const string EventSystemEventControllerReleaseAllResources = "EventSystemEventControllerReleaseAllResources";
 
-        private static SystemEventController _instance;
+		public const string EventSystemEventControllerClearInGameLog = "EventSystemEventControllerClearInGameLog";
+		public const string EventSystemEventControllerAddTextLog = "EventSystemEventControllerAddTextLog";
+
+		private static SystemEventController _instance;
         public static SystemEventController Instance
         {
             get
