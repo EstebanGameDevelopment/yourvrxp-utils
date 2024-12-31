@@ -26,7 +26,7 @@ namespace yourvrexperience.Utils
 
         public const string EVENT_COMM_GET_FILE_DATA       = "yourvrexperience.Utils.GetFileDataHTTP";
 
-        public const bool DEBUG_LOG = false;
+        public const bool DEBUG_LOG = true;
 
 		public const int STATE_IDLE = 0;
 		public const int STATE_COMMUNICATION = 1;
@@ -183,77 +183,11 @@ namespace yourvrexperience.Utils
                 Utilities.DebugLogColor("CommController::RequestReal:URL=" + _commRequest.UrlRequest, Color.red);
                 Utilities.DebugLogColor("CommController::RequestReal:data=" + data, Color.red);
 			}
-			if (_commRequest.Method == BaseDataHTTP.METHOD_GET)
+			UnityWebRequest www;
+			switch (_commRequest.Method)
 			{
-                UnityWebRequest www = UnityWebRequest.Get(_commRequest.UrlRequest + data);
-				_currentWWW = www;
-                if (_headers != null)
-                {
-                    for (int i = 0; i < _headers.Count; i++)
-                    {
-                        if (_headers[i].Items.Count > 1)
-                        {
-							string type = _headers[i].Items[0];
-							string content = _headers[i].Items[1];
-                            www.SetRequestHeader(type, content);
-                        }
-                    }
-                }                
-
-                if (_isBinaryResponse)
-				{
-					StartCoroutine(WaitForUnityWebRequest(www));
-				}
-				else
-				{
-					StartCoroutine(WaitForUnityWebStringRequest(www));
-				}
-			}
-			else
-			{
-				if ((_commRequest.RawData != null) && (_commRequest.RawData.Length > 0))
-				{
-					UnityWebRequest www = new UnityWebRequest(_commRequest.UrlRequest, "POST");					
-					_currentWWW = www;
-					www.uploadHandler = new UploadHandlerRaw(_commRequest.RawData);
-					www.downloadHandler = new DownloadHandlerBuffer();
-					www.disposeDownloadHandlerOnDispose = true;
-					www.disposeUploadHandlerOnDispose = true;
-					www.disposeCertificateHandlerOnDispose = true;
-					if (_headers != null)
-					{
-						for (int i = 0; i < _headers.Count; i++)
-						{
-							if (_headers[i].Items.Count > 1)
-							{
-								string type = _headers[i].Items[0];
-								string content = _headers[i].Items[1];
-								www.SetRequestHeader(type, content);
-							}
-						}
-					}
-
-					if (_isBinaryResponse)
-					{
-						StartCoroutine(WaitForUnityWebRequest(www));
-					}
-					else
-					{
-						StartCoroutine(WaitForUnityWebStringRequest(www));
-					}
-				}
-				else
-				{
-					UnityWebRequest www = null;
-					if (_commRequest.FormPost != null)
-                    {
-						www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
-					}
-					else
-                    {
-						www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormData);
-					}
-
+				case BaseDataHTTP.METHOD_GET:
+					www = UnityWebRequest.Get(_commRequest.UrlRequest + data);
 					_currentWWW = www;
 					if (_headers != null)
 					{
@@ -276,7 +210,82 @@ namespace yourvrexperience.Utils
 					{
 						StartCoroutine(WaitForUnityWebStringRequest(www));
 					}
-				}
+					break;
+
+				case BaseDataHTTP.METHOD_POST:
+					if ((_commRequest.RawData != null) && (_commRequest.RawData.Length > 0))
+					{
+						www = new UnityWebRequest(_commRequest.UrlRequest, "POST");					
+						_currentWWW = www;
+						www.uploadHandler = new UploadHandlerRaw(_commRequest.RawData);
+						www.downloadHandler = new DownloadHandlerBuffer();
+						www.disposeDownloadHandlerOnDispose = true;
+						www.disposeUploadHandlerOnDispose = true;
+						www.disposeCertificateHandlerOnDispose = true;
+						if (_headers != null)
+						{
+							for (int i = 0; i < _headers.Count; i++)
+							{
+								if (_headers[i].Items.Count > 1)
+								{
+									string type = _headers[i].Items[0];
+									string content = _headers[i].Items[1];
+									www.SetRequestHeader(type, content);
+								}
+							}
+						}
+
+						if (_isBinaryResponse)
+						{
+							StartCoroutine(WaitForUnityWebRequest(www));
+						}
+						else
+						{
+							StartCoroutine(WaitForUnityWebStringRequest(www));
+						}
+					}
+					else
+					{
+						www = null;
+						if (_commRequest.FormPost != null)
+						{
+							www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormPost);
+						}
+						else
+						{
+							www = UnityWebRequest.Post(_commRequest.UrlRequest, _commRequest.FormData);
+						}
+
+						_currentWWW = www;
+						if (_headers != null)
+						{
+							for (int i = 0; i < _headers.Count; i++)
+							{
+								if (_headers[i].Items.Count > 1)
+								{
+									string type = _headers[i].Items[0];
+									string content = _headers[i].Items[1];
+									www.SetRequestHeader(type, content);
+								}
+							}
+						}                
+
+						if (_isBinaryResponse)
+						{
+							StartCoroutine(WaitForUnityWebRequest(www));
+						}
+						else
+						{
+							StartCoroutine(WaitForUnityWebStringRequest(www));
+						}
+					}
+					break;
+
+				case BaseDataHTTP.METHOD_CANCEL:
+					Debug.LogError("=====================CANCELLED HTTP=" + _commRequest.UrlRequest);
+					ChangeState(STATE_IDLE);
+					ProcesQueuedComms();
+					break;
 			}
 		}
 

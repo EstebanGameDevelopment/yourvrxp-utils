@@ -9,6 +9,7 @@ namespace yourvrexperience.Utils
 	{
 		public const int METHOD_GET = 0;
 		public const int METHOD_POST = 1;
+		public const int METHOD_CANCEL = 2;
 
 		protected string _code;
 		protected string _jsonResponse;
