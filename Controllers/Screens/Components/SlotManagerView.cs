@@ -292,6 +292,12 @@ namespace yourvrexperience.Utils
 			_gameObjects.Add(newSlot);
 		}
 
+		public void ClearData()
+		{
+			_currentPage = 0;
+			_data.Clear();
+		}
+
 		public void DisplayNoRecords()
         {
 			if (LoadingIcon != null) _imageLoading = LoadingIcon.transform;
