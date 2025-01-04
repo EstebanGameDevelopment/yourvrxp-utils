@@ -17,6 +17,7 @@ namespace yourvrexperience.Utils
     {
 		public const string EventScreenInformationResponse = "EventScreenInformationResponse";
 		public const string EventScreenInformationDestroy = "EventScreenInformationDestroy";
+		public const string EventScreenInformationByNameDestroy = "EventScreenInformationByNameDestroy";
 		public const string EventScreenInformationInited = "EventScreenInformationInited";
 		public const string EventScreenInformationDestroyed = "EventScreenInformationDestroyed";
 		public const string EventScreenInformationRequestAllScreensDestroyed = "EventScreenInformationRequestAllScreensDestroyed";
@@ -296,6 +297,13 @@ namespace yourvrexperience.Utils
 					UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
 				}
 			}
+			if (nameEvent.Equals(EventScreenInformationByNameDestroy))
+            {
+				if (NameScreen.IndexOf((string)parameters[0]) != -1)
+                {
+					UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
+				}
+            }
 			if (nameEvent.Equals(EventScreenInformationRequestAllScreensDestroyed))
 			{
 				UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
