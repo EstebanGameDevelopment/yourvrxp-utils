@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.IO;
 
 namespace yourvrexperience.Utils
 {
@@ -55,7 +56,7 @@ namespace yourvrexperience.Utils
 			_instance = null;
 		}
 
-		public void StopAllSounds()
+        public void StopAllSounds()
 		{
 			StopSoundBackground();
 			StopSoundsFx();
@@ -302,7 +303,8 @@ namespace yourvrexperience.Utils
 			StartCoroutine(LoadMusic(eventName, id, extension, urlData));
 		}
 
-		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath) 
+
+		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath)
 		{
 			AudioType typeAudio = AudioType.UNKNOWN;
 			if (extension.IndexOf("mp3") != -1)
@@ -323,9 +325,82 @@ namespace yourvrexperience.Utils
 			}
 			else
 			{
+				// Debug.LogError("DOWNLOADING SOUND[" + typeAudio.ToString() + "]::URL=" + urlAudioPath);
+				using (UnityWebRequest www = UnityWebRequest.Get(urlAudioPath))
+				{
+					yield return www.SendWebRequest();
+
+					if (www.result != UnityWebRequest.Result.Success)
+					{
+						Debug.LogError($"Error downloading audio: {www.error}");
+						yield break;
+					}
+
+					byte[] receivedBytes = www.downloadHandler.data;
+
+					// Decode OGG data using NVorbis
+					using (var memStream = new MemoryStream(receivedBytes))
+					using (var vorbisReader = new NVorbis.VorbisReader(memStream, true))
+					{
+						int channels = vorbisReader.Channels;
+						int sampleRate = vorbisReader.SampleRate;
+
+						// Calculate total samples
+						long totalSampleCount = vorbisReader.TotalSamples;
+						float[] samples = new float[totalSampleCount];
+
+						int sampleIndex = 0;
+						float[] buffer = new float[1024];
+
+						// Read all samples into the array
+						while (true)
+						{
+							int read = vorbisReader.ReadSamples(buffer, 0, buffer.Length);
+							if (read == 0) break;
+
+							Array.Copy(buffer, 0, samples, sampleIndex, read);
+							sampleIndex += read;
+						}
+
+						// Create an AudioClip
+						string clipName = "Audio_" + Utilities.RandomCodeGeneration(10);
+						AudioClip audioClip = AudioClip.Create(clipName, (int)totalSampleCount / channels, channels, sampleRate, false);
+
+						// Set the audio data
+						if (!audioClip.SetData(samples, 0))
+						{
+							Debug.LogError("Failed to set audio data on AudioClip.");
+							yield break;
+						}
+
+						// Use the AudioClip (e.g., assign to an AudioSource)
+						Debug.Log($"AudioClip {clipName} created successfully.");
+
+						if (audioClip != null)
+						{
+							if (audioClip.samples == 0)
+							{
+								SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+							}
+							else
+							{
+								SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, audioClip);
+							}
+							// Debug.LogError("AUDIO DATA::targetAudioClip[" + audioClip.samples + "], channels[" + audioClip.channels + "], frequency[" + audioClip.frequency + "]");
+						}
+						else
+						{
+							SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+						}
+					}
+				}
+
+				/*
 				using (var uwr = UnityWebRequestMultimedia.GetAudioClip(urlAudioPath, typeAudio))
 				{
-					((DownloadHandlerAudioClip)uwr.downloadHandler).streamAudio = false;
+					var dh = (DownloadHandlerAudioClip)uwr.downloadHandler;
+					dh.compressed = false;
+					dh.streamAudio = false;
 
 					yield return uwr.SendWebRequest();
 
@@ -340,32 +415,34 @@ namespace yourvrexperience.Utils
 					if (dlHandler.isDone)
 					{
 						try
-                        {
+						{
 							AudioClip audioClip = dlHandler.audioClip;
 							if (audioClip != null)
 							{
 								AudioClip targetAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
 								if (targetAudioClip.samples == 0)
-                                {
+								{
 									SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 								}
 								else
-                                {
+								{
 									SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, targetAudioClip);
-								}								
+								}
 								// Debug.LogError("AUDIO DATA::targetAudioClip["+targetAudioClip.samples+"], channels["+targetAudioClip.channels+"], frequency["+targetAudioClip.frequency+"]");
 							}
 							else
 							{
 								SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 							}
-						} catch (Exception err)
-                        {
+						}
+						catch (Exception err)
+						{
 							SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 						}
 					}
 				}
+				*/
 			}
-	    }
+		}
 	}
 }
