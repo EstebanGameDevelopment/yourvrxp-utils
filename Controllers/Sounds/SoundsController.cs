@@ -303,6 +303,69 @@ namespace yourvrexperience.Utils
 			StartCoroutine(LoadMusic(eventName, id, extension, urlData));
 		}
 
+		public void LoadSoundDataBytes(byte[] receivedBytes, string eventName, int id, string extension)
+		{
+			StartCoroutine(CreateAudioclipBytes(receivedBytes, eventName, id, extension));
+		}
+
+		public IEnumerator CreateAudioclipBytes(byte[] receivedBytes, string eventName, int id, string extension)
+        {
+			// Decode OGG data using NVorbis
+			using (var memStream = new MemoryStream(receivedBytes))
+			using (var vorbisReader = new NVorbis.VorbisReader(memStream, true))
+			{
+				int channels = vorbisReader.Channels;
+				int sampleRate = vorbisReader.SampleRate;
+
+				// Calculate total samples
+				long totalSampleCount = vorbisReader.TotalSamples;
+				float[] samples = new float[totalSampleCount];
+
+				int sampleIndex = 0;
+				float[] buffer = new float[1024];
+
+				// Read all samples into the array
+				while (true)
+				{
+					int read = vorbisReader.ReadSamples(buffer, 0, buffer.Length);
+					if (read == 0) break;
+
+					Array.Copy(buffer, 0, samples, sampleIndex, read);
+					sampleIndex += read;
+				}
+
+				// Create an AudioClip
+				string clipName = "Audio_" + Utilities.RandomCodeGeneration(10);
+				AudioClip audioClip = AudioClip.Create(clipName, (int)totalSampleCount / channels, channels, sampleRate, false);
+
+				// Set the audio data
+				if (!audioClip.SetData(samples, 0))
+				{
+					Debug.LogError("Failed to set audio data on AudioClip.");
+					yield break;
+				}
+
+				// Use the AudioClip (e.g., assign to an AudioSource)
+				Debug.Log($"AudioClip {clipName} created successfully.");
+
+				if (audioClip != null)
+				{
+					if (audioClip.samples == 0)
+					{
+						SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+					}
+					else
+					{
+						SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, audioClip);
+					}
+					// Debug.LogError("AUDIO DATA::targetAudioClip[" + audioClip.samples + "], channels[" + audioClip.channels + "], frequency[" + audioClip.frequency + "]");
+				}
+				else
+				{
+					SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+				}
+			}
+		}
 
 		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath)
 		{
@@ -338,61 +401,7 @@ namespace yourvrexperience.Utils
 
 					byte[] receivedBytes = www.downloadHandler.data;
 
-					// Decode OGG data using NVorbis
-					using (var memStream = new MemoryStream(receivedBytes))
-					using (var vorbisReader = new NVorbis.VorbisReader(memStream, true))
-					{
-						int channels = vorbisReader.Channels;
-						int sampleRate = vorbisReader.SampleRate;
-
-						// Calculate total samples
-						long totalSampleCount = vorbisReader.TotalSamples;
-						float[] samples = new float[totalSampleCount];
-
-						int sampleIndex = 0;
-						float[] buffer = new float[1024];
-
-						// Read all samples into the array
-						while (true)
-						{
-							int read = vorbisReader.ReadSamples(buffer, 0, buffer.Length);
-							if (read == 0) break;
-
-							Array.Copy(buffer, 0, samples, sampleIndex, read);
-							sampleIndex += read;
-						}
-
-						// Create an AudioClip
-						string clipName = "Audio_" + Utilities.RandomCodeGeneration(10);
-						AudioClip audioClip = AudioClip.Create(clipName, (int)totalSampleCount / channels, channels, sampleRate, false);
-
-						// Set the audio data
-						if (!audioClip.SetData(samples, 0))
-						{
-							Debug.LogError("Failed to set audio data on AudioClip.");
-							yield break;
-						}
-
-						// Use the AudioClip (e.g., assign to an AudioSource)
-						Debug.Log($"AudioClip {clipName} created successfully.");
-
-						if (audioClip != null)
-						{
-							if (audioClip.samples == 0)
-							{
-								SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
-							}
-							else
-							{
-								SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, audioClip);
-							}
-							// Debug.LogError("AUDIO DATA::targetAudioClip[" + audioClip.samples + "], channels[" + audioClip.channels + "], frequency[" + audioClip.frequency + "]");
-						}
-						else
-						{
-							SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
-						}
-					}
+					LoadSoundDataBytes(receivedBytes, eventName, id, extension);
 				}
 
 				/*
