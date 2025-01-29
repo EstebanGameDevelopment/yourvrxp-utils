@@ -3,7 +3,6 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 using System.Linq;
-using System.IO;
 
 namespace yourvrexperience.Utils
 {
@@ -50,6 +49,32 @@ namespace yourvrexperience.Utils
                 byte[] combinedBytes = Encoding.UTF8.GetBytes(input + combinedSalt);
                 byte[] hashBytes = sha256.ComputeHash(combinedBytes);
                 return Convert.ToBase64String(hashBytes);
+            }
+        }
+
+        public static long GetUniqueId(string username, int length = 9)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                // Compute SHA-256 hash
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(username));
+
+                // Convert hash to Base64 string
+                string base64Hash = Convert.ToBase64String(hashBytes);
+
+                // Remove non-digit characters and take the first 'length' digits
+                string numericPart = string.Concat(base64Hash.Where(char.IsDigit));
+                string truncated;
+                if (username.Length > length)
+                {
+                    truncated = numericPart.Substring(0, Math.Min(numericPart.Length, length));
+                }
+                else
+                {
+                    truncated = numericPart.Substring(0, Math.Min(numericPart.Length, username.Length));
+                }
+
+                return long.Parse(truncated);
             }
         }
     }
