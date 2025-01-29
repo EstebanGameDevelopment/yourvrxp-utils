@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
+using System.Linq;
 
 namespace yourvrexperience.Utils
 {
@@ -317,26 +318,25 @@ namespace yourvrexperience.Utils
 				int channels = vorbisReader.Channels;
 				int sampleRate = vorbisReader.SampleRate;
 
-				// Calculate total samples
-				long totalSampleCount = vorbisReader.TotalSamples;
-				float[] samples = new float[totalSampleCount];
-
-				int sampleIndex = 0;
+				List<float> sampleList = new List<float>();  // Use dynamic list
 				float[] buffer = new float[1024];
 
-				// Read all samples into the array
+				// Read all samples into the list
 				while (true)
 				{
 					int read = vorbisReader.ReadSamples(buffer, 0, buffer.Length);
 					if (read == 0) break;
 
-					Array.Copy(buffer, 0, samples, sampleIndex, read);
-					sampleIndex += read;
+					sampleList.AddRange(buffer.Take(read));
 				}
+
+				// Convert to array
+				float[] samples = sampleList.ToArray();
+				int totalSamples = samples.Length;
 
 				// Create an AudioClip
 				string clipName = "Audio_" + Utilities.RandomCodeGeneration(10);
-				AudioClip audioClip = AudioClip.Create(clipName, (int)totalSampleCount / channels, channels, sampleRate, false);
+				AudioClip audioClip = AudioClip.Create(clipName, (int)totalSamples / channels, channels, sampleRate, false);
 
 				// Set the audio data
 				if (!audioClip.SetData(samples, 0))
@@ -401,7 +401,12 @@ namespace yourvrexperience.Utils
 
 					byte[] receivedBytes = www.downloadHandler.data;
 
-					LoadSoundDataBytes(receivedBytes, eventName, id, extension);
+					try
+					{
+						LoadSoundDataBytes(receivedBytes, eventName, id, extension);
+					}
+					catch (Exception err) { }
+					
 				}
 
 				/*
