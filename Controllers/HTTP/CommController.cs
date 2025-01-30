@@ -408,7 +408,7 @@ namespace yourvrexperience.Utils
 				if (www.isNetworkError || www.isHttpError)
 				{
 					if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-					_commRequest.Response(www.error);
+					_commRequest.Response("Error::" + www.error);
 				}
 				else
 				{
