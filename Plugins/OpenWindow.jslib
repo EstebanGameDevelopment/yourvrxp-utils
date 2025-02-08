@@ -1,12 +1,7 @@
 ﻿var OpenWindowPlugin = {
     OpenInNewTab: function(link)
     {
-    	var url = Pointer_stringify(link);
-        document.onmouseup = function()
-        {
-        	window.open(url);
-        	document.onmouseup = null;
-        }
+		window.open(Pointer_stringify(link));
     },
 	OpenInSameTab: function (link) {
 		window.location = Pointer_stringify(link);

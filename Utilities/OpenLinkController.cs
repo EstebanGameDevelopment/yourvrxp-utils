@@ -15,12 +15,16 @@ namespace yourvrexperience.Utils
 		{
 #if !UNITY_EDITOR
 		OpenInNewTab(url);
+#else
+			Application.OpenURL(url);
 #endif
 		}
 		public static void OpenLinkJSPluginSameTab(string url)
 		{
 #if !UNITY_EDITOR
 		OpenInSameTab(url);
+#else
+			Application.OpenURL(url);
 #endif
 		}
 
