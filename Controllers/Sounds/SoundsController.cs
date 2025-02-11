@@ -196,13 +196,16 @@ namespace yourvrexperience.Utils
 
 		public void PlaySoundFX(string audioName, bool loop, float volume)
 		{
-			for (int i = 0; i < Sounds.Length; i++)
-			{
-				if (Sounds[i] != null)
-                {
-					if (Sounds[i].name == audioName)
+			if (volume > 0)
+            {
+				for (int i = 0; i < Sounds.Length; i++)
+				{
+					if (Sounds[i] != null)
 					{
-						PlaySoundClipFx(ChannelsAudio.FX1, Sounds[i], loop, volume);
+						if (Sounds[i].name == audioName)
+						{
+							PlaySoundClipFx(ChannelsAudio.FX1, Sounds[i], loop, volume);
+						}
 					}
 				}
 			}
