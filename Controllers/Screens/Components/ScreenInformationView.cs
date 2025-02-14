@@ -41,8 +41,9 @@ namespace yourvrexperience.Utils
 		protected string _customOutputEvent = "";
 		protected CustomInput _inputValue;
 		protected string _nameScreen;
+		protected ICheckInput _checkInput = null; 
 
-		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard)
+		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, ICheckInput checkInput = null)
 		{
 			string okText = ok;
 			if (okText.Length == 0)
@@ -58,7 +59,7 @@ namespace yourvrexperience.Utils
 #if !(ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 			shouldHidePrevious = false;
 #endif			
-			ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText, infoImage, contentType);
+			ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText, infoImage, contentType, checkInput);
 		}
 
         public override void Initialize(params object[] parameters)
@@ -74,6 +75,7 @@ namespace yourvrexperience.Utils
 			string textCancel = (string)parameters[5];
 
 			_inputValue = _content.GetComponentInChildren<CustomInput>();
+			_checkInput = null;
 			if (_inputValue != null)
 			{
 				_inputValue.OnFocusEvent += OnFocusInputValue;
@@ -82,6 +84,10 @@ namespace yourvrexperience.Utils
 				if (parameters.Length > 7)
 				{
 					_inputValue.contentType = (TMP_InputField.ContentType)parameters[7];
+				}
+				if (parameters.Length > 8)
+                {
+					_checkInput = (ICheckInput)parameters[8];
 				}
 			}
 
@@ -160,6 +166,7 @@ namespace yourvrexperience.Utils
 			{
 				_content = null;
 				_origin = null;
+				_checkInput = null;
 				bool wasInput = (_inputValue != null);
 				if (_inputValue != null)
 				{
@@ -172,10 +179,12 @@ namespace yourvrexperience.Utils
 				UIEventController.Instance.DispatchUIEvent(EventScreenInformationDestroyed, _nameScreen, wasInput);
 			}
         }
+		
 
 		private void UpdateTitle(string title)
 		{
 			Transform contentTitle = Utilities.FindNameInChildren(_content, "Title");
+
 			if (contentTitle != null)
 			{
 				if (contentTitle.GetComponent<TextMeshProUGUI>() != null)
@@ -190,6 +199,25 @@ namespace yourvrexperience.Utils
 					}
 				}
 			} 
+		}
+
+		private void UpdateFeedback(string feedback)
+		{
+			Transform contentTitle = Utilities.FindNameInChildren(_content, "Feedback");
+			if (contentTitle != null)
+			{
+				if (contentTitle.GetComponent<TextMeshProUGUI>() != null)
+				{
+					contentTitle.GetComponent<TextMeshProUGUI>().text = feedback;
+				}
+				else
+				{
+					if (contentTitle.GetComponent<Text>() != null)
+					{
+						contentTitle.GetComponent<Text>().text = feedback;
+					}
+				}
+			}			
 		}
 
 		private void UpdateDescription(string description)
@@ -244,6 +272,15 @@ namespace yourvrexperience.Utils
 			{
 				if (_inputValue != null)
 				{
+					if (_checkInput != null)
+                    {
+						int codeInput = _checkInput.IsTextValid(_inputValue.text);
+						if (codeInput > 0)
+						{
+							UpdateFeedback(_checkInput.GetMessageFeedback(codeInput));
+							return;
+						}
+					}
 					if (_customOutputEvent != null)
 					{
 						if (_customOutputEvent.Length > 0)
