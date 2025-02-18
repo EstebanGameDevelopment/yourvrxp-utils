@@ -139,7 +139,18 @@ namespace yourvrexperience.Utils
             RequestReal(_event, _headers, _isBinaryResponse, _list);
         }
 
-        public void Request(string _event, bool _isBinaryResponse, params object[] _list)
+		public void RequestPriorityHeader(string _event, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, params object[] _list)
+		{
+			if (_state != STATE_IDLE)
+			{
+				InsertRequest(_event, _headers, _isBinaryResponse, _list);
+				return;
+			}
+
+			RequestReal(_event, _headers, _isBinaryResponse, _list);
+		}
+
+		public void Request(string _event, bool _isBinaryResponse, params object[] _list)
 		{
             if (_state != STATE_IDLE)
 			{
@@ -313,6 +324,10 @@ namespace yourvrexperience.Utils
 		{
 			_priorityQueuedEvents.Insert(0, new CommEventData(_nameEvent, null, _isBinaryResponse, 0, _list));
 		}
+		public void InsertRequest(string _nameEvent, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, params object[] _list)
+		{
+			_priorityQueuedEvents.Insert(0, new CommEventData(_nameEvent, _headers, _isBinaryResponse, 0, _list));
+		}
 
 		IEnumerator WaitForRequest(WWW www)
 		{
@@ -324,7 +339,7 @@ namespace yourvrexperience.Utils
 				if (www.error == null)
 				{
 					if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
-					_commRequest.Response(www.bytes);
+					_commRequest.Response("Error::" + www.text);
 				}
 				else
 				{
@@ -350,7 +365,7 @@ namespace yourvrexperience.Utils
 				if (www.isNetworkError || www.isHttpError)
 				{
 					if (DEBUG_LOG) Debug.LogError("WWW Error: " + www.error);
-					_commRequest.Response(Encoding.ASCII.GetBytes(www.error));
+					_commRequest.Response("Error::" + www.error);
 				}
 				else
 				{
@@ -382,7 +397,7 @@ namespace yourvrexperience.Utils
 				if (www.error == null)
 				{
 					if (DEBUG_LOG) Debug.Log("WWW Ok!: " + www.text);
-					_commRequest.Response(www.text);
+					_commRequest.Response("Error::" + www.text);
 				}
 				else
 				{
