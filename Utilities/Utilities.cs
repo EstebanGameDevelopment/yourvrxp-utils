@@ -19,8 +19,7 @@ namespace yourvrexperience.Utils
 
 		public static string ScreenShotName(int width, int height)
 		{
-			return string.Format("{0}/screen{1}x{2}{3}.png",
-								 Application.persistentDataPath,
+			return string.Format("screen{0}x{1}{2}.png",
 								 width, height,
 								 System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
 		}

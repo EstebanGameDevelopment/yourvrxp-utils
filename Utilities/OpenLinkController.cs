@@ -28,10 +28,18 @@ namespace yourvrexperience.Utils
 #endif
 		}
 
+		public static void SaveScreenshotPNG(string fileName, byte[] pngBytes)
+		{
+#if !UNITY_EDITOR
+			DownloadFile(fileName, pngBytes, pngBytes.Length);
+#endif
+		}
+
 		[DllImport("__Internal")]
 		public static extern void OpenInNewTab(string url);
 		[DllImport("__Internal")]
 		public static extern void OpenInSameTab(string url);
-
+		[DllImport("__Internal")]
+		private static extern void DownloadFile(string filename, byte[] fileData, int dataLength);
 	}
 }
