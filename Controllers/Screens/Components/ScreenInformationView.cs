@@ -24,7 +24,8 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationUpdateInformation = "EventScreenInformationUpdateInformation";
 		public const string EventScreenInformationAddInformation = "EventScreenInformationAddInformation";
 		public const string EventScreenInformationSetInputText = "EventScreenInformationSetInputText";
-		public const string EventScreenInformationAddInputText = "EventScreenInformationAddInputText";		
+		public const string EventScreenInformationAddInputText = "EventScreenInformationAddInputText";
+		public const string EventScreenInformationAddTimer = "EventScreenInformationAddTimer";
 
 		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
@@ -41,7 +42,12 @@ namespace yourvrexperience.Utils
 		protected string _customOutputEvent = "";
 		protected CustomInput _inputValue;
 		protected string _nameScreen;
-		protected ICheckInput _checkInput = null; 
+		protected ICheckInput _checkInput = null;
+
+		protected bool _enableTimer = false;
+		protected string _codeXMLLanguage;
+		protected int _totalTime;
+		protected float _timeAcumSec;
 
 		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, ICheckInput checkInput = null)
 		{
@@ -321,6 +327,13 @@ namespace yourvrexperience.Utils
 
 		protected virtual void OnUIEvent(string nameEvent, object[] parameters)
 		{
+			if (nameEvent.Equals(EventScreenInformationAddTimer))
+            {
+				_enableTimer = true;
+				_codeXMLLanguage = (string)parameters[0];
+				_totalTime = (int)parameters[1];
+				_timeAcumSec = 0;
+			}
 			if (nameEvent.Equals(EventScreenInformationDestroy))
 			{
 				bool shouldDestroy = true;
@@ -378,5 +391,26 @@ namespace yourvrexperience.Utils
 			}
 #endif
 		}
+
+		void Update()
+        {
+			if (_enableTimer)
+            {
+				if (_totalTime <= 0)
+                {
+					_enableTimer = false;
+				}
+				else
+                {
+					_timeAcumSec += Time.deltaTime;
+					if (_timeAcumSec >= 1)
+					{
+						_timeAcumSec -= 1;
+						_totalTime--;
+						UpdateDescription(LanguageController.Instance.GetText(_codeXMLLanguage, _totalTime));
+					}
+				}
+			}
+        }
 	}
 }
