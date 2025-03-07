@@ -207,7 +207,7 @@ namespace yourvrexperience.Utils
 			} 
 		}
 
-		private void UpdateFeedback(string feedback)
+		protected void UpdateFeedback(string feedback)
 		{
 			Transform contentTitle = Utilities.FindNameInChildren(_content, "Feedback");
 			if (contentTitle != null)
