@@ -17,6 +17,24 @@ namespace yourvrexperience.Utils
 	{
 		public const string SeparatorBasicTypes = ";";
 
+		public static string ConvertTimestampToDate(long timestamp)
+		{
+			DateTime date = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
+			return date.ToString("MM/dd/yyyy");
+		}
+
+		public static long GetCurrentTimestamp()
+		{
+			return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+		}
+
+		public static long AddDaysToTimestamp(long timestamp, int days)
+		{
+			DateTime date = DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime;
+			date = date.AddDays(days);
+			return new DateTimeOffset(date).ToUnixTimeSeconds();
+		}
+
 		public static string ScreenShotName(int width, int height)
 		{
 			return string.Format("screen{0}x{1}{2}.png",
