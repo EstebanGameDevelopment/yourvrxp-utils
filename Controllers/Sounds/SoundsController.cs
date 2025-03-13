@@ -349,7 +349,9 @@ namespace yourvrexperience.Utils
 				}
 
 				// Use the AudioClip (e.g., assign to an AudioSource)
+#if UNITY_EDITOR
 				Debug.Log($"AudioClip {clipName} created successfully.");
+#endif
 
 				if (audioClip != null)
 				{
