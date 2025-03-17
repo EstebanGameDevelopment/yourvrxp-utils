@@ -26,7 +26,11 @@ namespace yourvrexperience.Utils
 
         public const string EVENT_COMM_GET_FILE_DATA       = "yourvrexperience.Utils.GetFileDataHTTP";
 
-        public const bool DEBUG_LOG = false;
+#if UNITY_EDITOR
+		public const bool DEBUG_LOG = true;
+#else
+		public const bool DEBUG_LOG = false;
+#endif
 
 		public const int STATE_IDLE = 0;
 		public const int STATE_COMMUNICATION = 1;
@@ -99,7 +103,7 @@ namespace yourvrexperience.Utils
         {
 #if DESTROY_MEMORY_ALLOCATED
             Destroy();
-#endif            
+#endif
         }
 
         public void Destroy()
