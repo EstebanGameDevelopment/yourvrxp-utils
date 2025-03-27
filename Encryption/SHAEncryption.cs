@@ -7,7 +7,36 @@ using System.Linq;
 namespace yourvrexperience.Utils
 {
 	public static class SHAEncryption
-	{
+	{        
+        public static string GenerateShortHash(string email, string code, int total)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                string combined = email + code;
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(combined));
+                string base64Hash = Convert.ToBase64String(hashBytes);
+
+                // Remove non-alphanumeric characters for easy typing
+                string alphanumericHash = RemoveSpecialCharacters(base64Hash);
+
+                // Return only the first total characters
+                return alphanumericHash.Substring(0, total);
+            }
+        }
+
+        static string RemoveSpecialCharacters(string input)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (char c in input)
+            {
+                if (char.IsLetterOrDigit(c)) // Only keep letters and digits
+                {
+                    result.Append(c);
+                }
+            }
+            return result.ToString();
+        }
+
         public static string HashPassword(string password, string salt)
         {
             using (var sha256 = SHA256.Create())
