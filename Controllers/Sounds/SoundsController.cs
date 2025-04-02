@@ -11,6 +11,7 @@ namespace yourvrexperience.Utils
 	public class SoundsController : MonoBehaviour
 	{
 		public const string EventSoundsControllerFadeCompleted = "EventSoundsControllerFadeCompleted";
+		public const string EventSoundsControllerErrorRemoteFormat = "EventSoundsControllerErrorRemoteFormat";
 
 		public const bool FORCE_VOLUME_ZERO = false;
 
@@ -223,19 +224,19 @@ namespace yourvrexperience.Utils
 		}
 
 
-        public void PlayRemoteBackground(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
+        public void PlayRemoteBackground(AudioType audioType, ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
         {
-            StartCoroutine(LoadAudioFromServer(audioURL, true, channel, loop, volume, is3D));
+            StartCoroutine(LoadAudioFromServer(audioType, audioURL, true, channel, loop, volume, is3D));
         }
 
-        public void PlayRemoteFX(ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
+        public void PlayRemoteFX(AudioType audioType, ChannelsAudio channel, string audioURL, bool loop, float volume, bool is3D = false)
         {
-            StartCoroutine(LoadAudioFromServer(audioURL, false, channel, loop, volume, is3D));
+            StartCoroutine(LoadAudioFromServer(audioType, audioURL, false, channel, loop, volume, is3D));
         }
 
-        private IEnumerator LoadAudioFromServer(string url, bool isBackground, ChannelsAudio channel, bool loop, float volume, bool is3D)
+        private IEnumerator LoadAudioFromServer(AudioType audioType, string url, bool isBackground, ChannelsAudio channel, bool loop, float volume, bool is3D)
         {
-            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG))
+            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, audioType))
             {
                 yield return www.SendWebRequest();
 
@@ -245,16 +246,24 @@ namespace yourvrexperience.Utils
                 }
                 else
                 {
-                    AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
-                    if (isBackground)
+					AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
+					if (audioClip.length == 0)
                     {
-                        PlaySoundClipBackground(audioClip, loop, volume, is3D);
-                    }
-                    else
+						SystemEventController.Instance.DispatchSystemEvent(EventSoundsControllerErrorRemoteFormat, url);
+					}
+					else
                     {
-                        PlaySoundClipFx(channel, audioClip, loop, volume, is3D);
-                    }                    
-                }
+
+						if (isBackground)
+						{
+							PlaySoundClipBackground(audioClip, loop, volume, is3D);
+						}
+						else
+						{
+							PlaySoundClipFx(channel, audioClip, loop, volume, is3D);
+						}
+					}
+				}
             }
         }
 
