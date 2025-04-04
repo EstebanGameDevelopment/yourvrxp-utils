@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace yourvrexperience.Utils
 {
@@ -43,7 +44,9 @@ namespace yourvrexperience.Utils
 			get { return _currentAudioMelodyPlaying; }
 		}
 
-		void Awake()
+        public object WaveFileWriter { get; private set; }
+
+        void Awake()
 		{
 			_audioSources = GetComponents<AudioSource>();
 			_audioBackground = _audioSources[(int)ChannelsAudio.Background];
@@ -384,15 +387,15 @@ namespace yourvrexperience.Utils
 		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath)
 		{
 			AudioType typeAudio = AudioType.UNKNOWN;
-			if (extension.IndexOf("mp3") != -1)
+			if ((extension.IndexOf("mp3") != -1) || (extension.IndexOf(".mp3") != -1))
 			{
 				typeAudio = AudioType.MPEG;
 			}
-			else if (extension.IndexOf("wav") != -1)
+			else if ((extension.IndexOf("wav") != -1) || (extension.IndexOf(".wav") != -1))
 			{
 				typeAudio = AudioType.WAV;
 			}
-			else if (extension.IndexOf("ogg") != -1)
+			else if ((extension.IndexOf("ogg") != -1) || (extension.IndexOf(".ogg") != -1))
 			{
 				typeAudio = AudioType.OGGVORBIS;
 			}
@@ -420,57 +423,32 @@ namespace yourvrexperience.Utils
 						LoadSoundDataBytes(receivedBytes, eventName, id, extension);
 					}
 					catch (Exception err) { }
-					
 				}
-
-				/*
-				using (var uwr = UnityWebRequestMultimedia.GetAudioClip(urlAudioPath, typeAudio))
-				{
-					var dh = (DownloadHandlerAudioClip)uwr.downloadHandler;
-					dh.compressed = false;
-					dh.streamAudio = false;
-
-					yield return uwr.SendWebRequest();
-
-					if (uwr.isNetworkError || uwr.isHttpError)
-					{
-						Debug.LogError(uwr.error);
-						yield break;
-					}
-
-					DownloadHandlerAudioClip dlHandler = (DownloadHandlerAudioClip)uwr.downloadHandler;
-
-					if (dlHandler.isDone)
-					{
-						try
-						{
-							AudioClip audioClip = dlHandler.audioClip;
-							if (audioClip != null)
-							{
-								AudioClip targetAudioClip = DownloadHandlerAudioClip.GetContent(uwr);
-								if (targetAudioClip.samples == 0)
-								{
-									SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
-								}
-								else
-								{
-									SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, targetAudioClip);
-								}
-								// Debug.LogError("AUDIO DATA::targetAudioClip["+targetAudioClip.samples+"], channels["+targetAudioClip.channels+"], frequency["+targetAudioClip.frequency+"]");
-							}
-							else
-							{
-								SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
-							}
-						}
-						catch (Exception err)
-						{
-							SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
-						}
-					}
-				}
-				*/
 			}
 		}
+
+#if UNITY_WEBGL
+		public void PlayJSAudio(string url)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			PlayJSAudioFromURL(url);
+#else
+			Debug.Log("Audio playback is only available in WebGL builds.");
+#endif
+		}
+
+		public void StopJS()
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			StopJSAudio();
+#endif
+		}
+
+		[DllImport("__Internal")]
+		private static extern void PlayJSAudioFromURL(string url);
+
+		[DllImport("__Internal")]
+		private static extern void StopJSAudio();
+#endif
 	}
 }
