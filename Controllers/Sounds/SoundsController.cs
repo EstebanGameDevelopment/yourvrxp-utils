@@ -314,17 +314,17 @@ namespace yourvrexperience.Utils
 			return clip;
 		}
 
-		public void DownloadAudioFile(string eventName, int id, string extension, string urlData)
+		public void DownloadAudioFile(string eventName, int id, string extension, string urlData, bool shouldReport)
 		{
-			StartCoroutine(LoadMusic(eventName, id, extension, urlData));
+			StartCoroutine(LoadMusic(eventName, id, extension, urlData, shouldReport));
 		}
 
-		public void LoadSoundDataBytes(byte[] receivedBytes, string eventName, int id, string extension)
+		public void LoadSoundDataBytes(byte[] receivedBytes, string eventName, int id, string extension, bool shouldReport)
 		{
-			StartCoroutine(CreateAudioclipBytes(receivedBytes, eventName, id, extension));
+			StartCoroutine(CreateAudioclipBytes(receivedBytes, eventName, id, extension, shouldReport));
 		}
 
-		public IEnumerator CreateAudioclipBytes(byte[] receivedBytes, string eventName, int id, string extension)
+		public IEnumerator CreateAudioclipBytes(byte[] receivedBytes, string eventName, int id, string extension, bool shouldReport)
         {
 			// Decode OGG data using NVorbis
 			using (var memStream = new MemoryStream(receivedBytes))
@@ -373,7 +373,7 @@ namespace yourvrexperience.Utils
 					}
 					else
 					{
-						SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, extension, audioClip);
+						SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, shouldReport, extension, audioClip);
 					}
 					// Debug.LogError("AUDIO DATA::targetAudioClip[" + audioClip.samples + "], channels[" + audioClip.channels + "], frequency[" + audioClip.frequency + "]");
 				}
@@ -384,7 +384,7 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath)
+		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath, bool shouldReport)
 		{
 			AudioType typeAudio = AudioType.UNKNOWN;
 			if ((extension.IndexOf("mp3") != -1) || (extension.IndexOf(".mp3") != -1))
@@ -420,7 +420,7 @@ namespace yourvrexperience.Utils
 
 					try
 					{
-						LoadSoundDataBytes(receivedBytes, eventName, id, extension);
+						LoadSoundDataBytes(receivedBytes, eventName, id, extension, shouldReport);
 					}
 					catch (Exception err) { }
 				}
