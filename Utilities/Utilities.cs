@@ -1168,5 +1168,28 @@ namespace yourvrexperience.Utils
 				return false;
             }
         }
+
+		public static List<int> FindPatternPositions(string text, string pattern)
+		{
+			List<int> positions = new List<int>();
+			foreach (Match match in Regex.Matches(text, Regex.Escape(pattern)))
+			{
+				positions.Add(match.Index);
+			}
+			return positions;
+		}
+
+		public static List<int> IndexPatternPositions(string text, string pattern)
+		{
+			List<int> positions = new List<int>();
+			int index = text.IndexOf(pattern);
+			while (index != -1)
+			{
+				positions.Add(index);
+				index = text.IndexOf(pattern, index + 1);
+			}
+			return positions;
+		}
+
 	}
 }
