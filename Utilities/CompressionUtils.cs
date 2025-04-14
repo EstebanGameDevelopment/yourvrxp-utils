@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using UnityEngine;
@@ -90,5 +91,25 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-    }
+		public static List<(string FileName, byte[] Content)> ReadZipFromBytes(byte[] zipData)
+		{
+			var files = new List<(string FileName, byte[] Content)>();
+
+			using (var memoryStream = new MemoryStream(zipData))
+			using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Read))
+			{
+				foreach (var entry in archive.Entries)
+				{
+					using (var entryStream = entry.Open())
+					using (var ms = new MemoryStream())
+					{
+						entryStream.CopyTo(ms);
+						files.Add((entry.FullName, ms.ToArray()));
+					}
+				}
+			}
+
+			return files;
+		}
+	}
 }
