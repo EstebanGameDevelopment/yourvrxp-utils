@@ -373,7 +373,7 @@ namespace yourvrexperience.Utils
 					}
 					else
 					{
-						SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, shouldReport, extension, audioClip);
+						SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, shouldReport, extension, audioClip, receivedBytes);
 					}
 					// Debug.LogError("AUDIO DATA::targetAudioClip[" + audioClip.samples + "], channels[" + audioClip.channels + "], frequency[" + audioClip.frequency + "]");
 				}
