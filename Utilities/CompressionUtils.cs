@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.Networking;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace yourvrexperience.Utils
 {
@@ -111,5 +112,32 @@ namespace yourvrexperience.Utils
 
 			return files;
 		}
+
+		public static List<(string FileName, byte[] Content)> ReadEncryptedZipFromBytes(byte[] zipData, string password)
+		{
+			var files = new List<(string FileName, byte[] Content)>();
+
+			using (var memoryStream = new MemoryStream(zipData))
+			using (var zipFile = new ICSharpCode.SharpZipLib.Zip.ZipFile(memoryStream))
+			{
+				if (!string.IsNullOrEmpty(password))
+					zipFile.Password = password;
+
+				foreach (ZipEntry entry in zipFile)
+				{
+					if (!entry.IsFile) continue;
+
+					using (var stream = zipFile.GetInputStream(entry))
+					using (var ms = new MemoryStream())
+					{
+						stream.CopyTo(ms);
+						files.Add((entry.Name, ms.ToArray()));
+					}
+				}
+			}
+
+			return files;
+		}
+
 	}
 }
