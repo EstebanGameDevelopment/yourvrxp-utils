@@ -1,0 +1,370 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using static SymSpell;
+
+namespace yourvrexperience.Utils
+{
+
+    public class SymSpellController : MonoBehaviour
+    {
+        public const string EventSymSpellControllerClearUnderlines = "EventSymSpellControllerClearUnderlines";
+        public const string EventSymSpellControllerUnderlineError = "EventSymSpellControllerUnderlineError";
+
+        public const string Separator = ";";
+
+        private static SymSpellController _instance;
+
+        public static SymSpellController Instance
+        {
+            get
+            {
+                if (!_instance)
+                {
+                    _instance = GameObject.FindObjectOfType(typeof(SymSpellController)) as SymSpellController;
+                }
+                return _instance;
+            }
+        }
+
+        public class WordSuggestion : IEqualityComparer<WordSuggestion>
+        {
+            public string Word;
+            public float Distance;
+
+            public WordSuggestion(string word, float distance)
+            {
+                Word = word;
+                Distance = distance;
+            }
+
+            public bool Equals(WordSuggestion x, WordSuggestion y)
+            {
+                return x.Word == y.Word;
+            }
+
+            public int GetHashCode(WordSuggestion value)
+            {
+                return value.GetHashCode();
+            }
+        }
+
+        public class WordChecked
+        {
+            public string Word;
+            public string WordOriginal;
+            public int Start;
+            public int Valid = -1;
+            public WordSuggestion[] Suggestions;
+
+            public WordChecked(string word, string wordOriginal)
+            {
+                Word = word;
+                WordOriginal = wordOriginal;
+            }
+        }
+
+        private const int MaxEditDistanceLookup = 2; //max edit distance per lookup (maxEditDistanceLookup<=maxEditDistanceDictionary)
+        private const Verbosity SuggestionVerbosity = SymSpell.Verbosity.Closest; //Top, Closest, All
+
+        [SerializeField] private TextAsset dictionaryEnglish;
+        [SerializeField] private TextAsset dictionarySpanish;
+        [SerializeField] private TextAsset dictionaryGerman;
+        [SerializeField] private TextAsset dictionaryFrench;
+        [SerializeField] private TextAsset dictionaryItalian;
+        [SerializeField] private TextAsset dictionaryRussian;
+
+        private SymSpell _symSpell;
+        private List<WordChecked> _currentWordsParagraph = new List<WordChecked>();
+        private string _currentParagraph = "";
+        private List<string> _wordsExceptions = new List<string>();
+        private int _currentNumberErrors = 0;
+
+        public void Initialize(string languageCode)
+        {
+            int initialCapacity = 82765;
+            _symSpell = new SymSpell(initialCapacity, MaxEditDistanceLookup);
+            int termIndex = 0; //column of the term in the dictionary text file
+            int countIndex = 1; //column of the term frequency in the dictionary text file
+
+            switch (languageCode)
+            {
+                case LanguageController.CodeLanguageEnglish:     
+                    _symSpell.LoadDictionary(dictionaryEnglish.bytes, termIndex, countIndex);
+                    break;
+
+                case LanguageController.CodeLanguageSpanish:
+                    _symSpell.LoadDictionary(dictionarySpanish.bytes, termIndex, countIndex);
+                    break;
+
+                case LanguageController.CodeLanguageGerman:
+                    _symSpell.LoadDictionary(dictionaryGerman.bytes, termIndex, countIndex);
+                    break;
+
+                case LanguageController.CodeLanguageFrench:
+                    _symSpell.LoadDictionary(dictionaryFrench.bytes, termIndex, countIndex);
+                    break;
+
+                case LanguageController.CodeLanguageItalian:
+                    _symSpell.LoadDictionary(dictionaryItalian.bytes, termIndex, countIndex);
+                    break;
+
+                case LanguageController.CodeLanguageRussian:
+                    _symSpell.LoadDictionary(dictionaryRussian.bytes, termIndex, countIndex);
+                    break;
+            }
+        }
+
+        public void UnpackWordExceptions(string data)
+        {
+            if ((data != null) && (data.Length > 0))
+            {
+                string[] exceptionsTemp = data.Split(Separator);
+                _wordsExceptions = new List<string>();
+                foreach (string exception in exceptionsTemp)
+                {
+                    if ((exception != null) && (exception.Length > 0))
+                    {
+                        _wordsExceptions.Add(exception);
+                    }
+                }
+            }
+        }
+
+        public string PackWordExceptions()
+        {
+            string output = "";
+            foreach(string exception in _wordsExceptions)
+            {
+                output += exception + Separator;
+            }
+            return output;
+        }
+
+        public void AddException(string wordValue)
+        {
+            string word = wordValue.ToLower();
+            if ((word != null) && (word.Length > 0))
+            {
+                if (!_wordsExceptions.Contains(word))
+                {
+                    _wordsExceptions.Add(word);
+                }
+            }
+        }
+
+        public WordSuggestion[] GetSuggestionForWord(string word)
+        {
+            string wordLower = word.ToLower();
+            foreach (WordChecked wordChecked in _currentWordsParagraph)
+            {
+                if (wordChecked.Word.Equals(wordLower))
+                {
+                    return wordChecked.Suggestions;
+                }
+            }
+            return null;
+        }
+
+        public void ReportWordErrors()
+        {
+            foreach (WordChecked wordChecked in _currentWordsParagraph)
+            {
+                if (wordChecked.Valid == 0)
+                {
+                    SystemEventController.Instance.DispatchSystemEvent(EventSymSpellControllerUnderlineError, wordChecked);
+                }
+            }
+        }
+
+        public void AnalyseText(string paragraphOrigin)
+        {
+            int newNumberErrors = 0;
+            List<WordChecked> wordsError = new List<WordChecked>();            
+            string paragraphPhase = paragraphOrigin.Replace("’", "'");
+            paragraphPhase = paragraphPhase.Replace("?", string.Empty);
+            paragraphPhase = paragraphPhase.Replace("…", string.Empty);
+            paragraphPhase = paragraphPhase.Replace("!", ".");            
+            string paragraph = Utilities.RemoveXmlTags(paragraphPhase);
+
+            if (_currentParagraph.Length > 0)
+            {
+                if (_currentParagraph.Length >= paragraph.Length)
+                {
+                    _currentWordsParagraph.Clear();
+                }
+            }
+            _currentParagraph = paragraph;
+            
+
+            if ((paragraph.IndexOf(' ') != -1) || (paragraph.IndexOf(',') != -1) || (paragraph.IndexOf('.') != -1)
+                || (paragraph.IndexOf('\"') != -1) || (paragraph.IndexOf('\n') != -1) || (paragraph.IndexOf(':') != -1)
+                || (paragraph.IndexOf('—') != -1) || (paragraph.IndexOf('-') != -1) || (paragraph.IndexOf(';') != -1))
+            {
+                string[] splittedFull = paragraph.Split(' ', ',', '.', ':', ';', '\n', '\"', '-', '—');
+                List<string> splittedListFull = splittedFull.ToList<string>();
+                splittedListFull.RemoveAt(splittedListFull.Count - 1);
+                string[] splitted = splittedListFull.ToArray();
+
+                if (_currentWordsParagraph.Count != splitted.Length)
+                {
+                    if (_currentWordsParagraph.Count > splitted.Length)
+                    {
+                        _currentWordsParagraph.Clear();
+                        for (int i = 0; i < splitted.Length; i++)
+                        {
+                            _currentWordsParagraph.Add(new WordChecked(splitted[i].ToLower(), splitted[i]));
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < splitted.Length; i++)
+                        {
+                            string wordInitial = splitted[i];
+                            if (wordInitial.Length > 1)
+                            {
+                                if (i >= _currentWordsParagraph.Count)
+                                {
+                                    _currentWordsParagraph.Add(new WordChecked(wordInitial.ToLower(), wordInitial));
+                                }
+                                else
+                                {
+                                    WordChecked wordChecked = _currentWordsParagraph[i];
+                                    if (!wordInitial.ToLower().Equals(wordChecked.Word.ToLower()))
+                                    {
+                                        wordChecked.Word = wordInitial.ToLower();
+                                        wordChecked.WordOriginal = wordInitial;
+                                        wordChecked.Valid = -1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (WordChecked word in _currentWordsParagraph)
+                    {
+                        if ((word.Word == null) || (word.Word.Length == 0))
+                        {
+                            word.Valid = 1;
+                        }
+                        else
+                        {
+                            if (word.Valid == -1)
+                            {
+                                float isNumber = 0;
+                                if (float.TryParse(word.Word, out isNumber))
+                                {
+                                    word.Valid = 1;
+                                }
+                                else
+                                {
+                                    List<SuggestItem> suggestions = _symSpell.Lookup(word.Word, SuggestionVerbosity, MaxEditDistanceLookup);
+                                    List<SuggestItem> sortedSuggestions = suggestions.OrderByDescending(item => item.distance)
+                                                                    .ThenByDescending(item => item.count)
+                                                                    .ToList();
+
+                                    bool isValid = false;
+                                    foreach (var suggestion in sortedSuggestions)
+                                    {
+                                        if (suggestion.distance == 0)
+                                        {
+                                            isValid = true;
+                                        }
+                                    }
+
+                                    if (_wordsExceptions.Contains(word.Word))
+                                    {
+                                        word.Valid = 1;
+                                    }
+                                    else
+                                    {
+                                        if (isValid)
+                                        {
+                                            word.Valid = 1;
+                                        }
+                                        else
+                                        {
+                                            word.Valid = 0;
+                                            List<WordSuggestion> suggestedWords = new List<WordSuggestion>();
+                                            List<float> suggestedDistance = new List<float>();
+                                            foreach (var suggestion in sortedSuggestions)
+                                            {
+                                                suggestedWords.Add(new WordSuggestion(suggestion.term, suggestion.distance));
+                                            }
+                                            word.Suggestions = suggestedWords.ToArray();
+                                            word.Start = paragraph.IndexOf(word.WordOriginal);
+                                            wordsError.Add(word);
+                                        }
+                                    }
+                                }
+                            }                        
+                        }
+                    }
+                }
+            }
+
+            if (wordsError.Count > 0)
+            {
+                for (int i = 0; i < wordsError.Count; i++)
+                {
+                    WordChecked wordError = wordsError[i];
+                    string word = wordError.WordOriginal;
+                    if ((word != null) && (word.Length > 0))
+                    {
+                        newNumberErrors++;
+
+                        string[] sentences = paragraph.Split(new char[] { '.', '!', '?', ';', '\n', '\"', '-', '—' }, StringSplitOptions.RemoveEmptyEntries);
+                        string sentenceContainingWord = sentences.FirstOrDefault(sentence =>
+                            sentence.Split(' ', ',', ':', ';', '\n', '\"', '-', '—').Contains(word, StringComparer.OrdinalIgnoreCase));
+
+                        if ((sentenceContainingWord != null) && (sentenceContainingWord.Length > 0))
+                        {
+                            var suggestions = _symSpell.LookupCompound(sentenceContainingWord, MaxEditDistanceLookup);
+
+                            List<WordSuggestion> finalSuggestions = new List<WordSuggestion>();
+                            foreach (var suggestion in suggestions)
+                            {
+                                // Debug.LogError(suggestion.term + " " + suggestion.distance.ToString() + " " + suggestion.count.ToString("N0"));
+                                string sentenceSuggested = suggestion.term;
+                                foreach (WordSuggestion wordSuggestion in wordError.Suggestions)
+                                {
+                                    if (sentenceSuggested.IndexOf(wordSuggestion.Word.ToLower()) != -1)
+                                    {
+                                        finalSuggestions.Add(wordSuggestion);
+                                    }
+                                }
+                            }
+
+                            foreach (WordSuggestion wordSuggestion in wordError.Suggestions)
+                            {
+                                if (!finalSuggestions.Contains(wordSuggestion))
+                                {
+                                    finalSuggestions.Add(wordSuggestion);
+                                }
+                            }
+
+                            wordError.Suggestions = finalSuggestions.ToArray<WordSuggestion>();
+
+                            /*
+                            string logSuggestions = "++SUGGESTION FOR WORD["+ wordError.WordOriginal + "]=";
+                            for (int k = 0; k < wordError.Suggestions.Length; k++)
+                            {
+                                logSuggestions += wordError.Suggestions[k].Word + ",";
+                            }
+                            Debug.LogError(logSuggestions);
+                            */
+                        }
+                    }
+                }
+            }
+            if (_currentNumberErrors != newNumberErrors)
+            {
+                _currentNumberErrors = newNumberErrors;
+                SystemEventController.Instance.DispatchSystemEvent(EventSymSpellControllerClearUnderlines);
+                ReportWordErrors();
+            }
+        }
+    }
+}
