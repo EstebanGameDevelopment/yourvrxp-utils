@@ -20,7 +20,6 @@ namespace yourvrexperience.Utils
         void Start()
         {
             textLog.text = "";
-            textInput.onValueChanged.AddListener(OnTextChanged);
             textInput.onTextSelection.AddListener(OnSelectText);
 
             SymSpellController.Instance.Initialize(LanguageController.CodeLanguageEnglish);
@@ -32,11 +31,6 @@ namespace yourvrexperience.Utils
         private void OnDestroy()
         {
             if (SystemEventController.Instance != null) SystemEventController.Instance.Event -= OnSystemEvent;
-        }
-
-        private void OnTextChanged(string paragraphOrigin)
-        {
-            SymSpellController.Instance.AnalyseText(paragraphOrigin);
         }
 
         private void OnSelectText(string value, int start, int end)
@@ -72,20 +66,22 @@ namespace yourvrexperience.Utils
                 WordChecked wordError = (WordChecked)parameters[0];
                 string currentText = textInput.text;
 
-                textInput.onValueChanged.RemoveListener(OnTextChanged);
-
-                int finalStart = currentText.IndexOf(wordError.Word, wordError.Start);
+                int finalStart = currentText.IndexOf(wordError.WordOriginal, wordError.Start);
                 string part1 = currentText.Substring(0, finalStart);
 
                 int finalEnd = finalStart + wordError.Word.Length;
                 string part2 = textInput.text.Substring(finalEnd, textInput.text.Length - finalEnd);
 
-                string totalText = part1 + "<u>" + wordError.Word + "</u>" + part2;
+                string totalText = part1 + "<u>" + wordError.WordOriginal + "</u>" + part2;
                 textInput.text = totalText;
+            }
+        }
 
-                textInput.MoveToEndOfLine(false, false);
-
-                textInput.onValueChanged.AddListener(OnTextChanged);
+        private void Update()
+        {
+            if (textInput.isFocused && Input.GetKeyDown(KeyCode.Return))
+            {
+                SymSpellController.Instance.AnalyseText(textInput.text);
             }
         }
     }

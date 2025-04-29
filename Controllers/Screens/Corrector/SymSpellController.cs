@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using yourvrexperience.aibookeditor;
 using static SymSpell;
 
 namespace yourvrexperience.Utils
@@ -56,6 +57,7 @@ namespace yourvrexperience.Utils
             public string Word;
             public string WordOriginal;
             public int Start;
+            public string SentenceWrong;
             public int Valid = -1;
             public WordSuggestion[] Suggestions;
 
@@ -117,6 +119,13 @@ namespace yourvrexperience.Utils
             }
         }
 
+        private void ClearMemory()
+        {
+            _currentWordsParagraph = new List<WordChecked>();
+            _currentParagraph = "";
+            _currentNumberErrors = 0;
+        }
+
         public void UnpackWordExceptions(string data)
         {
             if ((data != null) && (data.Length > 0))
@@ -145,14 +154,15 @@ namespace yourvrexperience.Utils
 
         public void AddException(string wordValue)
         {
-            string word = wordValue.ToLower();
-            if ((word != null) && (word.Length > 0))
+            string word = wordValue;
+            if ((word != null) && (word.Length > 1) && (word.Length < 20))
             {
                 if (!_wordsExceptions.Contains(word))
                 {
                     _wordsExceptions.Add(word);
                 }
             }
+            AIBookEditorData.Instance.CurrentStory.WordsExceptions = PackWordExceptions();
         }
 
         public WordSuggestion[] GetSuggestionForWord(string word)
@@ -179,128 +189,94 @@ namespace yourvrexperience.Utils
             }
         }
 
-        public void AnalyseText(string paragraphOrigin)
+        public void AnalyseText(string textOrigin)
         {
             int newNumberErrors = 0;
             List<WordChecked> wordsError = new List<WordChecked>();            
-            string paragraphPhase = paragraphOrigin.Replace("’", "'");
-            paragraphPhase = paragraphPhase.Replace("?", string.Empty);
-            paragraphPhase = paragraphPhase.Replace("…", string.Empty);
-            paragraphPhase = paragraphPhase.Replace("!", ".");            
-            string paragraph = Utilities.RemoveXmlTags(paragraphPhase);
+            string formattedText = textOrigin.Replace("?", string.Empty);
+            formattedText = formattedText.Replace("…", string.Empty);
+            formattedText = formattedText.Replace("!", ".");            
+            string paragraph = Utilities.RemoveXmlTags(formattedText);
 
-            if (_currentParagraph.Length > 0)
-            {
-                if (_currentParagraph.Length >= paragraph.Length)
-                {
-                    _currentWordsParagraph.Clear();
-                }
-            }
-            _currentParagraph = paragraph;
-            
+            ClearMemory();
 
             if ((paragraph.IndexOf(' ') != -1) || (paragraph.IndexOf(',') != -1) || (paragraph.IndexOf('.') != -1)
                 || (paragraph.IndexOf('\"') != -1) || (paragraph.IndexOf('\n') != -1) || (paragraph.IndexOf(':') != -1)
-                || (paragraph.IndexOf('—') != -1) || (paragraph.IndexOf('-') != -1) || (paragraph.IndexOf(';') != -1))
+                || (paragraph.IndexOf('—') != -1) || (paragraph.IndexOf('-') != -1) || (paragraph.IndexOf(';') != -1)
+                || (paragraph.IndexOf('%') != -1) || (paragraph.IndexOf(')') != -1) || (paragraph.IndexOf('(') != -1))
             {
-                string[] splittedFull = paragraph.Split(' ', ',', '.', ':', ';', '\n', '\"', '-', '—');
+                string[] splittedFull = paragraph.Split(' ', ',', '.', ':', ';', '\n', '\"', '-', '—', '%', '(', ')');
                 List<string> splittedListFull = splittedFull.ToList<string>();
                 splittedListFull.RemoveAt(splittedListFull.Count - 1);
                 string[] splitted = splittedListFull.ToArray();
 
-                if (_currentWordsParagraph.Count != splitted.Length)
+                for (int i = 0; i < splitted.Length; i++)
                 {
-                    if (_currentWordsParagraph.Count > splitted.Length)
+                    string sword = splitted[i];
+                    sword = sword.Replace("’", "'");
+                    _currentWordsParagraph.Add(new WordChecked(sword.ToLower(), splitted[i]));
+                }
+
+                int characterCounter = 0;
+                foreach (WordChecked word in _currentWordsParagraph)
+                {
+                    if ((word.Word == null) || (word.Word.Length == 0))
                     {
-                        _currentWordsParagraph.Clear();
-                        for (int i = 0; i < splitted.Length; i++)
-                        {
-                            _currentWordsParagraph.Add(new WordChecked(splitted[i].ToLower(), splitted[i]));
-                        }
+                        word.Valid = 1;
                     }
                     else
                     {
-                        for (int i = 0; i < splitted.Length; i++)
+                        characterCounter += word.Word.Length + 1;
+
+                        if (word.Valid == -1)
                         {
-                            string wordInitial = splitted[i];
-                            if (wordInitial.Length > 1)
+                            float isNumber = 0;
+                            if (float.TryParse(word.Word, out isNumber))
                             {
-                                if (i >= _currentWordsParagraph.Count)
+                                word.Valid = 1;
+                            }
+                            else
+                            {
+                                List<SuggestItem> suggestions = _symSpell.Lookup(word.Word, SuggestionVerbosity, MaxEditDistanceLookup);
+                                List<SuggestItem> sortedSuggestions = suggestions.OrderByDescending(item => item.distance)
+                                                                .ThenByDescending(item => item.count)
+                                                                .ToList();
+
+                                bool isValid = false;
+                                foreach (var suggestion in sortedSuggestions)
                                 {
-                                    _currentWordsParagraph.Add(new WordChecked(wordInitial.ToLower(), wordInitial));
-                                }
-                                else
-                                {
-                                    WordChecked wordChecked = _currentWordsParagraph[i];
-                                    if (!wordInitial.ToLower().Equals(wordChecked.Word.ToLower()))
+                                    if (suggestion.distance == 0)
                                     {
-                                        wordChecked.Word = wordInitial.ToLower();
-                                        wordChecked.WordOriginal = wordInitial;
-                                        wordChecked.Valid = -1;
+                                        isValid = true;
                                     }
                                 }
-                            }
-                        }
-                    }
 
-                    foreach (WordChecked word in _currentWordsParagraph)
-                    {
-                        if ((word.Word == null) || (word.Word.Length == 0))
-                        {
-                            word.Valid = 1;
-                        }
-                        else
-                        {
-                            if (word.Valid == -1)
-                            {
-                                float isNumber = 0;
-                                if (float.TryParse(word.Word, out isNumber))
+                                if (_wordsExceptions.Contains(word.WordOriginal))
                                 {
                                     word.Valid = 1;
                                 }
                                 else
                                 {
-                                    List<SuggestItem> suggestions = _symSpell.Lookup(word.Word, SuggestionVerbosity, MaxEditDistanceLookup);
-                                    List<SuggestItem> sortedSuggestions = suggestions.OrderByDescending(item => item.distance)
-                                                                    .ThenByDescending(item => item.count)
-                                                                    .ToList();
-
-                                    bool isValid = false;
-                                    foreach (var suggestion in sortedSuggestions)
-                                    {
-                                        if (suggestion.distance == 0)
-                                        {
-                                            isValid = true;
-                                        }
-                                    }
-
-                                    if (_wordsExceptions.Contains(word.Word))
+                                    if (isValid)
                                     {
                                         word.Valid = 1;
                                     }
                                     else
                                     {
-                                        if (isValid)
+                                        word.Valid = 0;
+                                        List<WordSuggestion> suggestedWords = new List<WordSuggestion>();
+                                        List<float> suggestedDistance = new List<float>();
+                                        foreach (var suggestion in sortedSuggestions)
                                         {
-                                            word.Valid = 1;
+                                            suggestedWords.Add(new WordSuggestion(suggestion.term, suggestion.distance));
                                         }
-                                        else
-                                        {
-                                            word.Valid = 0;
-                                            List<WordSuggestion> suggestedWords = new List<WordSuggestion>();
-                                            List<float> suggestedDistance = new List<float>();
-                                            foreach (var suggestion in sortedSuggestions)
-                                            {
-                                                suggestedWords.Add(new WordSuggestion(suggestion.term, suggestion.distance));
-                                            }
-                                            word.Suggestions = suggestedWords.ToArray();
-                                            word.Start = paragraph.IndexOf(word.WordOriginal);
-                                            wordsError.Add(word);
-                                        }
+                                        word.Suggestions = suggestedWords.ToArray();
+                                        word.Start = paragraph.IndexOf(word.WordOriginal, characterCounter - word.WordOriginal.Length);
+                                        wordsError.Add(word);
                                     }
                                 }
-                            }                        
-                        }
+                            }
+                        }                        
                     }
                 }
             }
@@ -315,9 +291,9 @@ namespace yourvrexperience.Utils
                     {
                         newNumberErrors++;
 
-                        string[] sentences = paragraph.Split(new char[] { '.', '!', '?', ';', '\n', '\"', '-', '—' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] sentences = paragraph.Split(new char[] { '.', '!', '?', ';', '\n', '\"', '-', '—', '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
                         string sentenceContainingWord = sentences.FirstOrDefault(sentence =>
-                            sentence.Split(' ', ',', ':', ';', '\n', '\"', '-', '—').Contains(word, StringComparer.OrdinalIgnoreCase));
+                            sentence.Split(' ', ',', ':', ';', '\n', '\"', '-', '—', '(', ')').Contains(word, StringComparer.OrdinalIgnoreCase));
 
                         if ((sentenceContainingWord != null) && (sentenceContainingWord.Length > 0))
                         {
@@ -346,6 +322,7 @@ namespace yourvrexperience.Utils
                             }
 
                             wordError.Suggestions = finalSuggestions.ToArray<WordSuggestion>();
+                            wordError.SentenceWrong = sentenceContainingWord.ToLower().Trim();
 
                             /*
                             string logSuggestions = "++SUGGESTION FOR WORD["+ wordError.WordOriginal + "]=";
@@ -359,10 +336,10 @@ namespace yourvrexperience.Utils
                     }
                 }
             }
+            SystemEventController.Instance.DispatchSystemEvent(EventSymSpellControllerClearUnderlines);
             if (_currentNumberErrors != newNumberErrors)
             {
                 _currentNumberErrors = newNumberErrors;
-                SystemEventController.Instance.DispatchSystemEvent(EventSymSpellControllerClearUnderlines);
                 ReportWordErrors();
             }
         }
