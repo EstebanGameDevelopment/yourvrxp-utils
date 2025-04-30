@@ -203,9 +203,10 @@ namespace yourvrexperience.Utils
             if ((paragraph.IndexOf(' ') != -1) || (paragraph.IndexOf(',') != -1) || (paragraph.IndexOf('.') != -1)
                 || (paragraph.IndexOf('\"') != -1) || (paragraph.IndexOf('\n') != -1) || (paragraph.IndexOf(':') != -1)
                 || (paragraph.IndexOf('—') != -1) || (paragraph.IndexOf('-') != -1) || (paragraph.IndexOf(';') != -1)
-                || (paragraph.IndexOf('%') != -1) || (paragraph.IndexOf(')') != -1) || (paragraph.IndexOf('(') != -1))
+                || (paragraph.IndexOf('%') != -1) || (paragraph.IndexOf(')') != -1) || (paragraph.IndexOf('(') != -1)
+                || (paragraph.IndexOf('_') != -1))
             {
-                string[] splittedFull = paragraph.Split(' ', ',', '.', ':', ';', '\n', '\"', '-', '—', '%', '(', ')');
+                string[] splittedFull = paragraph.Split(' ', ',', '.', ':', ';', '\n', '\"', '-', '—', '%', '(', ')', '_');
                 List<string> splittedListFull = splittedFull.ToList<string>();
                 splittedListFull.RemoveAt(splittedListFull.Count - 1);
                 string[] splitted = splittedListFull.ToArray();
@@ -291,9 +292,9 @@ namespace yourvrexperience.Utils
                     {
                         newNumberErrors++;
 
-                        string[] sentences = paragraph.Split(new char[] { '.', '!', '?', ';', '\n', '\"', '-', '—', '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] sentences = paragraph.Split(new char[] { '.', '!', '?', ';', '\n', '\"', '-', '—', '(', ')', '_' }, StringSplitOptions.RemoveEmptyEntries);
                         string sentenceContainingWord = sentences.FirstOrDefault(sentence =>
-                            sentence.Split(' ', ',', ':', ';', '\n', '\"', '-', '—', '(', ')').Contains(word, StringComparer.OrdinalIgnoreCase));
+                            sentence.Split(' ', ',', ':', ';', '\n', '\"', '-', '—', '(', ')', '_').Contains(word, StringComparer.OrdinalIgnoreCase));
 
                         if ((sentenceContainingWord != null) && (sentenceContainingWord.Length > 0))
                         {
