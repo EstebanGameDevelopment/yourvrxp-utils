@@ -193,7 +193,9 @@ namespace yourvrexperience.Utils
         {
             int newNumberErrors = 0;
             List<WordChecked> wordsError = new List<WordChecked>();            
-            string formattedText = textOrigin.Replace("?", string.Empty);
+            string formattedText = textOrigin.Replace("?", ".");
+            formattedText = formattedText.Replace("¿", string.Empty);
+            formattedText = formattedText.Replace("¡", string.Empty);
             formattedText = formattedText.Replace("…", string.Empty);
             formattedText = formattedText.Replace("!", ".");            
             string paragraph = Utilities.RemoveXmlTags(formattedText);
