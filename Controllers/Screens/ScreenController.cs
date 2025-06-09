@@ -52,6 +52,7 @@ namespace yourvrexperience.Utils
             }
         }
 
+		[SerializeField] private LanguageController languageData;
 		[SerializeField] private float distanceScreen = 1.2f;
 		[SerializeField] private float sizeVRScreen = 0.002f;
 		[SerializeField] private float scaleFactor = 0.5f;
@@ -115,6 +116,8 @@ namespace yourvrexperience.Utils
 				
 				SystemEventController.Instance.Event += OnSystemEvent;
 				UIEventController.Instance.Event += OnUIEvent;
+
+				languageData.Initialize();
 				
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 				VRInputController.Instance.Event += OnVREvent;
