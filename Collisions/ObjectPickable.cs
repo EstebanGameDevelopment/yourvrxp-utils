@@ -111,7 +111,11 @@ namespace yourvrexperience.Utils
 
        	public void ResetForces()
         {
+#if UNITY_6000_0_OR_NEWER
 			_rigidBody.linearVelocity = Vector3.zero;
+#else
+			_rigidBody.velocity = Vector3.zero;
+#endif
 			_rigidBody.angularVelocity = Vector3.zero;
         }
  
@@ -231,14 +235,14 @@ namespace yourvrexperience.Utils
 			{
 				if (_isGrabbed)
 				{
-	#if ENABLE_ULTIMATEXR
+#if ENABLE_ULTIMATEXR
 					if (!_grabbableObject.IsBeingGrabbed)
 					{
 						MoveToPosition();
 					}
-	#else
+#else
 					MoveToPosition();
-	#endif
+#endif
 				}
 			}
         }
