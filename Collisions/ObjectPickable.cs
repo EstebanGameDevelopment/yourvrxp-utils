@@ -111,7 +111,7 @@ namespace yourvrexperience.Utils
 
        	public void ResetForces()
         {
-			_rigidBody.velocity = Vector3.zero;
+			_rigidBody.linearVelocity = Vector3.zero;
 			_rigidBody.angularVelocity = Vector3.zero;
         }
  

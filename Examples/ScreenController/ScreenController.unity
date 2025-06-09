@@ -474,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c41dd7964f9df41bd4173390834ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AssetBundleURL: https://www.yourvrexperience.com/mygames/yourvrxrframework/yourvrxrframework
+  AssetBundleURL: https://www.yourvrexperience.com/apps/examples/yourvrxrframework
   AssetBundleVersion: 1
 --- !u!1 &1410056574
 GameObject:
