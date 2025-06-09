@@ -12,6 +12,7 @@ namespace yourvrexperience.Utils
     {
         public const string EventSymSpellControllerClearUnderlines = "EventSymSpellControllerClearUnderlines";
         public const string EventSymSpellControllerUnderlineError = "EventSymSpellControllerUnderlineError";
+        public const string EventSymSpellControllerPackWordExceptions = "EventSymSpellControllerPackWordExceptions";
 
         public const string Separator = ";";
 
@@ -161,7 +162,7 @@ namespace yourvrexperience.Utils
                     _wordsExceptions.Add(word);
                 }
             }
-            AIBookEditorData.Instance.CurrentStory.WordsExceptions = PackWordExceptions();
+            SystemEventController.Instance.DispatchSystemEvent(EventSymSpellControllerPackWordExceptions, PackWordExceptions());
         }
 
         public WordSuggestion[] GetSuggestionForWord(string word)
