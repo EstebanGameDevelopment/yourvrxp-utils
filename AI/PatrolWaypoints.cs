@@ -296,7 +296,7 @@ namespace yourvrexperience.Utils
                                 _activatedNavigation = false;
                                 if (_navigationComponent.enabled)
                                 {
-                                    Utilities.ActivatePhysics(this.gameObject, false);
+                                    yourvrexperience.Utils.Utilities.ActivatePhysics(this.gameObject, false);
                                     _navigationComponent.isStopped = true;
                                     _navigationComponent.enabled = false;
                                 }
@@ -318,7 +318,7 @@ namespace yourvrexperience.Utils
 
                 case WaypointActions.GoToWaypoint:
                     DispatchMovingEvent();
-                    Utilities.ActivatePhysics(this.gameObject, true);
+                    yourvrexperience.Utils.Utilities.ActivatePhysics(this.gameObject, true);
                     break;
 
                 case WaypointActions.StayInWaypoint:
@@ -328,13 +328,13 @@ namespace yourvrexperience.Utils
                     {
                         _rotateComponent.DeactivateRotation();
                     }
-                    Utilities.ActivatePhysics(this.gameObject, true);
+                    yourvrexperience.Utils.Utilities.ActivatePhysics(this.gameObject, true);
                     break;
 
                 case WaypointActions.LookToWaypoint:
                     _currenAnchorPoint = this.transform.position;
                     DispatchStandingEvent();
-                    Utilities.ActivatePhysics(this.gameObject, true);
+                    yourvrexperience.Utils.Utilities.ActivatePhysics(this.gameObject, true);
                     break;
             }
         }
@@ -363,7 +363,7 @@ namespace yourvrexperience.Utils
                     {
                         if (_navigationComponent.enabled)
                         {
-                            Utilities.ActivatePhysics(this.gameObject, false);
+                            yourvrexperience.Utils.Utilities.ActivatePhysics(this.gameObject, false);
                             _navigationComponent.isStopped = true;
                             _navigationComponent.enabled = false;
                         }

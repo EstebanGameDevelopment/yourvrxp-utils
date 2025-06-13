@@ -198,7 +198,7 @@ namespace yourvrexperience.Utils
             formattedText = formattedText.Replace("¡", string.Empty);
             formattedText = formattedText.Replace("…", string.Empty);
             formattedText = formattedText.Replace("!", ".");            
-            string paragraph = Utilities.RemoveXmlTags(formattedText);
+            string paragraph = yourvrexperience.Utils.Utilities.RemoveXmlTags(formattedText);
 
             ClearMemory();
 

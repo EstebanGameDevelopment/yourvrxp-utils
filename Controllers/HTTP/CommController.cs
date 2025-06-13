@@ -195,8 +195,8 @@ namespace yourvrexperience.Utils
 			string data = _commRequest.Build(_list);
 			if (DEBUG_LOG)
 			{
-                Utilities.DebugLogColor("CommController::RequestReal:URL=" + _commRequest.UrlRequest, Color.red);
-                Utilities.DebugLogColor("CommController::RequestReal:data=" + data, Color.red);
+                yourvrexperience.Utils.Utilities.DebugLogColor("CommController::RequestReal:URL=" + _commRequest.UrlRequest, Color.red);
+                yourvrexperience.Utils.Utilities.DebugLogColor("CommController::RequestReal:data=" + data, Color.red);
 			}
 			UnityWebRequest www;
 			switch (_commRequest.Method)
@@ -353,7 +353,7 @@ namespace yourvrexperience.Utils
 			}
 			catch (Exception err)
 			{
-				if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForRequest::stacktrace=" + err.StackTrace, Color.red);
+				if (DEBUG_LOG) yourvrexperience.Utils.Utilities.DebugLogColor("CommController::WaitForRequest::stacktrace=" + err.StackTrace, Color.red);
 			}
 
 			ChangeState(STATE_IDLE);
@@ -379,7 +379,7 @@ namespace yourvrexperience.Utils
 			}
 			catch (Exception err)
 			{
-				if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebRequest::stacktrace=" + err.StackTrace, Color.red);
+				if (DEBUG_LOG) yourvrexperience.Utils.Utilities.DebugLogColor("CommController::WaitForUnityWebRequest::stacktrace=" + err.StackTrace, Color.red);
 			}
 
 			if (_currentWWW == www)
@@ -411,7 +411,7 @@ namespace yourvrexperience.Utils
 			}
 			catch (Exception err)
 			{
-				if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForStringRequest::stacktrace=" + err.StackTrace, Color.red);
+				if (DEBUG_LOG) yourvrexperience.Utils.Utilities.DebugLogColor("CommController::WaitForStringRequest::stacktrace=" + err.StackTrace, Color.red);
 			}
 
 			ChangeState(STATE_IDLE);
@@ -437,7 +437,7 @@ namespace yourvrexperience.Utils
 			}
 			catch (Exception err)
 			{
-				if (DEBUG_LOG) Utilities.DebugLogColor("CommController::WaitForUnityWebStringRequest::stacktrace=" + err.StackTrace, Color.red);
+				if (DEBUG_LOG) yourvrexperience.Utils.Utilities.DebugLogColor("CommController::WaitForUnityWebStringRequest::stacktrace=" + err.StackTrace, Color.red);
 			}
 
 			if (_currentWWW == www)

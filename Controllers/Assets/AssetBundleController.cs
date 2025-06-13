@@ -191,7 +191,7 @@ namespace yourvrexperience.Utils
         public Object GetObject(string name)
         {
 #if UNITY_EDITOR
-            Utilities.DebugLogColor("AssetbundleController::CreateGameObject::_name=" + name, Color.red);
+            yourvrexperience.Utils.Utilities.DebugLogColor("AssetbundleController::CreateGameObject::_name=" + name, Color.red);
 #endif
             if (_assetBundle.Count == 0) return null;
 
@@ -212,7 +212,7 @@ namespace yourvrexperience.Utils
         public GameObject CreateGameObject(string name)
         {
 #if UNITY_EDITOR
-            Utilities.DebugLogColor("AssetbundleController::CreateGameObject::_name=" + name, Color.red);
+            yourvrexperience.Utils.Utilities.DebugLogColor("AssetbundleController::CreateGameObject::_name=" + name, Color.red);
 #endif
             if (_assetBundle.Count == 0) return null;
 
@@ -226,7 +226,7 @@ namespace yourvrexperience.Utils
                     }
                     GameObject newObject = Instantiate(_loadedObjects[name]) as GameObject;
 #if UNITY_EDITOR
-                    Utilities.ResetMaterials(newObject);
+                    yourvrexperience.Utils.Utilities.ResetMaterials(newObject);
 #endif
                     return newObject;
                 }
@@ -237,7 +237,7 @@ namespace yourvrexperience.Utils
         public Sprite CreateSprite(string name)
         {
 #if UNITY_EDITOR
-            Utilities.DebugLogColor("AssetbundleController::CreateSprite::_name=" + name, Color.red);
+            yourvrexperience.Utils.Utilities.DebugLogColor("AssetbundleController::CreateSprite::_name=" + name, Color.red);
 #endif
             if (_assetBundle.Count == 0) return null;
 
@@ -258,7 +258,7 @@ namespace yourvrexperience.Utils
         public Texture2D CreateTexture(string name)
         {
 #if UNITY_EDITOR
-            Utilities.DebugLogColor("AssetbundleController::CreateTexture::_name=" + name, Color.red);
+            yourvrexperience.Utils.Utilities.DebugLogColor("AssetbundleController::CreateTexture::_name=" + name, Color.red);
 #endif
             if (_assetBundle.Count == 0) return null;
 
@@ -280,7 +280,7 @@ namespace yourvrexperience.Utils
         public Material CreateMaterial(string name)
         {
 #if UNITY_EDITOR
-            Utilities.DebugLogColor("AssetbundleController::CreateMaterial::_name=" + name, Color.red);
+            yourvrexperience.Utils.Utilities.DebugLogColor("AssetbundleController::CreateMaterial::_name=" + name, Color.red);
 #endif
             if (_assetBundle.Count == 0) return null;
 

@@ -53,14 +53,14 @@ namespace yourvrexperience.Utils
 			{
 				Position = Target.transform.position;
 			}			
-			return (int)Action + SeparatorWaypoint + Utilities.SerializeVector3(Position) + SeparatorWaypoint + Duration;
+			return (int)Action + SeparatorWaypoint + yourvrexperience.Utils.Utilities.SerializeVector3(Position) + SeparatorWaypoint + Duration;
 		}
 
 		public void UnPack(string data)
 		{
 			string[] dataArray = data.Split(new String[]{SeparatorWaypoint}, data.Length, StringSplitOptions.None);
 			Action = (ActionsPatrol)int.Parse(dataArray[0]);
-			Position = Utilities.DeserializeVector3(dataArray[1]);
+			Position = yourvrexperience.Utils.Utilities.DeserializeVector3(dataArray[1]);
 			Duration = float.Parse(dataArray[2]);
 		}
 

@@ -8,7 +8,7 @@ namespace yourvrexperience.Utils
     {
         void Start()
         {
-            Utilities.ApplyZTestTop(this.transform);
+            yourvrexperience.Utils.Utilities.ApplyZTestTop(this.transform);
         }
     }
 }

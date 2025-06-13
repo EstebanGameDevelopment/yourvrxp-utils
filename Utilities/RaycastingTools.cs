@@ -275,7 +275,7 @@ namespace yourvrexperience.Utils
 						{
 							if (debugMessage.Length > 0)
 							{
-								Debug.Log("<color=red>"+ debugMessage + " " + Utilities.GetFullPathNameGO(collidedThing)  + "</color>");
+								Debug.Log("<color=red>"+ debugMessage + " " + yourvrexperience.Utils.Utilities.GetFullPathNameGO(collidedThing)  + "</color>");
 							}
 							Vector3 collidedPoint = rayHit.point;
 							if (debugSphere)

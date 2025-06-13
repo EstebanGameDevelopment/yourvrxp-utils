@@ -65,7 +65,7 @@ namespace yourvrexperience.Utils
             if (nameEvent.Equals(EventBaseScreenViewEnableInteraction))
 			{				
 				bool interactivity = (bool)parameters[0];
-				Utilities.ApplyEnabledInteraction(this.gameObject.transform, interactivity);
+				yourvrexperience.Utils.Utilities.ApplyEnabledInteraction(this.gameObject.transform, interactivity);
 			}
         }
     }

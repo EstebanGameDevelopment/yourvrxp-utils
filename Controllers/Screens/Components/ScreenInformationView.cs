@@ -30,6 +30,7 @@ namespace yourvrexperience.Utils
 		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
 		public const string ScreenConfirmation = "ScreenConfirmation";
+		public const string ScreenConfirmationTop = "ScreenConfirmationTop";
 		public const string ScreenConfirmationBig = "ScreenConfirmationBig";
 		public const string ScreenInformationImage = "ScreenInformation";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
@@ -97,7 +98,7 @@ namespace yourvrexperience.Utils
 				}
 			}
 
-			Transform contentImage = Utilities.FindNameInChildren(_content, "Image");
+			Transform contentImage = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "Image");
 			if (contentImage != null)
 			{
 				Image imageScreen = contentImage.GetComponent<Image>();
@@ -110,7 +111,7 @@ namespace yourvrexperience.Utils
 				}				
 			}
 
-			Transform contentButtonOk = Utilities.FindNameInChildren(_content, "ButtonOk");
+			Transform contentButtonOk = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "ButtonOk");
             if (contentButtonOk != null)
             {
                 contentButtonOk.GetComponent<Button>().onClick.AddListener(OnConfirmation);
@@ -126,7 +127,7 @@ namespace yourvrexperience.Utils
 					}
 				}
             }
-			Transform contentButtonDeny = Utilities.FindNameInChildren(_content, "ButtonDeny");
+			Transform contentButtonDeny = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "ButtonDeny");
             if (contentButtonDeny != null)
             {
                 contentButtonDeny.GetComponent<Button>().onClick.AddListener(OnCancel);
@@ -142,7 +143,7 @@ namespace yourvrexperience.Utils
 					}
 				}
             }
-			Transform contentButtonCancel = Utilities.FindNameInChildren(_content, "ButtonCancel");
+			Transform contentButtonCancel = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "ButtonCancel");
             if (contentButtonCancel != null)
             {
                 contentButtonCancel.GetComponent<Button>().onClick.AddListener(OnCancel);
@@ -189,7 +190,7 @@ namespace yourvrexperience.Utils
 
 		private void UpdateTitle(string title)
 		{
-			Transform contentTitle = Utilities.FindNameInChildren(_content, "Title");
+			Transform contentTitle = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "Title");
 
 			if (contentTitle != null)
 			{
@@ -209,7 +210,7 @@ namespace yourvrexperience.Utils
 
 		protected void UpdateFeedback(string feedback)
 		{
-			Transform contentTitle = Utilities.FindNameInChildren(_content, "Feedback");
+			Transform contentTitle = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "Feedback");
 			if (contentTitle != null)
 			{
 				if (contentTitle.GetComponent<TextMeshProUGUI>() != null)
@@ -228,7 +229,7 @@ namespace yourvrexperience.Utils
 
 		private void UpdateDescription(string description)
 		{
-			Transform contentDescription = Utilities.FindNameInChildren(_content, "Description");
+			Transform contentDescription = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "Description");
 			if (contentDescription != null)
 			{
 				if (contentDescription.GetComponent<TextMeshProUGUI>() != null)
@@ -247,7 +248,7 @@ namespace yourvrexperience.Utils
 
 		private void AddToDescription(string description)
 		{
-			Transform contentDescription = Utilities.FindNameInChildren(_content, "Description");
+			Transform contentDescription = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "Description");
 			if (contentDescription != null)
 			{
 				if (contentDescription.GetComponent<TextMeshProUGUI>() != null)

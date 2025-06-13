@@ -406,7 +406,7 @@ namespace yourvrexperience.Utils
 			newScreen.GetComponent<CanvasScaler>().scaleFactor = scaleFactor;			
 			newScreen.GetComponent<RectTransform>().sizeDelta = new Vector2(withVRScreen, heightVRScreen);
 #if !ENABLE_NREAL
-			Utilities.ApplyZTestTop(newScreen.transform);
+			yourvrexperience.Utils.Utilities.ApplyZTestTop(newScreen.transform);
 #endif			
 #if ENABLE_OCULUS
 			newScreen.AddComponent<OVRRaycaster>();

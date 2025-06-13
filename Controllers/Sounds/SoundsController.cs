@@ -308,7 +308,7 @@ namespace yourvrexperience.Utils
 
 		public AudioClip CreateFromBytes(string name, byte[] data, int channels = 1, int frequency = 48000)
 		{
-			float[] samples = Utilities.ConvertByteToFloat(data);
+			float[] samples = yourvrexperience.Utils.Utilities.ConvertByteToFloat(data);
 			var clip = AudioClip.Create(name, samples.Length, channels, frequency, false);
 			clip.SetData(samples, 0);
 			return clip;
@@ -350,7 +350,7 @@ namespace yourvrexperience.Utils
 				int totalSamples = samples.Length;
 
 				// Create an AudioClip
-				string clipName = "Audio_" + Utilities.RandomCodeGeneration(10);
+				string clipName = "Audio_" + yourvrexperience.Utils.Utilities.RandomCodeGeneration(10);
 				AudioClip audioClip = AudioClip.Create(clipName, (int)totalSamples / channels, channels, sampleRate, false);
 
 				// Set the audio data

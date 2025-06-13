@@ -52,7 +52,7 @@ namespace yourvrexperience.Utils
 			};
 
 			byte[] key = Encoding.ASCII.GetBytes(_key);
-			string ivGenerated = Utilities.RandomCodeIV(32);
+			string ivGenerated = yourvrexperience.Utils.Utilities.RandomCodeIV(32);
 			byte[] IV = Encoding.ASCII.GetBytes(ivGenerated);
 			var encryptor = myRijndael.CreateEncryptor(key, IV);
 

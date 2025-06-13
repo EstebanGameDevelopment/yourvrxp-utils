@@ -24,7 +24,7 @@ namespace yourvrexperience.Utils
                 _totalTime = 0;
             }
             _timeAcum = 0;
-            Text.text = LanguageController.Instance.GetText("text.time") + " " + Utilities.GetFormattedTimeMinutes(_totalTime);
+            Text.text = LanguageController.Instance.GetText("text.time") + " " + yourvrexperience.Utils.Utilities.GetFormattedTimeMinutes(_totalTime);
         }
 
         public void Deactivate()
@@ -41,7 +41,7 @@ namespace yourvrexperience.Utils
                 {
                     _timeAcum -= 1;
                     _totalTime += 1;
-                    Text.text = LanguageController.Instance.GetText("text.time") + " " + Utilities.GetFormattedTimeMinutes(_totalTime);
+                    Text.text = LanguageController.Instance.GetText("text.time") + " " + yourvrexperience.Utils.Utilities.GetFormattedTimeMinutes(_totalTime);
                 }
             }
         }

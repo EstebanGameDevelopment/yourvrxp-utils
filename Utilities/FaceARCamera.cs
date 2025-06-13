@@ -19,11 +19,11 @@ namespace yourvrexperience.Utils
             Vector3 toCamera = Camera.main.transform.position - transform.position;
 			if (FaceNormalAxis)
 			{
-				this.transform.localRotation = Quaternion.Euler(new Vector3(0,Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.z)),0));
+				this.transform.localRotation = Quaternion.Euler(new Vector3(0,yourvrexperience.Utils.Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.z)),0));
 			}
 			else
 			{
-				this.transform.localRotation = Quaternion.Euler(new Vector3(0,Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.y)),0));
+				this.transform.localRotation = Quaternion.Euler(new Vector3(0,yourvrexperience.Utils.Utilities.GetAngleFromNormal(new Vector2(toCamera.x, toCamera.y)),0));
 			}
         }
     }

@@ -53,7 +53,7 @@ namespace yourvrexperience.Utils
 			_fromColor = _material.color;
 			_toColor = _material.color;
 
-			Utilities.ReverseNormals(gameObject);
+			yourvrexperience.Utils.Utilities.ReverseNormals(gameObject);
 		}
 
 		void Start()

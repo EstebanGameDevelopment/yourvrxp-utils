@@ -193,7 +193,7 @@ namespace yourvrexperience.Utils
 						GameObject newSlot;
 						if (_slotPrefab != null)
 						{
-							newSlot = Utilities.AddChild(_content.transform, _slotPrefab);
+							newSlot = yourvrexperience.Utils.Utilities.AddChild(_content.transform, _slotPrefab);
 						}
 						else
 						{
@@ -249,7 +249,7 @@ namespace yourvrexperience.Utils
 					GameObject newSlot;
 					if (_slotPrefab != null)
 					{
-						newSlot = Utilities.AddChild(_content.transform, _slotPrefab);
+						newSlot = yourvrexperience.Utils.Utilities.AddChild(_content.transform, _slotPrefab);
 					}
 					else
 					{
@@ -264,7 +264,7 @@ namespace yourvrexperience.Utils
 			{
 				if ((_currentPage + 1) * _itemsEachPage >= _data.Count)
 				{
-					GameObject newSlot = Utilities.AddChild(_content.transform, _createNewPrefab);
+					GameObject newSlot = yourvrexperience.Utils.Utilities.AddChild(_content.transform, _createNewPrefab);
 					newSlot.GetComponent<ISlotView>().Initialize();
 					_gameObjects.Add(newSlot);
 				}
@@ -287,7 +287,7 @@ namespace yourvrexperience.Utils
 			_data.Add(item);
 			_itemsEachPage++;
 			_totalPages = 1;
-			GameObject newSlot = Utilities.AddChild(_content.transform, _slotPrefab);
+			GameObject newSlot = yourvrexperience.Utils.Utilities.AddChild(_content.transform, _slotPrefab);
 			newSlot.GetComponent<ISlotView>().Initialize(item);
 			_gameObjects.Add(newSlot);
 		}

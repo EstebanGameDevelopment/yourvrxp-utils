@@ -38,7 +38,7 @@ namespace yourvrexperience.Utils
 				if (_timeToRefocus > _timeoutToRefocus)
 				{
 					Bounds canvasBounds = new Bounds(this.gameObject.transform.position, Vector3.one);					
-					if ((!Utilities.IsVisibleFrom(canvasBounds, _targetCamera)) || (Vector3.Distance(_targetCamera.transform.position, this.transform.position) > _distance * 2))
+					if ((!yourvrexperience.Utils.Utilities.IsVisibleFrom(canvasBounds, _targetCamera)) || (Vector3.Distance(_targetCamera.transform.position, this.transform.position) > _distance * 2))
 					{
 						_timeToRefocus = -_timeAnimation;
 						Vector3 position = _targetCamera.transform.position + _targetCamera.transform.forward * _distance;

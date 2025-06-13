@@ -42,7 +42,7 @@ namespace yourvrexperience.Utils
                 end = tmp;
             }
             string selectedText = value.Substring(start, end - start);
-            selectedText = Utilities.RemoveXmlTags(selectedText);
+            selectedText = yourvrexperience.Utils.Utilities.RemoveXmlTags(selectedText);
             WordSuggestion[] suggestionForWrongWord = SymSpellController.Instance.GetSuggestionForWord(selectedText);
             if (suggestionForWrongWord != null)
             {
