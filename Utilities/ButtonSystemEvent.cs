@@ -23,7 +23,7 @@ namespace yourvrexperience.Utils
 
         private void OnButtonClicked()
         {
-            SystemEventController.Instance.DispatchSystemEvent(EventButtonSystemEventClicked, eventName);
+            SystemEventController.Instance.DispatchSystemEvent(EventButtonSystemEventClicked, eventName, button);
         }
 	}
 }
