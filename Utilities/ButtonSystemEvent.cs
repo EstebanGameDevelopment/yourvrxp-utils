@@ -16,7 +16,26 @@ namespace yourvrexperience.Utils
         [SerializeField]
 		private string eventName;
 
+        public Button Button
+        {
+            get { return button; }
+            set { button = value; }
+        }
+        public string EventName
+        {
+            get { return eventName; }
+            set { eventName = value; }
+        }
+
         private void Awake()
+        {
+            if (button != null)
+            {
+                Initialize();
+            }            
+        }
+
+        public void Initialize()
         {
             button.onClick.AddListener(OnButtonClicked);
         }
