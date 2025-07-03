@@ -64,7 +64,7 @@ namespace yourvrexperience.Utils
             }
         }
 
-        public static float ResizeTextMeshPro(TextMeshProUGUI textMeshPro)
+        public static float ResizeTextMeshPro(TextMeshProUGUI textMeshPro, float extraHeight = 0)
         {
             Canvas.ForceUpdateCanvases();
 
@@ -72,7 +72,7 @@ namespace yourvrexperience.Utils
             RectTransform textRectTransform = textMeshPro.GetComponent<RectTransform>();
 
             Vector2 preferredValues = textMeshPro.GetPreferredValues(textMeshPro.text, textRectTransform.rect.width, 0);
-            float totalHeight = preferredValues.y;
+            float totalHeight = preferredValues.y + extraHeight;
             
             // Debug.LogError(" //////////////////////// RESIZE["+ textRectTransform.rect.width + "," + _totalHeight + "]");
 
