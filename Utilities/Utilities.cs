@@ -1191,5 +1191,29 @@ namespace yourvrexperience.Utils
 			return positions;
 		}
 
+		public static void MatchSize(GameObject objectA, GameObject objectB)
+		{
+			Renderer rendererA = objectA.GetComponent<Renderer>();
+			Renderer rendererB = objectB.GetComponent<Renderer>();
+
+			if (rendererA != null && rendererB != null)
+			{
+				Vector3 sizeA = rendererA.bounds.size;
+				Vector3 sizeB = rendererB.bounds.size;
+
+				Vector3 currentScale = objectA.transform.localScale;
+
+				// Calculate scale factors needed on each axis
+				Vector3 scaleFactor = new Vector3(
+					sizeB.x / sizeA.x,
+					sizeB.y / sizeA.y,
+					sizeB.z / sizeA.z
+				);
+
+				// Apply it to the current localScale
+				objectA.transform.localScale = Vector3.Scale(currentScale, scaleFactor);
+			}
+		}
+
 	}
 }
