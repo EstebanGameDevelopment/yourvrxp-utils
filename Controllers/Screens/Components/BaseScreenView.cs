@@ -14,9 +14,12 @@ namespace yourvrexperience.Utils
 		public const string EventBaseScreenViewCreated = "EventBaseScreenViewCreated";
 		public const string EventBaseScreenViewDestroyed = "EventBaseScreenViewDestroyed";
 		public const string EventBaseScreenViewEnableInteraction = "EventBaseScreenViewEnableInteraction";
+		public const string EventBaseScreenViewSetCanvasOrder = "EventBaseScreenViewSetCanvasOrder";
 
 		protected Transform _content;
 		protected Transform _background;
+
+		protected Canvas _canvas;
 
 		public Transform Content
 		{ 
@@ -36,6 +39,7 @@ namespace yourvrexperience.Utils
 		{
 			_content = this.transform.Find("Content");
 			_background = this.transform.Find("Background");
+			_canvas = this.GetComponent<Canvas>();
 
 			Debug.Assert(_content != null);
 
@@ -67,6 +71,14 @@ namespace yourvrexperience.Utils
 				bool interactivity = (bool)parameters[0];
 				yourvrexperience.Utils.Utilities.ApplyEnabledInteraction(this.gameObject.transform, interactivity);
 			}
+			if (nameEvent.Equals(EventBaseScreenViewSetCanvasOrder))
+            {
+				string targetName = (string)parameters[0];
+				if (NameScreen.IndexOf(targetName) != -1)
+                {
+					_canvas.sortingOrder = (int)parameters[1];
+                }
+            }
         }
     }
 }
