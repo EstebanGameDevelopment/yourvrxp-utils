@@ -38,6 +38,7 @@ namespace yourvrexperience.Utils
 		public const string EventScreenControllerToggleInGameDebugConsole = "EventScreenControllerToggleInGameDebugConsole";
 		public const string EventScreenControllerCreateScreen = "EventScreenControllerCreateScreen";
 		public const string EventScreenControllerCreateInformationScreen = "EventScreenControllerCreateInformationScreen";
+		public const string EventScreenControllerReactivateAllScreens = "EventScreenControllerReactivateAllScreens";
 
         private static ScreenController _instance;
         public static ScreenController Instance
@@ -240,7 +241,18 @@ namespace yourvrexperience.Utils
 
 				ScreenInformationView.CreateScreenInformation(screenName, origin, title, description, customEvent, ok, cancel, infoImage);
 			}
-            if (nameEvent.Equals(EventScreenControllerDestroyScreen))
+			if (nameEvent.Equals(EventScreenControllerReactivateAllScreens))
+            {
+				foreach (GameObject screen in _screensCreated)
+				{
+					IScreenView screenInterface = screen.GetComponent<IScreenView>();
+					if (screenInterface != null)
+					{
+						screenInterface.Content.gameObject.SetActive(true);
+					}
+				}
+			}
+			if (nameEvent.Equals(EventScreenControllerDestroyScreen))
             {
                 GameObject screen = (GameObject)parameters[0];
                 if (_screensCreated.Contains(screen))
