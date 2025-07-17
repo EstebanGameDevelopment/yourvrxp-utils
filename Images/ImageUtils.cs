@@ -97,6 +97,34 @@ namespace yourvrexperience.Utils
 			_image.overrideSprite = ToSprite(tex);
 		}
 
+		public static void LoadBytesSpriteResize(Vector2 size, Image _image, byte[] _pvrtcBytes)
+		{
+			Texture2D tex = new Texture2D(2, 2);
+			tex.LoadImage(_pvrtcBytes);
+			tex.Apply();
+			_image.overrideSprite = ToSprite(tex);
+			if (tex.width / tex.height <= 1)
+            {
+				// PORTRAIT
+				float finalHeight = size.y;
+				if (tex.height > size.y)
+                {
+					finalHeight = size.y;
+				}
+				_image.GetComponent<RectTransform>().sizeDelta = new Vector2(((finalHeight * tex.width) / tex.height), finalHeight);
+			}
+			else
+            {
+				// LANDSCAPE
+				float finalWitdh = size.x;
+				if (tex.width > size.x)
+				{
+					finalWitdh = size.x;
+				}
+				_image.GetComponent<RectTransform>().sizeDelta = new Vector2(finalWitdh, ((finalWitdh * tex.height) / tex.width));
+			}
+		}
+
 		public static void LoadBytesImage(RawImage _image, int _with, int _height, byte[] _pvrtcBytes)
 		{
 			Texture2D tex = new Texture2D(_with, _height);
