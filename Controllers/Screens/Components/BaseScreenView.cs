@@ -73,12 +73,25 @@ namespace yourvrexperience.Utils
 			}
 			if (nameEvent.Equals(EventBaseScreenViewSetCanvasOrder))
             {
-				string targetName = (string)parameters[0];
-				if (NameScreen.IndexOf(targetName) != -1)
+				if (parameters[0] is string)
                 {
-					_canvas.sortingOrder = (int)parameters[1];
-                }
-            }
+					string targetName = (string)parameters[0];
+					if (NameScreen.IndexOf(targetName) != -1)
+					{
+						_canvas.sortingOrder = (int)parameters[1];
+					}
+				}
+				else
+                {
+					if (parameters[0] is GameObject)
+                    {
+						if (this.gameObject == (GameObject)parameters[0])
+                        {
+							_canvas.sortingOrder = (int)parameters[1];
+						}
+                    }
+				}
+			}
         }
     }
 }
