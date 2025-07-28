@@ -81,6 +81,10 @@ namespace yourvrexperience.Utils
 		{
 			get { return sizeVRScreen; }
 		}
+		public int ScreenCreatedTotal
+        {
+			get { return _screensCreated.Count; }
+        }
 
 		public void Initialize()
 		{

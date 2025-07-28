@@ -76,6 +76,10 @@ namespace yourvrexperience.Utils
             }
         }
 
+        public void ApplyGenericAction(params object[] parameters)
+        {
+        }
+
         public void ButtonPressed()
         {
             ItemSelected();

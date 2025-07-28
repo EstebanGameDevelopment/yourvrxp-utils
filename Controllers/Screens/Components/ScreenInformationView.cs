@@ -32,6 +32,7 @@ namespace yourvrexperience.Utils
 		public const string ScreenConfirmation = "ScreenConfirmation";
 		public const string ScreenConfirmationTop = "ScreenConfirmationTop";
 		public const string ScreenConfirmationBig = "ScreenConfirmationBig";
+		public const string ScreenConfirmationInput = "ScreenConfirmationInput";
 		public const string ScreenInformationImage = "ScreenInformation";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
 		public const string ScreenLoading = "ScreenLoading";

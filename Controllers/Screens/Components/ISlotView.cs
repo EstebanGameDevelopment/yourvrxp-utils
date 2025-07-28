@@ -13,5 +13,6 @@ namespace yourvrexperience.Utils
 		void Initialize(params object[] _list);
 		bool Destroy();
 		void ItemSelected(bool dispatchEvent = true);
+		void ApplyGenericAction(params object[] parameters);
 	}
 }

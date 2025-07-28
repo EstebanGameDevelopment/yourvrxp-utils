@@ -140,6 +140,18 @@ namespace yourvrexperience.Utils
 			_scrollRectList.horizontalNormalizedPosition = value;
 		}
 
+		public void ApplyGenericAction(params object[] parameters)
+		{
+			for (int i = 0; i < _gameObjects.Count; i++)
+			{
+				if (_gameObjects[i] != null)
+				{
+					ISlotView itemSlotView = _gameObjects[i].GetComponent<ISlotView>();
+					itemSlotView.ApplyGenericAction(parameters);
+				}
+			}
+		}
+
 		public void ClearCurrentGameObject(bool resetPage)
 		{
             for (int i = 0; i < _gameObjects.Count; i++)
