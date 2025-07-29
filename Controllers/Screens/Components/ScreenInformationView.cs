@@ -320,10 +320,24 @@ namespace yourvrexperience.Utils
             {
                 if (_customOutputEvent.Length > 0)
                 {
-					UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Cancel);
+					if (_inputValue == null)
+                    {
+						UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Cancel);
+					}
+					else
+                    {
+						UIEventController.Instance.DispatchUIEvent(_customOutputEvent, _origin, ScreenInformationResponses.Cancel, _inputValue.text);
+					}					
                 }
             }
-			UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Cancel);
+			if (_inputValue == null)
+			{
+				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Cancel);
+			}
+			else
+			{
+				UIEventController.Instance.DispatchUIEvent(EventScreenInformationResponse, _origin, ScreenInformationResponses.Cancel, _inputValue.text);
+			}
             UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
         }
 
