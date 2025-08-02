@@ -6,19 +6,31 @@ namespace yourvrexperience.Utils
 {
 	public class Billboard : MonoBehaviour
 	{
-		private Camera mainCamera;
+        [SerializeField] private bool Direction;
 
-		void Start()
-		{
-			mainCamera = Camera.main;
-		}
+        private Camera mainCamera;
 
-		void Update()
-		{
-			Vector3 newRotation = mainCamera.transform.eulerAngles;
-			newRotation.x = 0;
-			newRotation.z = 0;
-			transform.eulerAngles = newRotation;
-		}
-	}
+        void Start()
+        {
+            mainCamera = Camera.main;
+        }
+
+        public void SetDirection(bool direction)
+        {
+            Direction = direction;
+        }
+
+        void LateUpdate()
+        {
+            if (mainCamera != null)
+            {
+                transform.LookAt(mainCamera.transform);
+
+                if (Direction)
+                {
+                    transform.forward = -transform.forward;
+                }                
+            }
+        }
+    }
 }

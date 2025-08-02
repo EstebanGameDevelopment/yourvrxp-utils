@@ -1215,5 +1215,25 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		public static string CeilDecimal(float value, int decimals)
+        {
+			string output = value.ToString();
+			if (output.IndexOf(",") != -1)
+            {
+				output = output.Replace(",", ".");
+			}
+			if (output.IndexOf(".") != -1)
+            {
+				string[] segments = output.Split(".");
+				string decimalPart = segments[1];
+				if (decimalPart.Length > decimals)
+                {
+					decimalPart = decimalPart.Substring(0, decimals);
+				}
+				return segments[0] + "." + decimalPart;
+			}
+			return output;
+        }
+
 	}
 }
