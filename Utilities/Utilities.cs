@@ -1235,5 +1235,17 @@ namespace yourvrexperience.Utils
 			return output;
         }
 
+		public static string ShortenText(string text, int limit)
+        {
+			if (text.Length > limit)
+            {
+				return text.Substring(0, limit) + "...";
+            }
+			else
+            {
+				return text;
+            }
+        }
+
 	}
 }
