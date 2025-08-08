@@ -252,7 +252,7 @@ namespace yourvrexperience.Utils
 					IScreenView screenInterface = screen.GetComponent<IScreenView>();
 					if (screenInterface != null)
 					{
-						screenInterface.Content.gameObject.SetActive(true);
+						screenInterface.ActivateContent(true);
 					}
 				}
 			}
@@ -376,7 +376,7 @@ namespace yourvrexperience.Utils
 						IScreenView screenInterface = screen.GetComponent<IScreenView>();
 						if (screenInterface != null)
 						{
-							screenInterface.Content.gameObject.SetActive(false);
+							screenInterface.ActivateContent(false);
 						}
 					}
 				}

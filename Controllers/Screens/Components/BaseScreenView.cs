@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.UI;
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 using yourvrexperience.VR;
 #endif
@@ -20,6 +21,7 @@ namespace yourvrexperience.Utils
 		protected Transform _background;
 
 		protected Canvas _canvas;
+		protected GraphicRaycaster _raycaster;
 
 		public Transform Content
 		{ 
@@ -40,6 +42,7 @@ namespace yourvrexperience.Utils
 			_content = this.transform.Find("Content");
 			_background = this.transform.Find("Background");
 			_canvas = this.GetComponent<Canvas>();
+			_raycaster = this.GetComponent<GraphicRaycaster>();
 
 			Debug.Assert(_content != null);
 
@@ -53,6 +56,15 @@ namespace yourvrexperience.Utils
 		public virtual void ActivateContent(bool value)
 		{
 			Content.gameObject.SetActive(value);
+
+			if (value)
+            {
+				_raycaster.enabled = true;
+			}
+			else
+            {
+				_raycaster.enabled = false;
+			}
 		}
 
 		public virtual void Destroy()
