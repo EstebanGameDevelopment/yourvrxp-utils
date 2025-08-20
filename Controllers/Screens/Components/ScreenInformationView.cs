@@ -51,7 +51,7 @@ namespace yourvrexperience.Utils
 		protected int _totalTime;
 		protected float _timeAcumSec;
 
-		public static void CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, ICheckInput checkInput = null)
+		public static GameObject CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, ICheckInput checkInput = null)
 		{
 			string okText = ok;
 			if (okText.Length == 0)
@@ -67,7 +67,7 @@ namespace yourvrexperience.Utils
 #if !(ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL)
 			shouldHidePrevious = false;
 #endif			
-			ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText, infoImage, contentType, checkInput);
+			return ScreenController.Instance.CreateScreen(screenName, false, shouldHidePrevious, origin, customEvent, title, description, okText, cancelText, infoImage, contentType, checkInput);
 		}
 
         public override void Initialize(params object[] parameters)
