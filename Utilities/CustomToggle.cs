@@ -9,10 +9,19 @@ namespace yourvrexperience.Utils
 {
     public class CustomToggle : Toggle
     {
+		public string Name;
+
+		public Action<CustomToggle, string> PointerClickedButton;
 		public Action<CustomToggle> PointerEnterButton;
 		public Action<CustomToggle> PointerExitButton;
 
-        public override void OnPointerEnter(PointerEventData eventData)
+		public override void OnPointerClick(PointerEventData eventData)
+        {
+			base.OnPointerClick(eventData);
+			PointerClickedButton?.Invoke(this, Name);
+		}
+
+		public override void OnPointerEnter(PointerEventData eventData)
 		{
 			base.OnPointerEnter(eventData);
 			PointerEnterButton?.Invoke(this);

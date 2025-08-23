@@ -26,6 +26,8 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationSetInputText = "EventScreenInformationSetInputText";
 		public const string EventScreenInformationAddInputText = "EventScreenInformationAddInputText";
 		public const string EventScreenInformationAddTimer = "EventScreenInformationAddTimer";
+		public const string EventScreenInformationIgnoreDestruction = "EventScreenInformationIgnoreDestruction";
+		public const string EventScreenInformationDestroyAllEvenIgnored = "EventScreenInformationDestroyAllEvenIgnored";
 
 		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
@@ -50,6 +52,7 @@ namespace yourvrexperience.Utils
 		protected string _codeXMLLanguage;
 		protected int _totalTime;
 		protected float _timeAcumSec;
+		protected bool _ignoreDestruction = false;
 
 		public static GameObject CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, ICheckInput checkInput = null)
 		{
@@ -343,6 +346,13 @@ namespace yourvrexperience.Utils
 
 		protected virtual void OnUIEvent(string nameEvent, object[] parameters)
 		{
+			if (nameEvent.Equals(EventScreenInformationIgnoreDestruction))
+            {
+				if (this.gameObject == (GameObject)parameters[0])
+                {
+					_ignoreDestruction = (bool)parameters[1];
+				}
+            }
 			if (nameEvent.Equals(EventScreenInformationAddTimer))
             {
 				_enableTimer = true;
@@ -352,6 +362,8 @@ namespace yourvrexperience.Utils
 			}
 			if (nameEvent.Equals(EventScreenInformationDestroy))
 			{
+				if (_ignoreDestruction) return;
+
 				bool shouldDestroy = true;
 				if (parameters.Length > 0)
 				{
@@ -365,6 +377,8 @@ namespace yourvrexperience.Utils
 			}
 			if (nameEvent.Equals(EventScreenInformationByNameDestroy))
             {
+				if (_ignoreDestruction) return;
+
 				if (NameScreen.IndexOf((string)parameters[0]) != -1)
                 {
 					UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
@@ -372,6 +386,13 @@ namespace yourvrexperience.Utils
             }
 			if (nameEvent.Equals(EventScreenInformationRequestAllScreensDestroyed))
 			{
+				if (_ignoreDestruction) return;
+
+				UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
+			}
+			if (nameEvent.Equals(EventScreenInformationDestroyAllEvenIgnored))
+            {
+				_ignoreDestruction = false;
 				UIEventController.Instance.DispatchUIEvent(ScreenController.EventScreenControllerDestroyScreen, this.gameObject);
 			}
 			if (nameEvent.Equals(EventScreenInformationUpdateInformation))

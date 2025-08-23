@@ -1247,5 +1247,12 @@ namespace yourvrexperience.Utils
             }
         }
 
+		public static string RemoveLinesContainingText(string source, string target)
+		{
+			return string.Join("\n", source.Split('\n')
+				.Where(line => !line.Contains(target, StringComparison.OrdinalIgnoreCase))
+				.ToArray());
+		}
+
 	}
 }
