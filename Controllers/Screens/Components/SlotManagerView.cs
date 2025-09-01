@@ -304,6 +304,16 @@ namespace yourvrexperience.Utils
 			_gameObjects.Add(newSlot);
 		}
 
+		public void RemoveItem(ItemMultiObjectEntry item)
+		{
+			if (_data.Remove(item))
+            {
+				_itemsEachPage--;
+				_totalPages = 1;
+				LoadCurrentPage();
+			}
+		}
+
 		public void ClearData()
 		{
 			_currentPage = 0;
