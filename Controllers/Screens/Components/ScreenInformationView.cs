@@ -19,6 +19,7 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationDestroy = "EventScreenInformationDestroy";
 		public const string EventScreenInformationByNameDestroy = "EventScreenInformationByNameDestroy";
 		public const string EventScreenInformationInited = "EventScreenInformationInited";
+		public const string EventScreenInformationInstantiated = "EventScreenInformationInstantiated";
 		public const string EventScreenInformationDestroyed = "EventScreenInformationDestroyed";
 		public const string EventScreenInformationRequestAllScreensDestroyed = "EventScreenInformationRequestAllScreensDestroyed";
 		public const string EventScreenInformationUpdateInformation = "EventScreenInformationUpdateInformation";
@@ -28,6 +29,8 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationAddTimer = "EventScreenInformationAddTimer";
 		public const string EventScreenInformationIgnoreDestruction = "EventScreenInformationIgnoreDestruction";
 		public const string EventScreenInformationDestroyAllEvenIgnored = "EventScreenInformationDestroyAllEvenIgnored";
+		public const string EventScreenInformationSetColor = "EventScreenInformationSetColor";
+		public const string EventScreenInformationSetFeedbackText = "EventScreenInformationSetFeedbackText";
 
 		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
@@ -82,6 +85,7 @@ namespace yourvrexperience.Utils
             _customOutputEvent = (string)parameters[1];
 			UpdateTitle((string)parameters[2]);
 			UpdateDescription((string)parameters[3]);
+			UpdateFeedback("");
 			string textOk = (string)parameters[4];
 			string textCancel = (string)parameters[5];
 
@@ -163,6 +167,7 @@ namespace yourvrexperience.Utils
 #endif
 
 			UIEventController.Instance.Event += OnUIEvent;
+			UIEventController.Instance.DispatchUIEvent(EventScreenInformationInstantiated, _nameScreen, this.gameObject);
 			UIEventController.Instance.DelayUIEvent(EventScreenInformationInited, 0.1f, _nameScreen, (_inputValue != null));
         }
 
@@ -346,6 +351,20 @@ namespace yourvrexperience.Utils
 
 		protected virtual void OnUIEvent(string nameEvent, object[] parameters)
 		{
+			if (nameEvent.Equals(EventScreenInformationSetFeedbackText))
+            {
+				if (parameters.Length > 1)
+                {
+					if (this.gameObject == (GameObject)parameters[0])
+					{
+						UpdateFeedback((string)parameters[1]);
+					}
+				}
+				else
+                {
+					UpdateFeedback((string)parameters[0]);
+				}
+			}
 			if (nameEvent.Equals(EventScreenInformationIgnoreDestruction))
             {
 				if (this.gameObject == (GameObject)parameters[0])
@@ -353,6 +372,13 @@ namespace yourvrexperience.Utils
 					_ignoreDestruction = (bool)parameters[1];
 				}
             }
+			if (nameEvent.Equals(EventScreenInformationSetColor))
+            {
+				if (this.gameObject == (GameObject)parameters[0])
+				{
+					_content.GetComponent<Image>().color = (Color)parameters[1];
+				}
+			}
 			if (nameEvent.Equals(EventScreenInformationAddTimer))
             {
 				_enableTimer = true;
