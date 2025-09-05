@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace yourvrexperience.Utils
 {
@@ -41,5 +42,27 @@ namespace yourvrexperience.Utils
             int distance = LevenshteinDistance(s1, s2);
             return (1.0f - ((float)distance / maxLength)) * 100;
         }
+
+        public static bool ContainsInList(string target, List<string> origin, int percentage)
+        {
+            foreach(string item in origin)
+            {
+                int maxLength = Math.Max(target.Length, item.Length);
+
+                if (maxLength == 0)
+                {
+                    return false; // Both strings are empty
+                }
+
+                int distance = LevenshteinDistance(target, item);
+                float result = (1.0f - ((float)distance / maxLength)) * 100;
+                if (result > percentage)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
