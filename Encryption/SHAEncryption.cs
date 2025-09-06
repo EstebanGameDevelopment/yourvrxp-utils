@@ -7,7 +7,18 @@ using System.Linq;
 namespace yourvrexperience.Utils
 {
 	public static class SHAEncryption
-	{        
+	{
+        public static int GetStableHash(string input)
+        {
+            using (var md5 = MD5.Create())
+            {
+                byte[] data = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+                // Take first 4 bytes and convert to int
+                return BitConverter.ToInt32(data, 0);
+            }
+        }
+
         public static string GenerateShortHash(string email, string code, int total)
         {
             using (SHA256 sha256 = SHA256.Create())
