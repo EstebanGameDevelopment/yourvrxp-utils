@@ -64,5 +64,26 @@ namespace yourvrexperience.Utils
             return false;
         }
 
+        public static string GetInList(string target, List<string> origin, int percentage)
+        {
+            foreach (string item in origin)
+            {
+                int maxLength = Math.Max(target.Length, item.Length);
+
+                if (maxLength == 0)
+                {
+                    return null; // Both strings are empty
+                }
+
+                int distance = LevenshteinDistance(target, item);
+                float result = (1.0f - ((float)distance / maxLength)) * 100;
+                if (result > percentage)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
     }
 }
