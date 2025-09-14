@@ -31,6 +31,7 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationDestroyAllEvenIgnored = "EventScreenInformationDestroyAllEvenIgnored";
 		public const string EventScreenInformationSetColor = "EventScreenInformationSetColor";
 		public const string EventScreenInformationSetFeedbackText = "EventScreenInformationSetFeedbackText";
+		public const string EventScreenInformationSetAlignment = "EventScreenInformationSetAlignment";
 
 		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
@@ -443,6 +444,11 @@ namespace yourvrexperience.Utils
 			if (nameEvent.Equals(EventScreenInformationAddInformation))
 			{
 				AddToDescription((string)parameters[0]);
+			}
+			if (nameEvent.Equals(EventScreenInformationSetAlignment))
+            {				
+				Transform contentDescription = yourvrexperience.Utils.Utilities.FindNameInChildren(_content, "Description");
+				contentDescription.GetComponent<TextMeshProUGUI>().alignment = (TextAlignmentOptions)parameters[0];
 			}
 #if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
 			if (nameEvent.Equals(ScreenVRKeyboardView.EventScreenVRKeyboardSetNewText))
