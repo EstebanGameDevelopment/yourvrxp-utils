@@ -27,6 +27,10 @@ namespace yourvrexperience.Utils
 		{ 
 			get { return _content; } 
 		}
+		public Canvas Canvas
+		{
+			get { return _canvas; }
+		}
 		public Transform Background
 		{ 
 			get { return _background; } 
