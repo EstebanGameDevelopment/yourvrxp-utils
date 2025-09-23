@@ -32,6 +32,7 @@ namespace yourvrexperience.Utils
 		public const string EventScreenInformationSetColor = "EventScreenInformationSetColor";
 		public const string EventScreenInformationSetFeedbackText = "EventScreenInformationSetFeedbackText";
 		public const string EventScreenInformationSetAlignment = "EventScreenInformationSetAlignment";
+		public const string EventScreenInformationEnableInputText = "EventScreenInformationEnableInputText";
 
 		public const string ScreenInformation = "ScreenInformation";
 		public const string ScreenInformationBig = "ScreenInformationBig";
@@ -432,6 +433,13 @@ namespace yourvrexperience.Utils
 				if (_inputValue != null)
 				{
 					_inputValue.text = (string)parameters[0];
+				}
+			}
+			if (nameEvent.Equals(EventScreenInformationEnableInputText))
+            {
+				if (_inputValue != null)
+				{
+					_inputValue.interactable = (bool)parameters[0];
 				}
 			}
 			if (nameEvent.Equals(EventScreenInformationAddInputText))
