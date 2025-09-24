@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace yourvrexperience.Utils
 {
@@ -115,6 +116,11 @@ namespace yourvrexperience.Utils
                 }
             }
             return null;
+        }
+
+        public static List<string> RemoveDuplicates(List<string> inputList)
+        {
+            return inputList.Distinct().ToList();
         }
 
     }
