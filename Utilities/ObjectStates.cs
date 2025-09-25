@@ -8,7 +8,6 @@ namespace yourvrexperience.Utils
     public class ObjectStates : MonoBehaviour
     {
 		public const string EventObjectStatesChangeState = "EventObjectStatesChangeState";
-		public const string EventObjectStatesDisableRenderer = "EventObjectStatesDisableRenderer";
 
 		public delegate void CollisionEnterDetectorEvent(GameObject collider, GameObject other);
 		public delegate void CollisionExitDetectorEvent(GameObject collider, GameObject other);
@@ -17,7 +16,6 @@ namespace yourvrexperience.Utils
 		public event CollisionExitDetectorEvent CollisionExitEvent;
 
 		[SerializeField] private GameObject[] States;
-		[SerializeField] private MeshRenderer renderContainer;
 
 		private int _currentState = 0;
 		private string _name;
@@ -39,10 +37,6 @@ namespace yourvrexperience.Utils
 					return States.Length;
 				}				
 			}
-        }
-		public MeshRenderer RenderContainer
-        {
-			get { return renderContainer; }
         }
 
 		void Start()
@@ -129,10 +123,6 @@ namespace yourvrexperience.Utils
 					int stateTarget = (int)parameters[1];
 					EnableState(stateTarget);
 				}
-			}
-			if (nameEvent.Equals(EventObjectStatesDisableRenderer))
-            {
-				renderContainer.enabled = false;
 			}
 		}
 	}

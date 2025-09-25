@@ -1193,13 +1193,13 @@ namespace yourvrexperience.Utils
 
 		public static void MatchSize(GameObject objectA, GameObject objectB)
 		{
-			Renderer rendererA = objectA.GetComponent<Renderer>();
-			Renderer rendererB = objectB.GetComponent<Renderer>();
+			Collider colliderA = objectA.GetComponent<Collider>();
+			Collider colliderB = objectB.GetComponent<Collider>();
 
-			if (rendererA != null && rendererB != null)
+			if (colliderA != null && colliderB != null)
 			{
-				Vector3 sizeA = rendererA.bounds.size;
-				Vector3 sizeB = rendererB.bounds.size;
+				Vector3 sizeA = colliderA.bounds.size;
+				Vector3 sizeB = colliderB.bounds.size;
 
 				Vector3 currentScale = objectA.transform.localScale;
 
