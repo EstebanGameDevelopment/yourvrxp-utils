@@ -184,7 +184,98 @@ namespace yourvrexperience.Utils
 			return camera.transform.position + currentForwardMouse * distanceCollision;
 		}
 
-        public static Vector3 GetPositionInteraction(RectTransform targetRect, bool debugObject = false)
+		// ---------------------------------------------------
+		/**
+		 @brief We get the collided object between 2 points
+		 */
+		public static bool GetCollidedObjectBySegmentTargetIgnore(Vector3 _goalPosition, Vector3 _originPosition, params string[] _masksToIgnore)
+		{
+			Vector3 fwd = new Vector3(_goalPosition.x - _originPosition.x, _goalPosition.y - _originPosition.y, _goalPosition.z - _originPosition.z);
+			float distanceTotal = Vector3.Distance(_goalPosition, _originPosition);
+			fwd.Normalize();
+			Ray ray = new Ray();
+			ray.direction = fwd;
+			RaycastHit hitCollision = new RaycastHit();
+
+			int layerMask = Physics.IgnoreRaycastLayer;
+			if (_masksToIgnore != null)
+			{
+				for (int i = 0; i < _masksToIgnore.Length; i++)
+				{
+					layerMask |= (1 << LayerMask.NameToLayer(_masksToIgnore[i]));
+				}
+				layerMask = ~layerMask;
+			}
+			if (layerMask == 0)
+			{
+				if (Physics.Raycast(_originPosition, fwd, out hitCollision, distanceTotal))
+				{
+					// Debug.LogError("[--NO FILTER--]::NAME["+ hitCollision.collider.gameObject.name + "]::LAYER["+ LayerMask.LayerToName(hitCollision.collider.gameObject.layer) + "]");
+					return true;
+				}
+			}
+			else
+			{
+				if (Physics.Raycast(_originPosition, fwd, out hitCollision, distanceTotal, layerMask))
+				{
+					// Debug.LogError("[++WITH FILTER++]::NAME[" + hitCollision.collider.gameObject.name + "]::LAYER[" + LayerMask.LayerToName(hitCollision.collider.gameObject.layer) + "]::DISTANCE CHECK["+ distanceTotal + "]");
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		// ---------------------------------------------------
+		/**
+		 @brief We get the whole RaycastHit information of the collision, with the mask to ignore
+		 */
+		public static RaycastHit GetRaycastHitInfoByRay(Vector3 _origin, Vector3 _forward, params string[] _masksToIgnore)
+		{
+			Vector3 fwd = _forward;
+			fwd.Normalize();
+			RaycastHit hitCollision = new RaycastHit();
+
+			int layerMask = Physics.IgnoreRaycastLayer;
+			if (_masksToIgnore != null)
+			{
+				for (int i = 0; i < _masksToIgnore.Length; i++)
+				{
+					layerMask |= (1 << LayerMask.NameToLayer(_masksToIgnore[i]));
+				}
+				layerMask = ~layerMask;
+			}
+			Physics.Raycast(_origin, fwd, out hitCollision, Mathf.Infinity, layerMask);
+			return hitCollision;
+		}
+
+
+		// ---------------------------------------------------
+		/**
+		 @brief We get the whole RaycastHit information of the collision, with the mask to ignore
+		 */
+		public static bool GetRaycastHitInfoByRay(Vector3 _origin, Vector3 _forward, ref RaycastHit _hitCollision, params string[] _masksToIgnore)
+		{
+			Vector3 fwd = _forward;
+			fwd.Normalize();
+
+			int layerMask = Physics.IgnoreRaycastLayer;
+			if (_masksToIgnore != null)
+			{
+				for (int i = 0; i < _masksToIgnore.Length; i++)
+				{
+					layerMask |= (1 << LayerMask.NameToLayer(_masksToIgnore[i]));
+				}
+				layerMask = ~layerMask;
+			}
+			if (Physics.Raycast(_origin, fwd, out _hitCollision, Mathf.Infinity, layerMask))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public static Vector3 GetPositionInteraction(RectTransform targetRect, bool debugObject = false)
 		{
 			Vector3 collidedPositionRaycast = Vector3.zero;
 			Vector3 screenPosition = Vector3.zero;
