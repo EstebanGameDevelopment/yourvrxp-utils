@@ -23,7 +23,7 @@ namespace yourvrexperience.Utils
         public const bool DEBUG_PATHFINDING = false;
         public const bool DEBUG_DOTPATHS = false;
 
-        public const string TAG_FLOOR = "FLOOR";
+        public const string TAG_FLOOR = "Floor";
         public const string TAG_PATH = "PATH";
 
         // CELLS
@@ -116,6 +116,22 @@ namespace yourvrexperience.Utils
 
         // ---------------------------------------------------
         /**
+		 * Set the height of the waypoints
+		 */
+        public void SetPathWaypointHeight(float _pathHeight, int _layer = -1)
+        {
+            if (_layer == -1)
+            {
+                m_pathfindingInstances[m_pathfindingInstances.Count - 1].PathCheckHeight = _pathHeight;
+            }
+            else
+            {
+                m_pathfindingInstances[_layer].PathCheckHeight = _pathHeight;
+            }
+        }
+
+        // ---------------------------------------------------
+        /**
 		 * Get the content of the cell in the asked position
 		 */
         public bool CheckOutsideBoard(float _x, float _y, float _z, int _layer = -1)
@@ -182,6 +198,28 @@ namespace yourvrexperience.Utils
 
         // ---------------------------------------------------
         /**
+		 * Release memory
+		 */
+        public void DestroyInstances()
+        {
+            if (m_pathfindingInstances != null)
+            {
+                foreach (PathFindingInstance instance in m_pathfindingInstances)
+                {
+                    if (instance != null)
+                    {
+                        instance.ClearMemoryAllocated();
+                        instance.Destroy();
+                        instance.DestroyDebugMatrixConstruction();
+                        GameObject.Destroy(instance.gameObject);
+                    }
+                }
+                m_pathfindingInstances.Clear();
+            }
+        }
+
+        // ---------------------------------------------------
+        /**
 		 * Will dynamically calculate the collisions
 		 */
         public void CalculateCollisions(int _layerToCheck = 0, params string[] _layersToIgnore)
@@ -240,6 +278,25 @@ namespace yourvrexperience.Utils
                 else
                 {
                     m_pathfindingInstances[_layer].RenderDebugMatrixConstruction(_layer, -1, _timeToDisplayCollisions);
+                }
+            }
+        }
+
+        public void DestroyDebugMatrixConstruction(int _layer = -1)
+        {
+            if (m_pathfindingInstances != null)
+            {
+                if (_layer == -1)
+                {
+                    // RENDER ALL LAYERS
+                    for (int i = 0; i < m_pathfindingInstances.Count; i++)
+                    {
+                        m_pathfindingInstances[i].DestroyDebugMatrixConstruction();
+                    }
+                }
+                else
+                {
+                    m_pathfindingInstances[_layer].DestroyDebugMatrixConstruction();
                 }
             }
         }

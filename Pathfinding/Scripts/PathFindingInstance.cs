@@ -43,6 +43,8 @@ namespace yourvrexperience.Utils
 
         private PrecalculatedData m_vectorPaths;
 
+        private float m_pathCheckHeight = 1;
+
         // ----------------------------------------------
         // SETTERS/GETTERS
         // ----------------------------------------------	
@@ -90,6 +92,11 @@ namespace yourvrexperience.Utils
         {
             get { return m_waypointHeight; }
             set { m_waypointHeight = value; }
+        }
+        public float PathCheckHeight
+        {
+            get { return m_pathCheckHeight; }
+            set { m_pathCheckHeight = value; }
         }
 
 
@@ -290,8 +297,24 @@ namespace yourvrexperience.Utils
 
         // ---------------------------------------------------
         /**
-		 * Render an sphere int the empty cells to check if the matrix was build right
-		 */
+         * Destroy debug sphere reference
+         */
+        public void DestroyDebugMatrixConstruction()
+        {
+            if (m_temporalDots.Count > 0)
+            {
+                for (int i = 0; i < m_temporalDots.Count; i++)
+                {
+                    GameObject.DestroyImmediate(m_temporalDots[i]);
+                }
+            }
+            m_temporalDots.Clear();
+        }
+
+        // ---------------------------------------------------
+        /**
+         * Render an sphere int the empty cells to check if the matrix was build right
+         */
         public void RenderDebugMatrixConstruction(int _layerToCheck = 0, int _heightLayer = -1, float _timeToDisplayCollisions = 0)
 		{
 			if (m_dotPaths.Count > 0) return;
@@ -331,6 +354,7 @@ namespace yourvrexperience.Utils
                     newdot.transform.localScale = new Vector3(m_cellSize / 3, m_cellSize / 3, m_cellSize / 3);
                     // newdot.transform.localScale = new Vector3(m_cellSize / 2, m_cellSize / 2, m_cellSize / 2);
                     newdot.transform.position = pos;
+                    newdot.transform.parent = PathFindingController.Instance.transform;
                     if (_timeToDisplayCollisions > 0)
                     {
                         m_temporalDots.Add(newdot);
@@ -374,32 +398,31 @@ namespace yourvrexperience.Utils
                     Vector3 posAir3 = new Vector3(posAir.x - (m_cellSize / 3), posAir.y, posAir.z + (m_cellSize / 3));
                     Vector3 posAir4 = new Vector3(posAir.x + (m_cellSize / 3), posAir.y, posAir.z + (m_cellSize / 3));
 
-                    
                     RaycastHit raycastHit = new RaycastHit();
                     if (RaycastingTools.GetRaycastHitInfoByRay(posAir1, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
                     {
-                        if (raycastHit.collider.gameObject.tag != PathFindingController.TAG_FLOOR)
+                        if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
                             m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
                         }
                     }
                     if (RaycastingTools.GetRaycastHitInfoByRay(posAir2, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
                     {
-                        if (raycastHit.collider.gameObject.tag != PathFindingController.TAG_FLOOR)
+                        if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
                             m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
                         }
                     }
                     if (RaycastingTools.GetRaycastHitInfoByRay(posAir3, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
                     {
-                        if (raycastHit.collider.gameObject.tag != PathFindingController.TAG_FLOOR)
+                        if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
                             m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
                         }
                     }
                     if (RaycastingTools.GetRaycastHitInfoByRay(posAir4, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
                     {
-                        if (raycastHit.collider.gameObject.tag != PathFindingController.TAG_FLOOR)
+                        if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
                             m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
                         }
@@ -796,11 +819,11 @@ namespace yourvrexperience.Utils
                             {
                                 if (_oneLayer)
                                 {
-                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni, (m_cellSize / m_waypointHeight), (sGoalNext.y * m_cellSize) + m_zIni));
+                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize/2), (m_cellSize / m_waypointHeight), (sGoalNext.y * m_cellSize) + m_zIni + (m_cellSize / 2)));
                                 }
                                 else
                                 {
-                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni, sGoalNext.z - (m_cellSize / m_waypointHeight) + m_yIni, (sGoalNext.y * m_cellSize) + m_zIni));
+                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize / 2), sGoalNext.z - (m_cellSize / m_waypointHeight) + m_yIni, (sGoalNext.y * m_cellSize) + m_zIni + (m_cellSize / 2)));
                                 }
                             }
                             else
@@ -810,7 +833,7 @@ namespace yourvrexperience.Utils
                                     if (pivotReference == Vector3.zero)
                                     {
                                         // Debug.LogError("INSERT INITIAL POINT[" + sGoalNext.ToString() + "]");
-                                        currentChecked = new Vector3(_realDestination.x, (m_cellSize / m_waypointHeight), _realDestination.z);
+                                        currentChecked = new Vector3(_realDestination.x + (m_cellSize / 2), (m_cellSize / m_waypointHeight), _realDestination.z + (m_cellSize / 2));
                                         way.Insert(0, currentChecked);
                                         pivotReference = currentChecked;
                                     }
@@ -818,12 +841,12 @@ namespace yourvrexperience.Utils
                                     {
                                         Vector3 lastValidChecked = previousChecked;
                                         previousChecked = currentChecked;
-                                        currentChecked = new Vector3((sGoalNext.x * m_cellSize) + m_xIni, (m_cellSize / m_waypointHeight), (sGoalNext.y * m_cellSize) + m_zIni);
+                                        currentChecked = new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize / 2), (m_cellSize / m_waypointHeight), (sGoalNext.y * m_cellSize) + m_zIni + (m_cellSize / 2));
                                         if ((curIndexBack == 0) || (curIndexBack == -1))
                                         {
-                                            currentChecked = new Vector3(_realOrigin.x, (m_cellSize / m_waypointHeight), _realOrigin.z);
+                                            currentChecked = new Vector3(_realOrigin.x + (m_cellSize / 2), (m_cellSize / m_waypointHeight), _realOrigin.z + (m_cellSize / 2));
                                         }
-                                        if (CheckBlockedPath(currentChecked, pivotReference, 3, _masksToIgnore))
+                                        if (CheckBlockedPath(new Vector3(currentChecked.x, m_pathCheckHeight, currentChecked.z), new Vector3(pivotReference.x, m_pathCheckHeight, pivotReference.z), 3, _masksToIgnore))
                                         {
                                             // Debug.LogError("INSERT["+ currentChecked.ToString() + "] BECAUSE BLOCKED PATH");
                                             // way.Insert(0, previousChecked);
@@ -835,7 +858,7 @@ namespace yourvrexperience.Utils
                                 }
                                 else
                                 {
-                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni, sGoalNext.z - (m_cellSize / m_waypointHeight) + m_yIni, (sGoalNext.y * m_cellSize) + m_zIni));
+                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize/2), sGoalNext.z - (m_cellSize / m_waypointHeight) + m_yIni, (sGoalNext.y * m_cellSize) + m_zIni));
                                 }
                             }
 

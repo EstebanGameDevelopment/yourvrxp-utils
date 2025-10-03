@@ -1,15 +1,29 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace yourvrexperience.Utils
 {
     public class PathFindingMovement : MonoBehaviour
     {
+        public Action<PathFindingMovement> CompletedPath;
+
+        private void ReportCompletedPath()
+        {
+            CompletedPath?.Invoke(this);
+        }
+
+        private float _speedMovement;
+        private float _speedRotation;
         private float _yaw;
         private bool _applyGravity;
         private float _directionLeft;
         private bool _ignoreRigidBody;
+        
+        private int _currentWaypoint = -1;
+        private float _distanceDetection = -1;
+        private List<Vector3> _path;
 
         public float Yaw
         {
@@ -50,16 +64,36 @@ namespace yourvrexperience.Utils
             _ignoreRigidBody = ignoreRigidBody;
         }
 
-        public Vector2 LogicAlineation(Vector3 _goal, float _speedMovement, float _speedRotation)
+        public bool GoTo(Vector3 origin, Vector3 target, float speedMovement, float speedRotation, float distanceDetection)
+        {
+            _speedMovement = speedMovement;
+            _speedRotation = speedRotation;
+            _distanceDetection = distanceDetection;
+
+            _path = new List<Vector3>();
+
+            Vector3 targetFound = PathFindingController.Instance.GetPath(origin, target, _path, 0, false, -1);
+            if (targetFound != Vector3.zero)
+            {
+                _currentWaypoint = 0;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public Vector2 MoveTowardsGoal(Vector3 goal, float speedMovement, float speedRotation)
         {
             float yaw = Yaw * Mathf.Deg2Rad;
             Vector3 pos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z);
 
-            Vector3 normalVector = new Vector3(_goal.x, _goal.y, _goal.z) - pos;
+            Vector3 normalVector = new Vector3(goal.x, goal.y, goal.z) - pos;
             normalVector.Normalize();
 
             Vector2 v1 = new Vector2((float)Mathf.Cos(yaw), (float)Mathf.Sin(yaw));
-            Vector2 v2 = new Vector2(_goal.x - pos.x, _goal.z - pos.z);
+            Vector2 v2 = new Vector2(goal.x - pos.x, goal.z - pos.z);
 
             float moduloV2 = v2.magnitude;
             if (moduloV2 == 0)
@@ -74,11 +108,11 @@ namespace yourvrexperience.Utils
             }
             float angulo = (v1.x * v2.x) + (v1.y * v2.y);
 
-            float increment = _speedRotation;
+            float increment = speedRotation;
             if (angulo > 0.95) increment = (1 - angulo);
 
             // ASK DIRECTION OF THE ROTATION TO REACH THE GOAL
-            float directionLeft = AskDirectionPoint(new Vector2(pos.x, pos.z), yaw, new Vector2(_goal.x, _goal.z));
+            float directionLeft = AskDirectionPoint(new Vector2(pos.x, pos.z), yaw, new Vector2(goal.x, goal.z));
             float yawGoal = yaw;
             if (directionLeft > 0)
             {
@@ -94,23 +128,31 @@ namespace yourvrexperience.Utils
 
             // MOVE AND ROTATE
             yawGoal = yawGoal * Mathf.Rad2Deg;
-            if ((_speedMovement != -1) && (_speedMovement != 0))
+            if ((speedMovement != -1) && (speedMovement != 0))
             {
-                Vector3 movement = new Vector3((vf.x * _speedMovement * Time.deltaTime),
+                Vector3 movement = new Vector3((vf.x * speedMovement * Time.deltaTime),
                                                 0,
-                                                (vf.y * _speedMovement * Time.deltaTime)) + ((normalVector.z != 0) ? Vector3.zero : (ApplyGravity ? (Physics.gravity * Time.deltaTime) : Vector3.zero));
+                                                (vf.y * speedMovement * Time.deltaTime)) + ((normalVector.z != 0) ? Vector3.zero : (ApplyGravity ? (Physics.gravity * Time.deltaTime) : Vector3.zero));
                 CharacterController controller = this.GetComponent<CharacterController>();
                 if (controller == null)
                 {
-                    if (this.GetComponent<Rigidbody>().isKinematic)
+                    Rigidbody actorRigidBody = this.GetComponent<Rigidbody>();
+                    if (actorRigidBody == null)
                     {
                         this.gameObject.transform.position += movement;
                     }
                     else
                     {
-                        this.GetComponent<Rigidbody>().MovePosition(new Vector3(this.GetComponent<Rigidbody>().position.x + (vf.x * _speedMovement * Time.deltaTime)
-                                                                                 , this.GetComponent<Rigidbody>().position.y
-                                                                                 , this.GetComponent<Rigidbody>().position.z + (vf.y * _speedMovement * Time.deltaTime)));
+                        if (actorRigidBody.isKinematic)
+                        {
+                            this.gameObject.transform.position += movement;
+                        }
+                        else
+                        {
+                            this.GetComponent<Rigidbody>().MovePosition(new Vector3(actorRigidBody.position.x + (vf.x * speedMovement * Time.deltaTime)
+                                                                                     , actorRigidBody.position.y
+                                                                                     , actorRigidBody.position.z + (vf.y * speedMovement * Time.deltaTime)));
+                        }
                     }
                 }
                 else
@@ -123,16 +165,16 @@ namespace yourvrexperience.Utils
             return vf;
         }
 
-        public Vector2 LogicLocalAlineation(Vector3 _goal, float _speedMovement, float _speedRotation)
+        public Vector2 MoveLocalTowardsGoal(Vector3 goal, float speedMovement, float speedRotation)
         {
             float yaw = Yaw * Mathf.Deg2Rad;
             Vector3 pos = new Vector3(this.gameObject.transform.localPosition.x, this.gameObject.transform.localPosition.y, this.gameObject.transform.localPosition.z);
 
-            Vector3 normalVector = new Vector3(_goal.x, _goal.y, _goal.z) - pos;
+            Vector3 normalVector = new Vector3(goal.x, goal.y, goal.z) - pos;
             normalVector.Normalize();
 
             Vector2 v1 = new Vector2((float)Mathf.Cos(yaw), (float)Mathf.Sin(yaw));
-            Vector2 v2 = new Vector2(_goal.x - pos.x, _goal.z - pos.z);
+            Vector2 v2 = new Vector2(goal.x - pos.x, goal.z - pos.z);
 
             float moduloV2 = v2.magnitude;
             if (moduloV2 == 0)
@@ -147,11 +189,11 @@ namespace yourvrexperience.Utils
             }
             float angulo = (v1.x * v2.x) + (v1.y * v2.y);
 
-            float increment = _speedRotation;
+            float increment = speedRotation;
             if (angulo > 0.95) increment = (1 - angulo);
 
             // ASK DIRECTION OF THE ROTATION TO REACH THE GOAL
-            float directionLeft = AskDirectionPoint(new Vector2(pos.x, pos.z), yaw, new Vector2(_goal.x, _goal.z));
+            float directionLeft = AskDirectionPoint(new Vector2(pos.x, pos.z), yaw, new Vector2(goal.x, goal.z));
             float yawGoal = yaw;
             if (directionLeft > 0)
             {
@@ -167,11 +209,11 @@ namespace yourvrexperience.Utils
 
             // MOVE AND ROTATE
             yawGoal = yawGoal * Mathf.Rad2Deg;
-            if ((_speedMovement != -1) && (_speedMovement != 0))
+            if ((speedMovement != -1) && (speedMovement != 0))
             {
-                Vector3 movement = new Vector3((vf.x * _speedMovement * Time.deltaTime),
+                Vector3 movement = new Vector3((vf.x * speedMovement * Time.deltaTime),
                                                 0,
-                                                (vf.y * _speedMovement * Time.deltaTime)) + ((normalVector.z != 0) ? Vector3.zero : (ApplyGravity ? (Physics.gravity * Time.deltaTime) : Vector3.zero));
+                                                (vf.y * speedMovement * Time.deltaTime)) + ((normalVector.z != 0) ? Vector3.zero : (ApplyGravity ? (Physics.gravity * Time.deltaTime) : Vector3.zero));
 
                 this.gameObject.transform.localPosition += movement;
             }
@@ -180,7 +222,7 @@ namespace yourvrexperience.Utils
             return vf;
         }
 
-        public static float AskDirectionPoint(Vector2 pos, float yaw, Vector2 objetive)
+        public float AskDirectionPoint(Vector2 pos, float yaw, Vector2 objetive)
         {
             // Create Plane
             Vector3 p1 = new Vector3(pos.x, 0.0f, pos.y);
@@ -218,6 +260,49 @@ namespace yourvrexperience.Utils
 
             // Check if point objective is in one side or another of the planeppos si centro del plano
             return (((objetive.x * r.x) + (objetive.y * r.z)) + d);
+        }
+
+        public bool IsMoving()
+        {
+            return ((_path != null) && (_currentWaypoint != -1));
+        }
+
+        public void Stop()
+        {
+            _currentWaypoint = -1;
+            _path = null;
+        }
+
+        public void Force()
+        {
+            if (_path != null)
+            {
+                _currentWaypoint = _path.Count - 1;
+            }            
+        }
+
+        public bool Move()
+        {
+            if ((_path != null) && (_currentWaypoint!=-1))
+            {
+                if (_currentWaypoint <= _path.Count)
+                {
+                    MoveTowardsGoal(_path[_currentWaypoint], _speedMovement, _speedRotation);
+                    float distanceToWaypoint = Utilities.DistanceXZ(_path[_currentWaypoint], this.gameObject.transform.position);
+                    if (distanceToWaypoint < _distanceDetection)
+                    {
+                        _currentWaypoint++;
+                        if (_currentWaypoint >= _path.Count)
+                        {
+                            ReportCompletedPath();
+                            _currentWaypoint = -1;
+                            _path = null;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }
