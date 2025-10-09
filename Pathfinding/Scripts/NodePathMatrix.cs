@@ -19,19 +19,11 @@ namespace yourvrexperience.Utils
 		public float ValueSearch;
 		public int PreviousCell;
 
-		// -------------------------------------------
-		/* 
-		 * Constructor
-		 */
 		public NodePathMatrix()
 		{
 			Reset();
 		}
 
-		// -------------------------------------------
-		/* 
-		 * Reset
-		 */
 		public void Reset()
 		{
 			X = -1;

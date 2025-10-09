@@ -67,15 +67,15 @@ namespace yourvrexperience.Utils
         // ----------------------------------------------
         // PRIVATE MEMBERS
         // ----------------------------------------------	
-        private List<PathFindingInstance> m_pathfindingInstances = new List<PathFindingInstance>();
-        private bool m_isPrecalculated = false;
+        private List<PathFindingInstance> pathfindingInstances = new List<PathFindingInstance>();
+        private bool _isPrecalculated = false;
 
         // ----------------------------------------------
         // GETTERS/SETTERS
         // ----------------------------------------------	
         public bool IsPrecalculated
         {
-            get { return m_isPrecalculated; }
+            get { return _isPrecalculated; }
         }
 
         // ---------------------------------------------------
@@ -102,15 +102,15 @@ namespace yourvrexperience.Utils
         /**
 		 * Set the height of the waypoints
 		 */
-        public void SetWaypointHeight(float _waypointHeight, int _layer = -1)
+        public void SetWaypointHeight(float waypointHeight, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                m_pathfindingInstances[m_pathfindingInstances.Count - 1].WaypointHeight = _waypointHeight;
+                pathfindingInstances[pathfindingInstances.Count - 1].WaypointHeight = waypointHeight;
             }
             else
             {
-                m_pathfindingInstances[_layer].WaypointHeight = _waypointHeight;
+                pathfindingInstances[layer].WaypointHeight = waypointHeight;
             }
         }
 
@@ -118,15 +118,15 @@ namespace yourvrexperience.Utils
         /**
 		 * Set the height of the waypoints
 		 */
-        public void SetPathWaypointHeight(float _pathHeight, int _layer = -1)
+        public void SetPathWaypointHeight(float pathHeight, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                m_pathfindingInstances[m_pathfindingInstances.Count - 1].PathCheckHeight = _pathHeight;
+                pathfindingInstances[pathfindingInstances.Count - 1].PathCheckHeight = pathHeight;
             }
             else
             {
-                m_pathfindingInstances[_layer].PathCheckHeight = _pathHeight;
+                pathfindingInstances[layer].PathCheckHeight = pathHeight;
             }
         }
 
@@ -134,15 +134,15 @@ namespace yourvrexperience.Utils
         /**
 		 * Get the content of the cell in the asked position
 		 */
-        public bool CheckOutsideBoard(float _x, float _y, float _z, int _layer = -1)
+        public bool CheckOutsideBoard(float x, float y, float z, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].CheckOutsideBoard(_x, _y, _z);
+                return pathfindingInstances[pathfindingInstances.Count - 1].CheckOutsideBoard(x, y, z);
             }
             else
             {
-                return m_pathfindingInstances[_layer].CheckOutsideBoard(_x, _y, _z);
+                return pathfindingInstances[layer].CheckOutsideBoard(x, y, z);
             }
         }        
 
@@ -150,15 +150,15 @@ namespace yourvrexperience.Utils
         /**
 		 * Get the cell of the current position
 		 */
-        public Vector3 GetCellPositionInMatrix(float _x, float _y, float _z, int _layer = -1)
+        public Vector3 GetCellPositionInMatrix(float x, float y, float z, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].GetCellPositionInMatrix(_x, _y, _z);
+                return pathfindingInstances[pathfindingInstances.Count - 1].GetCellPositionInMatrix(x, y, z);
             }
             else
             {
-                return m_pathfindingInstances[_layer].GetCellPositionInMatrix(_x, _y, _z);
+                return pathfindingInstances[layer].GetCellPositionInMatrix(x, y, z);
             }
         }
 
@@ -166,15 +166,15 @@ namespace yourvrexperience.Utils
         /**
 		 * Get the content of the cell in the asked position
 		 */
-        public int GetCellContentByRealPosition(float _x, float _y, float _z, int _layer = -1)
+        public int GetCellContentByRealPosition(float x, float y, float z, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].GetCellContentByRealPosition(_x, _y, _z);
+                return pathfindingInstances[pathfindingInstances.Count - 1].GetCellContentByRealPosition(x, y, z);
             }
             else
             {
-                return m_pathfindingInstances[_layer].GetCellContentByRealPosition(_x, _y, _z);
+                return pathfindingInstances[layer].GetCellContentByRealPosition(x, y, z);
             }
         }
 
@@ -182,18 +182,18 @@ namespace yourvrexperience.Utils
         /**
 		 * Will initialize the structure to be able to use it
 		 */
-        public void AllocateMemoryMatrix(int _cols,
-                                        int _rows,
-                                        int _layers,
-                                        float _cellSize,
-                                        float _xIni,
-                                        float _yIni,
-                                        float _zIni,
-                                        int[][][] _initContent = null)
+        public void AllocateMemoryMatrix(int cols,
+                                        int rows,
+                                        int layers,
+                                        float cellSize,
+                                        float xIni,
+                                        float yIni,
+                                        float zIni,
+                                        int[][][] initContent = null)
         {
             GameObject newPathfindingInstance = Instantiate(PathFindingPrefab);
-            newPathfindingInstance.GetComponent<PathFindingInstance>().AllocateMemoryMatrix(_cols, _rows, _layers, _cellSize, _xIni, _yIni, _zIni, _initContent);
-            m_pathfindingInstances.Add(newPathfindingInstance.GetComponent<PathFindingInstance>());
+            newPathfindingInstance.GetComponent<PathFindingInstance>().AllocateMemoryMatrix(cols, rows, layers, cellSize, xIni, yIni, zIni, initContent);
+            pathfindingInstances.Add(newPathfindingInstance.GetComponent<PathFindingInstance>());
         }
 
         // ---------------------------------------------------
@@ -202,9 +202,9 @@ namespace yourvrexperience.Utils
 		 */
         public void DestroyInstances()
         {
-            if (m_pathfindingInstances != null)
+            if (pathfindingInstances != null)
             {
-                foreach (PathFindingInstance instance in m_pathfindingInstances)
+                foreach (PathFindingInstance instance in pathfindingInstances)
                 {
                     if (instance != null)
                     {
@@ -214,7 +214,7 @@ namespace yourvrexperience.Utils
                         GameObject.Destroy(instance.gameObject);
                     }
                 }
-                m_pathfindingInstances.Clear();
+                pathfindingInstances.Clear();
             }
         }
 
@@ -222,11 +222,11 @@ namespace yourvrexperience.Utils
         /**
 		 * Will dynamically calculate the collisions
 		 */
-        public void CalculateCollisions(int _layerToCheck = 0, params string[] _layersToIgnore)
+        public void CalculateCollisions(int layerToCheck = 0, params string[] layersToIgnore)
         {
-            foreach (PathFindingInstance pathInstance in m_pathfindingInstances)
+            foreach (PathFindingInstance pathInstance in pathfindingInstances)
             {
-                pathInstance.CalculateCollisions(_layerToCheck, _layersToIgnore);
+                pathInstance.CalculateCollisions(layerToCheck, layersToIgnore);
             }
         }
 
@@ -236,7 +236,7 @@ namespace yourvrexperience.Utils
 		 */
         public void ClearDotPaths()
         {
-            foreach (PathFindingInstance pathInstance in m_pathfindingInstances)
+            foreach (PathFindingInstance pathInstance in pathfindingInstances)
             {
                 pathInstance.ClearDotPaths();
             }
@@ -246,15 +246,15 @@ namespace yourvrexperience.Utils
         /**
 		 * CreateSingleDot
 		 */
-        public GameObject CreateSingleDot(Vector3 _position, float _size, int _type, int _layer = -1)
+        public GameObject CreateSingleDot(Vector3 position, float size, int type, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].CreateSingleDot(_position, _size, _type);
+                return pathfindingInstances[pathfindingInstances.Count - 1].CreateSingleDot(position, size, type);
             }
             else
             {
-                return m_pathfindingInstances[_layer].CreateSingleDot(_position, _size, _type);
+                return pathfindingInstances[layer].CreateSingleDot(position, size, type);
             }
         }
 
@@ -263,40 +263,40 @@ namespace yourvrexperience.Utils
         /**
 		 * RenderDebugMatrixConstruction
 		 */
-        public void RenderDebugMatrixConstruction(int _layer = -1, float _timeToDisplayCollisions = 0)
+        public void RenderDebugMatrixConstruction(int layer = -1, float timeToDisplayCollisions = 0)
         {
-            if (_timeToDisplayCollisions > 0)
+            if (timeToDisplayCollisions > 0)
             {
-                if (_layer == -1)
+                if (layer == -1)
                 {
                     // RENDER ALL LAYERS
-                    for (int i = 0; i < m_pathfindingInstances.Count; i++)
+                    for (int i = 0; i < pathfindingInstances.Count; i++)
                     {
-                        m_pathfindingInstances[i].RenderDebugMatrixConstruction(0, m_pathfindingInstances.Count - 1 - i, _timeToDisplayCollisions);
+                        pathfindingInstances[i].RenderDebugMatrixConstruction(0, pathfindingInstances.Count - 1 - i, timeToDisplayCollisions);
                     }
                 }
                 else
                 {
-                    m_pathfindingInstances[_layer].RenderDebugMatrixConstruction(_layer, -1, _timeToDisplayCollisions);
+                    pathfindingInstances[layer].RenderDebugMatrixConstruction(layer, -1, timeToDisplayCollisions);
                 }
             }
         }
 
-        public void DestroyDebugMatrixConstruction(int _layer = -1)
+        public void DestroyDebugMatrixConstruction(int layer = -1)
         {
-            if (m_pathfindingInstances != null)
+            if (pathfindingInstances != null)
             {
-                if (_layer == -1)
+                if (layer == -1)
                 {
                     // RENDER ALL LAYERS
-                    for (int i = 0; i < m_pathfindingInstances.Count; i++)
+                    for (int i = 0; i < pathfindingInstances.Count; i++)
                     {
-                        m_pathfindingInstances[i].DestroyDebugMatrixConstruction();
+                        pathfindingInstances[i].DestroyDebugMatrixConstruction();
                     }
                 }
                 else
                 {
-                    m_pathfindingInstances[_layer].DestroyDebugMatrixConstruction();
+                    pathfindingInstances[layer].DestroyDebugMatrixConstruction();
                 }
             }
         }
@@ -305,56 +305,56 @@ namespace yourvrexperience.Utils
         /**
 		 * CheckBlockedPath
 		 */
-        public bool CheckBlockedPath(Vector3 _origin, Vector3 _target, float _dotSize = 3, params string[] _masksToIgnore)
+        public bool CheckBlockedPath(Vector3 origin, Vector3 target, float dotSize = 3, params string[] masksToIgnore)
         {
-            return (RaycastingTools.GetCollidedObjectBySegmentTargetIgnore(_target, _origin, _masksToIgnore));
+            return (RaycastingTools.GetCollidedObjectBySegmentTargetIgnore(target, origin, masksToIgnore));
         }
 
         // ---------------------------------------------------
         /**
 		* Gets the path between 2 positions
 		*/
-        public Vector3 GetPath(Vector3 _origin,
-                                Vector3 _destination,
-                                List<Vector3> _waypoints,
-                                int _oneLayer,
-                                bool _raycastFilter,
-                                int _limitSearch = -1,
-                                params string[] _masksToIgnore)
+        public Vector3 GetPath(Vector3 origin,
+                                Vector3 destination,
+                                List<Vector3> waypoints,
+                                int oneLayer,
+                                bool raycastFilter,
+                                int limitSearch = -1,
+                                params string[] masksToIgnore)
         {
             // USE THE LAST PATH
-            return m_pathfindingInstances[m_pathfindingInstances.Count - 1].GetPath(_origin, _destination, _waypoints, _oneLayer, _raycastFilter, _limitSearch, _masksToIgnore);
+            return pathfindingInstances[pathfindingInstances.Count - 1].GetPath(origin, destination, waypoints, oneLayer, raycastFilter, limitSearch, masksToIgnore);
         }
 
         // ---------------------------------------------------
         /**
 		* Gets the path between 2 positions
 		*/
-        public Vector3 GetPathLayer(int _layer,
-                                Vector3 _origin,
-                                Vector3 _destination,
-                                List<Vector3> _waypoints,
-                                int _oneLayer,
-                                bool _raycastFilter,
-                                int _limitSearch = -1,
-                                params string[] _masksToIgnore)
+        public Vector3 GetPathLayer(int layer,
+                                Vector3 origin,
+                                Vector3 destination,
+                                List<Vector3> waypoints,
+                                int oneLayer,
+                                bool raycastFilter,
+                                int limitSearch = -1,
+                                params string[] masksToIgnore)
         {
-            return m_pathfindingInstances[_layer].GetPath(_origin, _destination, _waypoints, _oneLayer, _raycastFilter, _limitSearch, _masksToIgnore);
+            return pathfindingInstances[layer].GetPath(origin, destination, waypoints, oneLayer, raycastFilter, limitSearch, masksToIgnore);
         }
 
         // ---------------------------------------------------
         /**
 		* Check if the position is a free one
 		*/
-        public Vector3 IsPositionInFreeNode(Vector3 _position, int _layer = -1)
+        public Vector3 IsPositionInFreeNode(Vector3 position, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].IsPositionInFreeNode(_position);
+                return pathfindingInstances[pathfindingInstances.Count - 1].IsPositionInFreeNode(position);
             }
             else
             {
-                return m_pathfindingInstances[_layer].IsPositionInFreeNode(_position);
+                return pathfindingInstances[layer].IsPositionInFreeNode(position);
             }
         }
 
@@ -362,15 +362,15 @@ namespace yourvrexperience.Utils
         /**
 		* Gets the path between 2 positions
 		*/
-        public Vector3 GetClosestFreeNode(Vector3 _position, int _layer = -1)
+        public Vector3 GetClosestFreeNode(Vector3 position, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].GetClosestFreeNode(_position);
+                return pathfindingInstances[pathfindingInstances.Count - 1].GetClosestFreeNode(position);
             }
             else
             {
-                return m_pathfindingInstances[_layer].GetClosestFreeNode(_position);
+                return pathfindingInstances[layer].GetClosestFreeNode(position);
             }
         }
 
@@ -378,15 +378,15 @@ namespace yourvrexperience.Utils
         /**
 		* Gets the size of the cell
 		*/
-        public float GetCellSize(int _layer = -1)
+        public float GetCellSize(int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].CellSize;
+                return pathfindingInstances[pathfindingInstances.Count - 1].CellSize;
             }
             else
             {
-                return m_pathfindingInstances[_layer].CellSize;
+                return pathfindingInstances[layer].CellSize;
             }
         }
 
@@ -395,15 +395,15 @@ namespace yourvrexperience.Utils
         /**
 		* GetRandomFreeCellBorder
 		*/
-        public Vector3 GetRandomFreeCellBorder(int _layer = -1)
+        public Vector3 GetRandomFreeCellBorder(int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].GetRandomFreeCellBorder();
+                return pathfindingInstances[pathfindingInstances.Count - 1].GetRandomFreeCellBorder();
             }
             else
             {
-                return m_pathfindingInstances[_layer].GetRandomFreeCellBorder();
+                return pathfindingInstances[layer].GetRandomFreeCellBorder();
             }
         }
 
@@ -411,15 +411,15 @@ namespace yourvrexperience.Utils
         /**
 		* CheckOutsideBoard
 		*/
-        public bool CheckOutsideBoard(Vector3 _position, int _layer = -1)
+        public bool CheckOutsideBoard(Vector3 position, int layer = -1)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                return m_pathfindingInstances[m_pathfindingInstances.Count - 1].CheckOutsideBoard(_position.x, _position.y, _position.z);
+                return pathfindingInstances[pathfindingInstances.Count - 1].CheckOutsideBoard(position.x, position.y, position.z);
             }
             else
             {
-                return m_pathfindingInstances[_layer].CheckOutsideBoard(_position.x, _position.y, _position.z);
+                return pathfindingInstances[layer].CheckOutsideBoard(position.x, position.y, position.z);
             }
         }
 
@@ -427,15 +427,15 @@ namespace yourvrexperience.Utils
         /**
 		* Precalculate all the paths
 		*/
-        public void CalculateAll(string _filenamePath, int _layer = -1, bool _raycastFilter = false, params string[] _masksToIgnore)
+        public void CalculateAll(string filenamePath, int layer = -1, bool raycastFilter = false, params string[] masksToIgnore)
         {
-            if (_layer == -1)
+            if (layer == -1)
             {
-                m_pathfindingInstances[m_pathfindingInstances.Count - 1].CalculateAll(_filenamePath, _raycastFilter, _masksToIgnore);
+                pathfindingInstances[pathfindingInstances.Count - 1].CalculateAll(filenamePath, raycastFilter, masksToIgnore);
             }
             else
             {
-                m_pathfindingInstances[_layer].CalculateAll(_filenamePath, _raycastFilter, _masksToIgnore);
+                pathfindingInstances[layer].CalculateAll(filenamePath, raycastFilter, masksToIgnore);
             }
         }
 
@@ -443,16 +443,16 @@ namespace yourvrexperience.Utils
         /**
 		 * Load data of pathfinding
 		*/
-        public void LoadFile(string _filenamePath, int _layer = -1)
+        public void LoadFile(string filenamePath, int layer = -1)
         {
-            m_isPrecalculated = true;
-            if (_layer == -1)
+            _isPrecalculated = true;
+            if (layer == -1)
             {
-                m_pathfindingInstances[m_pathfindingInstances.Count - 1].LoadFile(_filenamePath);
+                pathfindingInstances[pathfindingInstances.Count - 1].LoadFile(filenamePath);
             }
             else
             {
-                m_pathfindingInstances[_layer].LoadFile(_filenamePath);
+                pathfindingInstances[layer].LoadFile(filenamePath);
             }
         }
 
@@ -460,16 +460,16 @@ namespace yourvrexperience.Utils
         /**
 		 * Load data of pathfinding
 		*/
-        public void LoadAsset(TextAsset _textAsset, int _layer = -1)
+        public void LoadAsset(TextAsset textAsset, int layer = -1)
         {
-            m_isPrecalculated = true;
-            if (_layer == -1)
+            _isPrecalculated = true;
+            if (layer == -1)
             {
-                m_pathfindingInstances[m_pathfindingInstances.Count - 1].LoadAsset(_textAsset);
+                pathfindingInstances[pathfindingInstances.Count - 1].LoadAsset(textAsset);
             }
             else
             {
-                m_pathfindingInstances[_layer].LoadAsset(_textAsset);
+                pathfindingInstances[layer].LoadAsset(textAsset);
             }
         }
     }

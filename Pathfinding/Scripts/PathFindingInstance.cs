@@ -21,82 +21,82 @@ namespace yourvrexperience.Utils
         // ----------------------------------------------
         // PRIVATE MEMBERS
         // ----------------------------------------------	
-        private int m_cols;                     //! Cols of the matrix
-		private int m_rows;                     //! Rows of the matrix
-		private int m_layers;                   //! Height of the matrix
-		private int m_totalCells;               //! Total number of cells
-		private float m_cellSize;               //! Size of the cell
-		private float m_xIni;                   //! Initial shift X
-		private float m_yIni;                   //! Initial shift Y
-		private float m_zIni;                   //! Initial shift Z
-        private float m_waypointHeight = 2;
+        private int _cols;                     //! Cols of the matrix
+		private int _rows;                     //! Rows of the matrix
+		private int _layers;                   //! Height of the matrix
+		private int _totalCells;               //! Total number of cells
+		private float _cellSize;               //! Size of the cell
+		private float _xIni;                   //! Initial shift X
+		private float _yIni;                   //! Initial shift Y
+		private float _zIni;                   //! Initial shift Z
+        private float _waypointHeight = 2;
 
-        private int m_sizeMatrix;
-		private int m_numCellsGenerated;
+        private int _sizeMatrix;
+		private int _numCellsGenerated;
 
-		private int[] m_floor;
+		private int[] _floor;
 
-		private int[][] m_cells;                //! List of cells to apply the pathfinding
+		private int[][] _cells;                //! List of cells to apply the pathfinding
 
-		private List<NodePathMatrix> m_matrixAI;
-		private List<GameObject> m_dotPaths = new List<GameObject>();
+		private List<NodePathMatrix> _matrixAI;
+		private List<GameObject> _dotPaths = new List<GameObject>();
 
-        private PrecalculatedData m_vectorPaths;
+        private PrecalculatedData _vectorPaths;
 
-        private float m_pathCheckHeight = 1;
+        private float _pathCheckHeight = 1;
 
         // ----------------------------------------------
         // SETTERS/GETTERS
         // ----------------------------------------------	
         public int Cols
 		{
-			get { return m_cols; }
-			set { m_cols = value; }
+			get { return _cols; }
+			set { _cols = value; }
 		}
 		public int Rows
 		{
-			get { return m_rows; }
-			set { m_rows = value; }
+			get { return _rows; }
+			set { _rows = value; }
 		}
 		public int Height
 		{
-			get { return m_layers; }
-			set { m_layers = value; }
+			get { return _layers; }
+			set { _layers = value; }
 		}
 		public int TotalCells
 		{
-			get { return m_totalCells; }
-			set { m_totalCells = value; }
+			get { return _totalCells; }
+			set { _totalCells = value; }
 		}
 		public float CellSize
 		{
-			get { return m_cellSize; }
-			set { m_cellSize = value; }
+			get { return _cellSize; }
+			set { _cellSize = value; }
 		}
 		public float xIni
 		{
-			get { return m_xIni; }
-			set { m_xIni = value; }
+			get { return _xIni; }
+			set { _xIni = value; }
 		}
 		public float yIni
 		{
-			get { return m_yIni; }
-			set { m_yIni = value; }
+			get { return _yIni; }
+			set { _yIni = value; }
 		}
 		public float zIni
 		{
-			get { return m_zIni; }
-			set { m_zIni = value; }
+			get { return _zIni; }
+			set { _zIni = value; }
 		}
         public float WaypointHeight
         {
-            get { return m_waypointHeight; }
-            set { m_waypointHeight = value; }
+            get { return _waypointHeight; }
+            set { _waypointHeight = value; }
         }
         public float PathCheckHeight
         {
-            get { return m_pathCheckHeight; }
-            set { m_pathCheckHeight = value; }
+            get { return _pathCheckHeight; }
+            set { _pathCheckHeight = value; }
         }
 
 
@@ -114,11 +114,11 @@ namespace yourvrexperience.Utils
 		 */
 		public void ClearDotPaths()
 		{
-			foreach (GameObject dot in m_dotPaths)
+			foreach (GameObject dot in _dotPaths)
 			{
 				Destroy(dot);
 			}
-			m_dotPaths.Clear();
+			_dotPaths.Clear();
 		}
 
 		// ---------------------------------------------------
@@ -127,7 +127,7 @@ namespace yourvrexperience.Utils
 		 */
 		public void ClearMemoryAllocated()
 		{
-			if (m_matrixAI != null) m_matrixAI.Clear();
+			if (_matrixAI != null) _matrixAI.Clear();
 		}
 
 		// ---------------------------------------------------
@@ -143,15 +143,15 @@ namespace yourvrexperience.Utils
 		/**
 		 * CreateDotPath
 		 */
-		private void CreateDotPath(Vector3 _position, int _totalDots)
+		private void CreateDotPath(Vector3 position, int totalDots)
 		{
 			if (PathFindingController.Instance.DebugPathPoints)
 			{
-				GameObject newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReferenceWay, _position, new Quaternion());
+				GameObject newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReferenceWay, position, new Quaternion());
                 // float cellSize = (m_cellSize / 3) + (1.2f * (float)(m_dotPaths.Count + 1) / (float)_totalDots);
-                float cellSize = (m_cellSize / 2);
+                float cellSize = (_cellSize / 2);
                 newdot.transform.localScale = new Vector3(cellSize, cellSize, cellSize);
-				m_dotPaths.Add(newdot);
+				_dotPaths.Add(newdot);
 			}
 		}
 
@@ -159,10 +159,10 @@ namespace yourvrexperience.Utils
         /**
 		 * CreateSingleDot
 		 */
-        public GameObject CreateSingleDot(Vector3 _position, float _size, int _type)
+        public GameObject CreateSingleDot(Vector3 position, float size, int type)
         {
             GameObject prefabDot = PathFindingController.Instance.DotReferenceWay;
-            switch (_type)
+            switch (type)
             {
                 case 1:
                     prefabDot = PathFindingController.Instance.DotReference;
@@ -177,8 +177,8 @@ namespace yourvrexperience.Utils
                     break;
             }
 
-            GameObject newdot = (GameObject)Instantiate(prefabDot, _position, new Quaternion());
-            newdot.transform.localScale = new Vector3(_size, _size, _size);
+            GameObject newdot = (GameObject)Instantiate(prefabDot, position, new Quaternion());
+            newdot.transform.localScale = new Vector3(size, size, size);
             return newdot;
         }
 
@@ -186,88 +186,88 @@ namespace yourvrexperience.Utils
         /**
 		 * CreateDot
 		 */
-        private void CreateDot(Vector3 _position, bool _enableRenderer = true, float _scaleSize = 3)
+        private void CreateDot(Vector3 position, bool enableRenderer = true, float scaleSize = 3)
         {
-            GameObject newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReferenceWay, _position, new Quaternion());
-            if (!_enableRenderer)
+            GameObject newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReferenceWay, position, new Quaternion());
+            if (!enableRenderer)
             {
                 newdot.GetComponent<Renderer>().enabled = true;
             }
-            float cellSize = (m_cellSize / _scaleSize);
+            float cellSize = (_cellSize / scaleSize);
             newdot.transform.localScale = new Vector3(cellSize, cellSize, cellSize);
-            m_dotPaths.Add(newdot);
+            _dotPaths.Add(newdot);
         }
 
         // ---------------------------------------------------
         /**
 		 * CheckBlockedPath
 		 */
-        public bool CheckBlockedPath(Vector3 _origin, Vector3 _target, float _dotSize = 3, params string[] _masksToIgnore)
+        public bool CheckBlockedPath(Vector3 origin, Vector3 target, float dotSize = 3, params string[] masksToIgnore)
         {
-            return (RaycastingTools.GetCollidedObjectBySegmentTargetIgnore(_target, _origin, _masksToIgnore));
+            return (RaycastingTools.GetCollidedObjectBySegmentTargetIgnore(target, origin, masksToIgnore));
         }
 
         // ---------------------------------------------------
         /**
 		 * Will initialize the structure to be able to use it
 		 */
-        public void AllocateMemoryMatrix(int _cols,
-										int _rows,
-										int _layers,
-										float _cellSize,
-										float _xIni,
-										float _yIni,
-										float _zIni,
-										int[][][] _initContent = null)
+        public void AllocateMemoryMatrix(int cols,
+										int rows,
+										int layers,
+										float cellSize,
+										float xIni,
+										float yIni,
+										float zIni,
+										int[][][] initContent = null)
 		{
-			m_cols = _rows;
-			m_rows = _cols;
-			m_layers = _layers;
-			m_totalCells = m_cols * m_rows * m_layers;
-			m_cellSize = _cellSize;
-			m_xIni = _xIni;
-			m_yIni = _yIni;
-			m_zIni = _zIni;
+			_cols = rows;
+			_rows = cols;
+			_layers = layers;
+			_totalCells = _cols * _rows * _layers;
+			_cellSize = cellSize;
+			_xIni = xIni;
+			_yIni = yIni;
+			_zIni = zIni;
 
 			// INIT
-			m_cells = new int[m_layers][];
-			for (int z = 0; z < m_layers; z++)
+			_cells = new int[_layers][];
+			for (int z = 0; z < _layers; z++)
 			{
-				m_cells[z] = new int[m_totalCells];
-				for (int x = 0; x < m_rows; x++)
+				_cells[z] = new int[_totalCells];
+				for (int x = 0; x < _rows; x++)
 				{
-					for (int y = 0; y < m_cols; y++)
+					for (int y = 0; y < _cols; y++)
 					{
-						m_cells[z][(x * m_cols) + y] = PathFindingController.CELL_EMPTY;
+						_cells[z][(x * _cols) + y] = PathFindingController.CELL_EMPTY;
 					}
 				}
 			}
 
             // COLLISION
-            if (_initContent != null)
+            if (initContent != null)
             {
-                for (int z = 0; z < m_layers; z++)
+                for (int z = 0; z < _layers; z++)
                 {
-                    for (int x = 0; x < m_rows; x++)
+                    for (int x = 0; x < _rows; x++)
                     {
-                        for (int y = 0; y < m_cols; y++)
+                        for (int y = 0; y < _cols; y++)
                         {
-                            int cellContent = _initContent[z][x][y];
-                            m_cells[z][(x * m_cols) + y] = ((cellContent != 0) ? PathFindingController.CELL_COLLISION : PathFindingController.CELL_EMPTY);
+                            int cellContent = initContent[z][x][y];
+                            _cells[z][(x * _cols) + y] = ((cellContent != 0) ? PathFindingController.CELL_COLLISION : PathFindingController.CELL_EMPTY);
                         }
                     }
                 }
             }
 
-            m_matrixAI = new List<NodePathMatrix>();
-			for (int i = 0; i < m_totalCells; i++)
+            _matrixAI = new List<NodePathMatrix>();
+			for (int i = 0; i < _totalCells; i++)
 			{
-				m_matrixAI.Add(new NodePathMatrix());
+				_matrixAI.Add(new NodePathMatrix());
 			}
 
 			if (PathFindingController.DEBUG_MATRIX_CONSTRUCTION)
 			{
-                if (_initContent == null)
+                if (initContent == null)
                 {
                     RenderDebugMatrixConstruction(0);
                 }				
@@ -279,18 +279,18 @@ namespace yourvrexperience.Utils
 		/**
 		 * SetContentCollisionCell
 		*/
-		public void SetContentCollisionCell(Vector3 _posMatrix, int _content)
+		public void SetContentCollisionCell(Vector3 posMatrix, int content)
 		{
-			m_cells[(int)_posMatrix.z][(int)((_posMatrix.x * m_cols) + _posMatrix.y)] = _content;
+			_cells[(int)posMatrix.z][(int)((posMatrix.x * _cols) + posMatrix.y)] = content;
 		}
 
 		// ---------------------------------------------------
 		/**
 		 * SetContentCollisionFloor
 		*/
-		public void SetContentCollisionFloor(Vector3 _posMatrix, int _content)
+		public void SetContentCollisionFloor(Vector3 posMatrix, int content)
 		{
-			m_floor[(int)((_posMatrix.x * m_cols) + _posMatrix.y)] = _content;
+			_floor[(int)((posMatrix.x * _cols) + posMatrix.y)] = content;
         }
 
         private List<GameObject> m_temporalDots = new List<GameObject>();
@@ -315,11 +315,11 @@ namespace yourvrexperience.Utils
         /**
          * Render an sphere int the empty cells to check if the matrix was build right
          */
-        public void RenderDebugMatrixConstruction(int _layerToCheck = 0, int _heightLayer = -1, float _timeToDisplayCollisions = 0)
+        public void RenderDebugMatrixConstruction(int layerToCheck = 0, int heightLayer = -1, float timeToDisplayCollisions = 0)
 		{
-			if (m_dotPaths.Count > 0) return;
+			if (_dotPaths.Count > 0) return;
 
-            if (_timeToDisplayCollisions > 0)
+            if (timeToDisplayCollisions > 0)
             {
                 if (m_temporalDots.Count > 0)
                 {
@@ -331,17 +331,17 @@ namespace yourvrexperience.Utils
                 m_temporalDots.Clear();
             }
 
-            for (int x = 0; x < m_rows; x++)
+            for (int x = 0; x < _rows; x++)
 			{
-				for (int y = 0; y < m_cols; y++)
+				for (int y = 0; y < _cols; y++)
 				{
-					int cellContent = m_cells[_layerToCheck][(x * m_cols) + y];
-                    float finalHeightDot = 0f * m_cellSize + m_yIni;
-                    if (_heightLayer != -1)
+					int cellContent = _cells[layerToCheck][(x * _cols) + y];
+                    float finalHeightDot = 0f * _cellSize + _yIni;
+                    if (heightLayer != -1)
                     {
-                        finalHeightDot += (_heightLayer * (m_cellSize * 2));
+                        finalHeightDot += (heightLayer * (_cellSize * 2));
                     }
-                    Vector3 pos = new Vector3((float)((x * m_cellSize)) + (m_cellSize / 2) + m_xIni, finalHeightDot, (float)((y * m_cellSize)) + (m_cellSize / 2) + m_zIni);
+                    Vector3 pos = new Vector3((float)((x * _cellSize)) + (_cellSize / 2) + _xIni, finalHeightDot, (float)((y * _cellSize)) + (_cellSize / 2) + _zIni);
                     GameObject newdot;
                     if (cellContent == PathFindingController.CELL_EMPTY)
 					{
@@ -351,18 +351,18 @@ namespace yourvrexperience.Utils
                     {
                         newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReference, this.gameObject.transform);
                     }
-                    newdot.transform.localScale = new Vector3(m_cellSize / 3, m_cellSize / 3, m_cellSize / 3);
+                    newdot.transform.localScale = new Vector3(_cellSize / 3, _cellSize / 3, _cellSize / 3);
                     // newdot.transform.localScale = new Vector3(m_cellSize / 2, m_cellSize / 2, m_cellSize / 2);
                     newdot.transform.position = pos;
                     newdot.transform.parent = PathFindingController.Instance.transform;
-                    if (_timeToDisplayCollisions > 0)
+                    if (timeToDisplayCollisions > 0)
                     {
                         m_temporalDots.Add(newdot);
-                        GameObject.Destroy(newdot, _timeToDisplayCollisions);
+                        GameObject.Destroy(newdot, timeToDisplayCollisions);
                     }
                     else
                     {
-                        m_dotPaths.Add(newdot);
+                        _dotPaths.Add(newdot);
                     }                    
                 }
 			}
@@ -372,59 +372,59 @@ namespace yourvrexperience.Utils
         /**
 		 * Will dynamically calculate the collisions
 		 */
-        public void CalculateCollisions(int _layerToCheck = 0, params string[] _layersToIgnore)
+        public void CalculateCollisions(int layerToCheck = 0, params string[] layersToIgnore)
         {
-            m_cells = new int[m_layers][];
-            for (int z = 0; z < m_layers; z++)
+            _cells = new int[_layers][];
+            for (int z = 0; z < _layers; z++)
             {
-                m_cells[z] = new int[m_totalCells];
-                for (int x = 0; x < m_rows; x++)
+                _cells[z] = new int[_totalCells];
+                for (int x = 0; x < _rows; x++)
                 {
-                    for (int y = 0; y < m_cols; y++)
+                    for (int y = 0; y < _cols; y++)
                     {
-                        m_cells[z][(x * m_cols) + y] = PathFindingController.CELL_EMPTY;
+                        _cells[z][(x * _cols) + y] = PathFindingController.CELL_EMPTY;
                     }
                 }
             }
 
-            for (int x = 0; x < m_rows; x++)
+            for (int x = 0; x < _rows; x++)
             {
-                for (int y = 0; y < m_cols; y++)
+                for (int y = 0; y < _cols; y++)
                 {
-                    int cellContent = m_cells[_layerToCheck][(x * m_cols) + y];
-                    Vector3 posAir = new Vector3((float)((x * m_cellSize)) + (m_cellSize / 2) + m_xIni, 1000, (float)((y * m_cellSize)) + (m_cellSize / 2) + m_zIni);
-                    Vector3 posAir1 = new Vector3(posAir.x - (m_cellSize / 3), posAir.y, posAir.z - (m_cellSize / 3));
-                    Vector3 posAir2 = new Vector3(posAir.x + (m_cellSize / 3), posAir.y, posAir.z - (m_cellSize / 3));
-                    Vector3 posAir3 = new Vector3(posAir.x - (m_cellSize / 3), posAir.y, posAir.z + (m_cellSize / 3));
-                    Vector3 posAir4 = new Vector3(posAir.x + (m_cellSize / 3), posAir.y, posAir.z + (m_cellSize / 3));
+                    int cellContent = _cells[layerToCheck][(x * _cols) + y];
+                    Vector3 posAir = new Vector3((float)((x * _cellSize)) + (_cellSize / 2) + _xIni, 1000, (float)((y * _cellSize)) + (_cellSize / 2) + _zIni);
+                    Vector3 posAir1 = new Vector3(posAir.x - (_cellSize / 3), posAir.y, posAir.z - (_cellSize / 3));
+                    Vector3 posAir2 = new Vector3(posAir.x + (_cellSize / 3), posAir.y, posAir.z - (_cellSize / 3));
+                    Vector3 posAir3 = new Vector3(posAir.x - (_cellSize / 3), posAir.y, posAir.z + (_cellSize / 3));
+                    Vector3 posAir4 = new Vector3(posAir.x + (_cellSize / 3), posAir.y, posAir.z + (_cellSize / 3));
 
                     RaycastHit raycastHit = new RaycastHit();
-                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir1, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
+                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir1, new Vector3(0, -1, 0), ref raycastHit, layersToIgnore))
                     {
                         if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
-                            m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
+                            _cells[layerToCheck][(x * _cols) + y] = PathFindingController.CELL_COLLISION;
                         }
                     }
-                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir2, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
+                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir2, new Vector3(0, -1, 0), ref raycastHit, layersToIgnore))
                     {
                         if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
-                            m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
+                            _cells[layerToCheck][(x * _cols) + y] = PathFindingController.CELL_COLLISION;
                         }
                     }
-                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir3, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
+                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir3, new Vector3(0, -1, 0), ref raycastHit, layersToIgnore))
                     {
                         if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
-                            m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
+                            _cells[layerToCheck][(x * _cols) + y] = PathFindingController.CELL_COLLISION;
                         }
                     }
-                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir4, new Vector3(0, -1, 0), ref raycastHit, _layersToIgnore))
+                    if (RaycastingTools.GetRaycastHitInfoByRay(posAir4, new Vector3(0, -1, 0), ref raycastHit, layersToIgnore))
                     {
                         if (raycastHit.collider.gameObject.layer != LayerMask.NameToLayer(PathFindingController.TAG_FLOOR))
                         {
-                            m_cells[_layerToCheck][(x * m_cols) + y] = PathFindingController.CELL_COLLISION;
+                            _cells[layerToCheck][(x * _cols) + y] = PathFindingController.CELL_COLLISION;
                         }
                     }
                 }
@@ -435,12 +435,12 @@ namespace yourvrexperience.Utils
         /**
 		 * Gets the direction to go from two points
 		*/
-        private int GetDirectionByPosition(int _xOrigin, int _yOrigin, int _xDestination, int _yDestination)
+        private int GetDirectionByPosition(int xOrigin, int yOrigin, int xDestination, int yDestination)
 		{
-			if (_yOrigin > _yDestination) return (PathFindingController.DIRECTION_UP);
-			if (_yOrigin < _yDestination) return (PathFindingController.DIRECTION_DOWN);
-			if (_xOrigin < _xDestination) return (PathFindingController.DIRECTION_RIGHT);
-			if (_xOrigin > _xDestination) return (PathFindingController.DIRECTION_LEFT);
+			if (yOrigin > yDestination) return (PathFindingController.DIRECTION_UP);
+			if (yOrigin < yDestination) return (PathFindingController.DIRECTION_DOWN);
+			if (xOrigin < xDestination) return (PathFindingController.DIRECTION_RIGHT);
+			if (xOrigin > xDestination) return (PathFindingController.DIRECTION_LEFT);
 
 			return (PathFindingController.DIRECTION_NONE);
 		}
@@ -449,14 +449,14 @@ namespace yourvrexperience.Utils
 		/**
 		 * Get the content of the cell in the asked position
 		 */
-		public bool CheckOutsideBoard(float _x, float _y, float _z)
+		public bool CheckOutsideBoard(float x, float y, float z)
 		{
-			int x = (int)(_x / m_cellSize);
-			int z = (int)(_z / m_cellSize);
-			if (z < 0) return true;
-			if (x < 0) return true;
-			if (x >= m_rows) return true;
-			if (z >= m_cols) return true;
+			int xCheck = (int)(x / _cellSize);
+			int zCheck = (int)(z / _cellSize);
+			if (zCheck < 0) return true;
+			if (xCheck < 0) return true;
+			if (xCheck >= _rows) return true;
+			if (zCheck >= _cols) return true;
 			return false;
 		}
 
@@ -464,51 +464,51 @@ namespace yourvrexperience.Utils
         /**
 		 * Get the cell of the current position
 		 */
-        public Vector3 GetCellPositionInMatrix(float _x, float _y, float _z)
+        public Vector3 GetCellPositionInMatrix(float x, float y, float z)
         {
-            int x = (int)((_x - m_xIni) / m_cellSize);
-            int z = (int)((_z - m_zIni) / m_cellSize);
-            return new Vector3(x, z, 0);
+            int xCheck = (int)((x - _xIni) / _cellSize);
+            int zCheck = (int)((z - _zIni) / _cellSize);
+            return new Vector3(xCheck, zCheck, 0);
         }
 
         // ---------------------------------------------------
         /**
 		 * Get the content of the cell in the asked position
 		 */
-        public int GetCellContentByRealPosition(float _x, float _y, float _z)
+        public int GetCellContentByRealPosition(float x, float y, float z)
 		{
-			int x = (int)((_x - m_xIni) / m_cellSize);
-			int z = (int)((_z - m_zIni) / m_cellSize);
-			return GetCellContent(x, z, 0);
+			int xCheck = (int)((x - _xIni) / _cellSize);
+			int zCheck = (int)((z - _zIni) / _cellSize);
+			return GetCellContent(xCheck, zCheck, 0);
 		}
 
 		// ---------------------------------------------------
 		/**
 		 * Get the content of the cell in the asked position
 		 */
-		public int GetCellContent(int _x, int _y, int _z)
+		public int GetCellContent(int x, int y, int z)
 		{
-			if (_y < 0) return PathFindingController.CELL_COLLISION;
-			if (_x < 0) return PathFindingController.CELL_COLLISION;
-			if (_z < 0) return PathFindingController.CELL_COLLISION;
-			if (_y >= m_cols) return PathFindingController.CELL_COLLISION;
-			if (_x >= m_rows) return PathFindingController.CELL_COLLISION;
-			if (_z >= m_layers) return PathFindingController.CELL_COLLISION;
-			return (int)(m_cells[_z][(_x * m_cols) + _y]);
+			if (y < 0) return PathFindingController.CELL_COLLISION;
+			if (x < 0) return PathFindingController.CELL_COLLISION;
+			if (z < 0) return PathFindingController.CELL_COLLISION;
+			if (y >= _cols) return PathFindingController.CELL_COLLISION;
+			if (x >= _rows) return PathFindingController.CELL_COLLISION;
+			if (z >= _layers) return PathFindingController.CELL_COLLISION;
+			return (int)(_cells[z][(x * _cols) + y]);
 		}
 
 		// ---------------------------------------------------
 		/**
 		 * Get the content of the cell in the asked position
 		 */
-		public bool OutOfBoundaries(int _x, int _y, int _z)
+		public bool OutOfBoundaries(int x, int y, int z)
 		{
-			if (_y < 0) return true;
-			if (_x < 0) return true;
-			if (_z < 0) return true;
-			if (_y >= m_cols) return true;
-			if (_x >= m_rows) return true;
-			if (_z >= m_layers) return true;
+			if (y < 0) return true;
+			if (x < 0) return true;
+			if (z < 0) return true;
+			if (y >= _cols) return true;
+			if (x >= _rows) return true;
+			if (z >= _layers) return true;
 			return false;
 		}
 
@@ -516,9 +516,9 @@ namespace yourvrexperience.Utils
 		/**
 		 * Distance between two points
 		*/
-		private float GetDistance(int _xOrigin, int _yOrigin, int _zOrigin, int _xDestination, int _yDestination, int _zDestination)
+		private float GetDistance(int xOrigin, int yOrigin, int zOrigin, int xDestination, int yDestination, int zDestination)
 		{
-			return (Mathf.Abs(_xOrigin - _xDestination) + Math.Abs(_yOrigin - _yDestination) + Math.Abs(_zOrigin - _zDestination));
+			return (Mathf.Abs(xOrigin - xDestination) + Math.Abs(yOrigin - yDestination) + Math.Abs(zOrigin - zDestination));
 		}
 
 		// ---------------------------------------------------
@@ -534,7 +534,7 @@ namespace yourvrexperience.Utils
         /*
 		* GetRandomFreeCellBorder
 		*/
-        public Vector3 GetRandomFreeCellBorder(int _layer = 0)
+        public Vector3 GetRandomFreeCellBorder(int layer = 0)
         {
             int finalX = -1;
             int finalY = -1;
@@ -549,10 +549,10 @@ namespace yourvrexperience.Utils
                     }
                     else
                     {
-                        finalX = m_rows - 1;
+                        finalX = _rows - 1;
                     }
 
-                    finalY = UnityEngine.Random.Range((int)0, (int)m_cols);
+                    finalY = UnityEngine.Random.Range((int)0, (int)_cols);
                 }
                 else
                 {
@@ -563,28 +563,28 @@ namespace yourvrexperience.Utils
                     }
                     else
                     {
-                        finalY = m_cols - 1;
+                        finalY = _cols - 1;
                     }
 
-                    finalX = UnityEngine.Random.Range((int)0, (int)m_rows);
+                    finalX = UnityEngine.Random.Range((int)0, (int)_rows);
                 }
             }
-            while (GetCellContent(finalX, finalY, _layer) != PathFindingController.CELL_EMPTY);
+            while (GetCellContent(finalX, finalY, layer) != PathFindingController.CELL_EMPTY);
 
-            return new Vector3((finalX * m_cellSize) + (m_cellSize / 2) + m_xIni, (m_cellSize / m_waypointHeight), (finalY * m_cellSize) + (m_cellSize / 2) + m_zIni);
+            return new Vector3((finalX * _cellSize) + (_cellSize / 2) + _xIni, (_cellSize / _waypointHeight), (finalY * _cellSize) + (_cellSize / 2) + _zIni);
         }
 
         // ---------------------------------------------------
         /*
 		 * GetHops
 		*/
-        private int GetHops(int _current)
+        private int GetHops(int current)
 		{
-			int curIndexBack = _current;
+			int curIndexBack = current;
 			int hops = 0;
 			do
 			{
-				curIndexBack = m_matrixAI[curIndexBack].PreviousCell;
+				curIndexBack = _matrixAI[curIndexBack].PreviousCell;
 				hops++;
 			} while ((curIndexBack != 0) && (curIndexBack != -1));
 			return hops;
@@ -594,13 +594,13 @@ namespace yourvrexperience.Utils
         /**
 		* Check if the position is in a free postion
 		*/
-        public Vector3 IsPositionInFreeNode(Vector3 _position)
+        public Vector3 IsPositionInFreeNode(Vector3 position)
         {
-            Vector3 position = new Vector3(_position.x, (m_cellSize / m_waypointHeight), _position.z);
-            Vector3 basePosition = GetCellPositionInMatrix(position.x, position.y, position.z);
+            Vector3 positionCheck = new Vector3(position.x, (_cellSize / _waypointHeight), position.z);
+            Vector3 basePosition = GetCellPositionInMatrix(positionCheck.x, positionCheck.y, positionCheck.z);
             if (GetCellContent((int)basePosition.x, (int)basePosition.y, 0) == PathFindingController.CELL_EMPTY)
             {
-                return new Vector3((basePosition.x * m_cellSize) + m_xIni, (m_cellSize / m_waypointHeight), (basePosition.y * m_cellSize) + m_zIni);
+                return new Vector3((basePosition.x * _cellSize) + _xIni, (_cellSize / _waypointHeight), (basePosition.y * _cellSize) + _zIni);
             }
             else
             {
@@ -612,13 +612,13 @@ namespace yourvrexperience.Utils
         /**
         * Get the closest free node to a position
         */
-        public Vector3 GetClosestFreeNode(Vector3 _position)
+        public Vector3 GetClosestFreeNode(Vector3 position)
         {
-            Vector3 position = new Vector3(_position.x, (m_cellSize / m_waypointHeight), _position.z);
-            Vector3 basePosition = GetCellPositionInMatrix(position.x, position.y, position.z);
+            Vector3 positionCheck = new Vector3(position.x, (_cellSize / _waypointHeight), position.z);
+            Vector3 basePosition = GetCellPositionInMatrix(positionCheck.x, positionCheck.y, positionCheck.z);
             if (GetCellContent((int)basePosition.x, (int)basePosition.y, 0) == PathFindingController.CELL_EMPTY)
             {
-                return new Vector3((basePosition.x * m_cellSize) + (m_cellSize/2) + m_xIni, (m_cellSize / m_waypointHeight), (basePosition.y * m_cellSize) + (m_cellSize / 2) + m_zIni);
+                return new Vector3((basePosition.x * _cellSize) + (_cellSize/2) + _xIni, (_cellSize / _waypointHeight), (basePosition.y * _cellSize) + (_cellSize / 2) + _zIni);
             }
             else
             {
@@ -632,7 +632,7 @@ namespace yourvrexperience.Utils
                         {
                             if (GetCellContent(i, j, 0) == PathFindingController.CELL_EMPTY)
                             {
-                                Vector3 currentPosition = new Vector3((i * m_cellSize) + (m_cellSize / 2) + m_xIni, (m_cellSize / m_waypointHeight), (j * m_cellSize) + (m_cellSize / 2) + m_zIni);
+                                Vector3 currentPosition = new Vector3((i * _cellSize) + (_cellSize / 2) + _xIni, (_cellSize / _waypointHeight), (j * _cellSize) + (_cellSize / 2) + _zIni);
                                 float currentDistance = Vector3.Distance(position, currentPosition);
                                 if (currentDistance < minimumDistance)
                                 {
@@ -651,39 +651,39 @@ namespace yourvrexperience.Utils
         /**
 		* Gets the path between 2 positions
 		*/
-        public Vector3 GetPath(Vector3 _origin,
-                                Vector3 _destination,
-                                List<Vector3> _waypoints,
-                                int _oneLayer,
-                                bool _raycastFilter,
-                                int _limitSearch = -1,
-                                params string[] _masksToIgnore)
+        public Vector3 GetPath(Vector3 origin,
+                                Vector3 destination,
+                                List<Vector3> waypoints,
+                                int oneLayer,
+                                bool raycastFilter,
+                                int limitSearch = -1,
+                                params string[] masksToIgnore)
         {
-            Vector3 origin = new Vector3();
-            origin.x = (int)((_origin.x - m_xIni) / m_cellSize);
-            origin.y = (int)((_origin.z - m_zIni) / m_cellSize);
-            origin.z = (_oneLayer != -1? _oneLayer : ((int)((_origin.y - m_yIni) / m_cellSize)));
+            Vector3 originCheck = new Vector3();
+            originCheck.x = (int)((origin.x - _xIni) / _cellSize);
+            originCheck.y = (int)((origin.z - _zIni) / _cellSize);
+            originCheck.z = (oneLayer != -1? oneLayer : ((int)((origin.y - _yIni) / _cellSize)));
 
-            Vector3 destination = new Vector3();
-            destination.x = (int)((_destination.x - m_xIni) / m_cellSize);
-            destination.y = (int)((_destination.z - m_zIni) / m_cellSize);
-            destination.z = (_oneLayer != -1 ? _oneLayer : ((int)((_destination.y - m_yIni) / m_cellSize)));
+            Vector3 destinationCheck = new Vector3();
+            destinationCheck.x = (int)((destination.x - _xIni) / _cellSize);
+            destinationCheck.y = (int)((destination.z - _zIni) / _cellSize);
+            destinationCheck.z = (oneLayer != -1 ? oneLayer : ((int)((destination.y - _yIni) / _cellSize)));
 
             // Debug.LogError("GetPath::origin[" + origin.ToString() + "]::destination[" + destination.ToString() + "]");
 
-            int limitSearch = ((_limitSearch == -1) ? m_totalCells - 5 : _limitSearch);
+            int limitSearchCheck = ((limitSearch == -1) ? _totalCells - 5 : limitSearch);
 
-            if (!m_hasBeenFileLoaded)
+            if (!_hasBeenFileLoaded)
             {
-                return SearchAStar(origin, destination, _origin, _destination, _waypoints, (_oneLayer != -1), limitSearch, _raycastFilter, _masksToIgnore);
+                return SearchAStar(originCheck, destinationCheck, origin, destination, waypoints, (oneLayer != -1), limitSearchCheck, raycastFilter, masksToIgnore);
             }
             else
             {
-                int cellOrigin = (int)((origin.x * m_cols) + origin.y);
-                int cellDestination = (int)((destination.x * m_cols) + destination.y);
-                if (m_vectorPaths.Data[cellOrigin] == null) return Vector3.zero;
-                if (m_vectorPaths.Data[cellOrigin][cellDestination] == null) return Vector3.zero;
-                return m_vectorPaths.Data[cellOrigin][cellDestination].GetVector3();
+                int cellOrigin = (int)((originCheck.x * _cols) + originCheck.y);
+                int cellDestination = (int)((destinationCheck.x * _cols) + destinationCheck.y);
+                if (_vectorPaths.Data[cellOrigin] == null) return Vector3.zero;
+                if (_vectorPaths.Data[cellOrigin][cellDestination] == null) return Vector3.zero;
+                return _vectorPaths.Data[cellOrigin][cellDestination].GetVector3();
             }
         }
 
@@ -695,68 +695,68 @@ namespace yourvrexperience.Utils
 		* @param x_des	Final position X
 		* @param y_des	Final position Y
 		*/
-        public Vector3 SearchAStar(Vector3 _origin,
-								Vector3 _destination,
-                                Vector3 _realOrigin,
-                                Vector3 _realDestination,
-                                List<Vector3> _waypoints,
-								bool _oneLayer,
-                                int _limitSearch,
-                                bool _raycastFilter = false,
-                                params string[] _masksToIgnore)
+        public Vector3 SearchAStar(Vector3 origin,
+								Vector3 destination,
+                                Vector3 realOrigin,
+                                Vector3 realDestination,
+                                List<Vector3> waypoints,
+								bool oneLayer,
+                                int limitSearch,
+                                bool raycastFilter = false,
+                                params string[] masksToIgnore)
 		{
 			int i;
 			int j;
 			float minimalValue;
 			int currentNodeEvaluated;
 
-			m_sizeMatrix = 0;
-			m_numCellsGenerated = 0;
+			_sizeMatrix = 0;
+			_numCellsGenerated = 0;
 
 			if (PathFindingController.DEBUG_PATHFINDING)
 			{
-				Debug.Log("cPathFinding.as::SearchAStar:: ORIGIN(" + _origin.x + "," + _origin.y + "," + _origin.z + "); DESTINATION(" + _destination.x + "," + _origin.y + "," + _origin.z + "); COLUMNS=" + m_cols + ";ROWS=" + m_rows + ";HEIGHT=" + m_layers);
-				Debug.Log("CONTENT=" + m_cells);
+				Debug.Log("cPathFinding.as::SearchAStar:: ORIGIN(" + origin.x + "," + origin.y + "," + origin.z + "); DESTINATION(" + destination.x + "," + origin.y + "," + origin.z + "); COLUMNS=" + _cols + ";ROWS=" + _rows + ";HEIGHT=" + _layers);
+				Debug.Log("CONTENT=" + _cells);
 			}
 
 			// SAME POSITION
-			if ((_origin.x == _destination.x) && (_origin.y == _destination.y) && (_origin.z == _destination.z))
+			if ((origin.x == destination.x) && (origin.y == destination.y) && (origin.z == destination.z))
 			{
 				return Vector3.zero;
 			}
 
 			// RESET MATRIX
-			for (i = 0; i < m_totalCells; i++)
+			for (i = 0; i < _totalCells; i++)
 			{
-				m_matrixAI[i].Reset();
+				_matrixAI[i].Reset();
 			}
 
 			// INITIALIZE FIRST POSITION
-			m_sizeMatrix = 0;
-			m_matrixAI[m_sizeMatrix].X = (int)_origin.x;
-			m_matrixAI[m_sizeMatrix].Y = (int)_origin.y;
-			m_matrixAI[m_sizeMatrix].Z = (int)_origin.z;
-			m_matrixAI[m_sizeMatrix].HasBeenVisited = NodePathMatrix.NODE_VISITED;
-			m_matrixAI[m_sizeMatrix].DirectionInitial = PathFindingController.DIRECTION_NONE;
-			if ((_destination.x == -1) && (_destination.y == -1) && (_destination.z == -1))
+			_sizeMatrix = 0;
+			_matrixAI[_sizeMatrix].X = (int)origin.x;
+			_matrixAI[_sizeMatrix].Y = (int)origin.y;
+			_matrixAI[_sizeMatrix].Z = (int)origin.z;
+			_matrixAI[_sizeMatrix].HasBeenVisited = NodePathMatrix.NODE_VISITED;
+			_matrixAI[_sizeMatrix].DirectionInitial = PathFindingController.DIRECTION_NONE;
+			if ((destination.x == -1) && (destination.y == -1) && (destination.z == -1))
 			{
-				m_matrixAI[m_sizeMatrix].ValueSearch = 0;
+				_matrixAI[_sizeMatrix].ValueSearch = 0;
 			}
 			else
 			{
-				m_matrixAI[m_sizeMatrix].ValueSearch = GetDistance((int)_origin.x, (int)_origin.y, (int)_origin.z,
-																(int)_destination.x, (int)_destination.y, (int)_destination.z);
+				_matrixAI[_sizeMatrix].ValueSearch = GetDistance((int)origin.x, (int)origin.y, (int)origin.z,
+																(int)destination.x, (int)destination.y, (int)destination.z);
 			}
-			m_matrixAI[m_sizeMatrix].PreviousCell = -1;
+			_matrixAI[_sizeMatrix].PreviousCell = -1;
 
 			// ++ START SEARCH ++
 			i = 0;
 			do
 			{
-				m_numCellsGenerated = 0;
+				_numCellsGenerated = 0;
 
 				// CHECK OVERFLOW
-				if (m_sizeMatrix > _limitSearch)
+				if (_sizeMatrix > limitSearch)
 				{
                     if (PathFindingController.DEBUG_PATHFINDING) Debug.Log("cPathFinding.as::SearchAStar:: RETURN 1");
                     return Vector3.zero;
@@ -765,14 +765,14 @@ namespace yourvrexperience.Utils
 				// ++ LOOK FOR THE FIRST BEST NODE TO CONTINUE ++
 				minimalValue = 100000000;
 				i = -1;
-				for (j = 0; j <= m_sizeMatrix; j++)
+				for (j = 0; j <= _sizeMatrix; j++)
 				{
-					if (m_matrixAI[j].HasBeenVisited == NodePathMatrix.NODE_VISITED) // CHECKED
+					if (_matrixAI[j].HasBeenVisited == NodePathMatrix.NODE_VISITED) // CHECKED
 					{
-						if (m_matrixAI[j].ValueSearch < minimalValue)
+						if (_matrixAI[j].ValueSearch < minimalValue)
 						{
 							i = j;
-							minimalValue = m_matrixAI[j].ValueSearch;
+							minimalValue = _matrixAI[j].ValueSearch;
 						}
 					}
 				}
@@ -785,7 +785,7 @@ namespace yourvrexperience.Utils
 
 				// ++ SELECT NODE ++
 				currentNodeEvaluated = i;
-				if ((m_matrixAI[i].X == _destination.x) && (m_matrixAI[i].Y == _destination.y) && (m_matrixAI[i].Z == _destination.z))
+				if ((_matrixAI[i].X == destination.x) && (_matrixAI[i].Y == destination.y) && (_matrixAI[i].Z == destination.z))
 				{
 					// CREATE THE LIST OF CELLS BETWEEN DESTINATION-ORIGIN
 					List<Vector3> way = new List<Vector3>();
@@ -804,36 +804,36 @@ namespace yourvrexperience.Utils
 						do
 						{
 
-							sGoalCurrent.x = m_matrixAI[curIndexBack].X;
-							sGoalCurrent.y = m_matrixAI[curIndexBack].Y;
-							sGoalCurrent.z = m_matrixAI[curIndexBack].Z;
+							sGoalCurrent.x = _matrixAI[curIndexBack].X;
+							sGoalCurrent.y = _matrixAI[curIndexBack].Y;
+							sGoalCurrent.z = _matrixAI[curIndexBack].Z;
 
 							sGoalNext.x = sGoalCurrent.x;
 							sGoalNext.y = sGoalCurrent.y;
 							sGoalNext.z = sGoalCurrent.z;
 
-                            curIndexBack = m_matrixAI[curIndexBack].PreviousCell;
+                            curIndexBack = _matrixAI[curIndexBack].PreviousCell;
 
                             // INSERT WAYPOINT
-                            if (!_raycastFilter)
+                            if (!raycastFilter)
                             {
-                                if (_oneLayer)
+                                if (oneLayer)
                                 {
-                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize/2), (m_cellSize / m_waypointHeight), (sGoalNext.y * m_cellSize) + m_zIni + (m_cellSize / 2)));
+                                    way.Insert(0, new Vector3((sGoalNext.x * _cellSize) + _xIni + (_cellSize/2), (_cellSize / _waypointHeight), (sGoalNext.y * _cellSize) + _zIni + (_cellSize / 2)));
                                 }
                                 else
                                 {
-                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize / 2), sGoalNext.z - (m_cellSize / m_waypointHeight) + m_yIni, (sGoalNext.y * m_cellSize) + m_zIni + (m_cellSize / 2)));
+                                    way.Insert(0, new Vector3((sGoalNext.x * _cellSize) + _xIni + (_cellSize / 2), sGoalNext.z - (_cellSize / _waypointHeight) + _yIni, (sGoalNext.y * _cellSize) + _zIni + (_cellSize / 2)));
                                 }
                             }
                             else
                             {
-                                if (_oneLayer)
+                                if (oneLayer)
                                 {
                                     if (pivotReference == Vector3.zero)
                                     {
                                         // Debug.LogError("INSERT INITIAL POINT[" + sGoalNext.ToString() + "]");
-                                        currentChecked = new Vector3(_realDestination.x + (m_cellSize / 2), (m_cellSize / m_waypointHeight), _realDestination.z + (m_cellSize / 2));
+                                        currentChecked = new Vector3(realDestination.x + (_cellSize / 2), (_cellSize / _waypointHeight), realDestination.z + (_cellSize / 2));
                                         way.Insert(0, currentChecked);
                                         pivotReference = currentChecked;
                                     }
@@ -841,12 +841,12 @@ namespace yourvrexperience.Utils
                                     {
                                         Vector3 lastValidChecked = previousChecked;
                                         previousChecked = currentChecked;
-                                        currentChecked = new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize / 2), (m_cellSize / m_waypointHeight), (sGoalNext.y * m_cellSize) + m_zIni + (m_cellSize / 2));
+                                        currentChecked = new Vector3((sGoalNext.x * _cellSize) + _xIni + (_cellSize / 2), (_cellSize / _waypointHeight), (sGoalNext.y * _cellSize) + _zIni + (_cellSize / 2));
                                         if ((curIndexBack == 0) || (curIndexBack == -1))
                                         {
-                                            currentChecked = new Vector3(_realOrigin.x + (m_cellSize / 2), (m_cellSize / m_waypointHeight), _realOrigin.z + (m_cellSize / 2));
+                                            currentChecked = new Vector3(realOrigin.x + (_cellSize / 2), (_cellSize / _waypointHeight), realOrigin.z + (_cellSize / 2));
                                         }
-                                        if (CheckBlockedPath(new Vector3(currentChecked.x, m_pathCheckHeight, currentChecked.z), new Vector3(pivotReference.x, m_pathCheckHeight, pivotReference.z), 3, _masksToIgnore))
+                                        if (CheckBlockedPath(new Vector3(currentChecked.x, _pathCheckHeight, currentChecked.z), new Vector3(pivotReference.x, _pathCheckHeight, pivotReference.z), 3, masksToIgnore))
                                         {
                                             // Debug.LogError("INSERT["+ currentChecked.ToString() + "] BECAUSE BLOCKED PATH");
                                             // way.Insert(0, previousChecked);
@@ -858,7 +858,7 @@ namespace yourvrexperience.Utils
                                 }
                                 else
                                 {
-                                    way.Insert(0, new Vector3((sGoalNext.x * m_cellSize) + m_xIni + (m_cellSize/2), sGoalNext.z - (m_cellSize / m_waypointHeight) + m_yIni, (sGoalNext.y * m_cellSize) + m_zIni));
+                                    way.Insert(0, new Vector3((sGoalNext.x * _cellSize) + _xIni + (_cellSize/2), sGoalNext.z - (_cellSize / _waypointHeight) + _yIni, (sGoalNext.y * _cellSize) + _zIni));
                                 }
                             }
 
@@ -869,12 +869,12 @@ namespace yourvrexperience.Utils
 						ClearDotPaths();
 
                         // DRAW DEBUG BALLS
-                        if (_waypoints != null)
+                        if (waypoints != null)
                         {
                             for (int o = 0; o < way.Count; o++)
                             {
                                 Vector3 sway = way[o];
-                                _waypoints.Add(new Vector3(sway.x, sway.y, sway.z));
+                                waypoints.Add(new Vector3(sway.x, sway.y, sway.z));
                                 CreateDotPath(sway, way.Count);
                             }
                         }
@@ -891,29 +891,29 @@ namespace yourvrexperience.Utils
 				}
 
 				// SET AS VISITED NODE
-				m_matrixAI[currentNodeEvaluated].HasBeenVisited = 0;
+				_matrixAI[currentNodeEvaluated].HasBeenVisited = 0;
 
-				if (PathFindingController.DEBUG_PATHFINDING) Debug.Log("cPathFinding.as::SearchAStar::ANALIZING(" + m_matrixAI[i].X + "," + m_matrixAI[i].Y + "," + m_matrixAI[i].Z + ")");
+				if (PathFindingController.DEBUG_PATHFINDING) Debug.Log("cPathFinding.as::SearchAStar::ANALIZING(" + _matrixAI[i].X + "," + _matrixAI[i].Y + "," + _matrixAI[i].Z + ")");
 
 				// CHILD UP
-				ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X), (int)(m_matrixAI[i].Y + 1), (int)(m_matrixAI[i].Z), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_DOWN, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X), (int)(m_matrixAI[i].Y + 1), (int)(m_matrixAI[i].Z - 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_DOWN, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X), (int)(m_matrixAI[i].Y + 1), (int)(m_matrixAI[i].Z + 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_DOWN, _oneLayer);
+				ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X), (int)(_matrixAI[i].Y + 1), (int)(_matrixAI[i].Z), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_DOWN, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X), (int)(_matrixAI[i].Y + 1), (int)(_matrixAI[i].Z - 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_DOWN, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X), (int)(_matrixAI[i].Y + 1), (int)(_matrixAI[i].Z + 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_DOWN, oneLayer);
 
 				// Child DOWN
-				ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X), (int)(m_matrixAI[i].Y - 1), (int)(m_matrixAI[i].Z), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_UP, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X), (int)(m_matrixAI[i].Y - 1), (int)(m_matrixAI[i].Z - 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_UP, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X), (int)(m_matrixAI[i].Y - 1), (int)(m_matrixAI[i].Z + 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_UP, _oneLayer);
+				ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X), (int)(_matrixAI[i].Y - 1), (int)(_matrixAI[i].Z), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_UP, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X), (int)(_matrixAI[i].Y - 1), (int)(_matrixAI[i].Z - 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_UP, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X), (int)(_matrixAI[i].Y - 1), (int)(_matrixAI[i].Z + 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_UP, oneLayer);
 
 				// Child LEFT
-				ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X - 1), (int)(m_matrixAI[i].Y), (int)(m_matrixAI[i].Z), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_LEFT, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X - 1), (int)(m_matrixAI[i].Y), (int)(m_matrixAI[i].Z - 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_LEFT, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X - 1), (int)(m_matrixAI[i].Y), (int)(m_matrixAI[i].Z + 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_LEFT, _oneLayer);
+				ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X - 1), (int)(_matrixAI[i].Y), (int)(_matrixAI[i].Z), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_LEFT, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X - 1), (int)(_matrixAI[i].Y), (int)(_matrixAI[i].Z - 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_LEFT, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X - 1), (int)(_matrixAI[i].Y), (int)(_matrixAI[i].Z + 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_LEFT, oneLayer);
 
 				//  Child RIGHT
-				ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X + 1), (int)(m_matrixAI[i].Y), (int)(m_matrixAI[i].Z), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_RIGHT, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X + 1), (int)(m_matrixAI[i].Y), (int)(m_matrixAI[i].Z - 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_RIGHT, _oneLayer);
-				if (!_oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(m_matrixAI[i].X + 1), (int)(m_matrixAI[i].Y), (int)(m_matrixAI[i].Z + 1), (int)_destination.x, (int)_destination.y, (int)_destination.z, PathFindingController.DIRECTION_RIGHT, _oneLayer);
+				ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X + 1), (int)(_matrixAI[i].Y), (int)(_matrixAI[i].Z), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_RIGHT, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X + 1), (int)(_matrixAI[i].Y), (int)(_matrixAI[i].Z - 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_RIGHT, oneLayer);
+				if (!oneLayer) ChildGeneration(i, currentNodeEvaluated, (int)(_matrixAI[i].X + 1), (int)(_matrixAI[i].Y), (int)(_matrixAI[i].Z + 1), (int)destination.x, (int)destination.y, (int)destination.z, PathFindingController.DIRECTION_RIGHT, oneLayer);
 
 			} while (true);
 		}
@@ -922,24 +922,24 @@ namespace yourvrexperience.Utils
 		/**
 		 * Test if the child generated is correct
 		*/
-		private int GetCorrectChild(int _xPosition, int _yPosition, int _zPosition, int _sizeMatrix, bool _oneLayer)
+		private int GetCorrectChild(int xPosition, int yPosition, int zPosition, int sizeMatrix, bool oneLayer)
 		{
 			int sCell;
 			int i;
 
 			// Position outside the bounds
-			if ((_xPosition < 0) || (_xPosition >= m_rows)) return (0);
-			if ((_yPosition < 0) || (_yPosition >= m_cols)) return (0);
-			if ((_zPosition < 0) || (_zPosition >= m_layers)) return (0);
+			if ((xPosition < 0) || (xPosition >= _rows)) return (0);
+			if ((yPosition < 0) || (yPosition >= _cols)) return (0);
+			if ((zPosition < 0) || (zPosition >= _layers)) return (0);
 
 			// Collision control
-			sCell = GetCellContent(_xPosition, _yPosition, _zPosition);
+			sCell = GetCellContent(xPosition, yPosition, zPosition);
 			if (!CheckCollidedContent(sCell))
 			{
 				// Check if the cell has been evaluated
-				for (i = 0; i <= _sizeMatrix; i++)
+				for (i = 0; i <= sizeMatrix; i++)
 				{
-					if ((m_matrixAI[i].X == _xPosition) && (m_matrixAI[i].Y == _yPosition) && (m_matrixAI[i].Z == _zPosition))
+					if ((_matrixAI[i].X == xPosition) && (_matrixAI[i].Y == yPosition) && (_matrixAI[i].Z == zPosition))
 						return (0);
 				}
 				return 1;
@@ -951,59 +951,59 @@ namespace yourvrexperience.Utils
 		/**
 		 * Generation of a new child
 		*/
-		private void ChildGeneration(int _index,
-									int _searched,
-									int _xOrigin, int _yOrigin, int _zOrigin,
-									int _xDestination, int _yDestination, int _zDestination,
-									int _initialDirection,
-									bool _oneLayer)
+		private void ChildGeneration(int index,
+									int searched,
+									int xOrigin, int yOrigin, int zOrigin,
+									int xDestination, int yDestination, int zDestination,
+									int initialDirection,
+									bool oneLayer)
 		{
 			// Generation of Childs 
-			int posx = _xOrigin;
-			int posy = _yOrigin;
-			int posz = _zOrigin;
+			int posx = xOrigin;
+			int posy = yOrigin;
+			int posz = zOrigin;
 			int directionInitial = -1;
-			if (GetCorrectChild(posx, posy, posz, m_sizeMatrix, _oneLayer) == 1)
+			if (GetCorrectChild(posx, posy, posz, _sizeMatrix, oneLayer) == 1)
 			{
-				if (m_matrixAI[_searched].DirectionInitial == PathFindingController.DIRECTION_NONE)
+				if (_matrixAI[searched].DirectionInitial == PathFindingController.DIRECTION_NONE)
 				{
-					directionInitial = _initialDirection;
+					directionInitial = initialDirection;
 				}
 				else
 				{
-					directionInitial = m_matrixAI[_searched].DirectionInitial;
+					directionInitial = _matrixAI[searched].DirectionInitial;
 				}
 
-				m_sizeMatrix++;
-				m_matrixAI[m_sizeMatrix].X = posx;
-				m_matrixAI[m_sizeMatrix].Y = posy;
-				m_matrixAI[m_sizeMatrix].Z = posz;
-				m_matrixAI[m_sizeMatrix].HasBeenVisited = NodePathMatrix.NODE_VISITED;
-				m_matrixAI[m_sizeMatrix].DirectionInitial = directionInitial;
-				if ((_xDestination == PathFindingController.DIRECTION_NONE) && (_yDestination == PathFindingController.DIRECTION_NONE) && (_zDestination == PathFindingController.DIRECTION_NONE))
+				_sizeMatrix++;
+				_matrixAI[_sizeMatrix].X = posx;
+				_matrixAI[_sizeMatrix].Y = posy;
+				_matrixAI[_sizeMatrix].Z = posz;
+				_matrixAI[_sizeMatrix].HasBeenVisited = NodePathMatrix.NODE_VISITED;
+				_matrixAI[_sizeMatrix].DirectionInitial = directionInitial;
+				if ((xDestination == PathFindingController.DIRECTION_NONE) && (yDestination == PathFindingController.DIRECTION_NONE) && (zDestination == PathFindingController.DIRECTION_NONE))
 				{
-					m_matrixAI[m_sizeMatrix].ValueSearch = 0;
+					_matrixAI[_sizeMatrix].ValueSearch = 0;
 				}
 				else
 				{
                     // m_matrixAI[m_sizeMatrix].ValueSearch = GetDistance(posx, posy, posz, _xDestination, _yDestination, _zDestination);
-                    m_matrixAI[m_sizeMatrix].ValueSearch = (float)GetHops(_index); // hops
+                    _matrixAI[_sizeMatrix].ValueSearch = (float)GetHops(index); // hops
                 }
-				m_matrixAI[m_sizeMatrix].PreviousCell = _index;
-				m_numCellsGenerated++;
+				_matrixAI[_sizeMatrix].PreviousCell = index;
+				_numCellsGenerated++;
 			}
 		}
 
-        private int m_xIterator = -1;
-        private int m_yIterator = 0;
-        private bool m_calculationCompleted = false;
+        private int _xIterator = -1;
+        private int _yIterator = 0;
+        private bool _calculationCompleted = false;
 
-        private int m_iIterator = -1;
-        private int m_jIterator = 0;
-        private bool m_iterationCompleted = true;
+        private int _iIterator = -1;
+        private int _jIterator = 0;
+        private bool _iterationCompleted = true;
 
-        private string m_filenamePath = "Assets/pathfinding.dat";
-        private bool m_hasBeenFileLoaded = false;
+        private string _filenamePath = "Assets/pathfinding.dat";
+        private bool _hasBeenFileLoaded = false;
 
         // ---------------------------------------------------
         /**
@@ -1013,11 +1013,11 @@ namespace yourvrexperience.Utils
         {
             FileStream file;
 
-            if (File.Exists(m_filenamePath)) file = File.OpenWrite(m_filenamePath);
-            else file = File.Create(m_filenamePath);
+            if (File.Exists(_filenamePath)) file = File.OpenWrite(_filenamePath);
+            else file = File.Create(_filenamePath);
 
             BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(file, m_vectorPaths);
+            bf.Serialize(file, _vectorPaths);
             file.Close();
         }
 
@@ -1025,16 +1025,16 @@ namespace yourvrexperience.Utils
         /**
 		 * Load data of pathfinding
 		*/
-        public void LoadFile(string _filenamePath)
+        public void LoadFile(string filenamePath)
         {
-            if (m_hasBeenFileLoaded) return;
-            m_hasBeenFileLoaded = true;
+            if (_hasBeenFileLoaded) return;
+            _hasBeenFileLoaded = true;
 
             FileStream file;
 
-            m_filenamePath = _filenamePath;
+            _filenamePath = filenamePath;
 
-            if (File.Exists(m_filenamePath)) file = File.OpenRead(m_filenamePath);
+            if (File.Exists(_filenamePath)) file = File.OpenRead(_filenamePath);
             else
             {
                 Debug.LogError("File not found");
@@ -1042,7 +1042,7 @@ namespace yourvrexperience.Utils
             }
 
             BinaryFormatter bf = new BinaryFormatter();
-            m_vectorPaths = (PrecalculatedData)bf.Deserialize(file);
+            _vectorPaths = (PrecalculatedData)bf.Deserialize(file);
             // m_vectorPaths.DebugLog();
             file.Close();
         }
@@ -1051,84 +1051,84 @@ namespace yourvrexperience.Utils
         /**
 		 * Load data of pathfinding
 		*/
-        public void LoadAsset(TextAsset _fileAsset)
+        public void LoadAsset(TextAsset fileAsset)
         {
-            if (m_hasBeenFileLoaded) return;
-            m_hasBeenFileLoaded = true;
+            if (_hasBeenFileLoaded) return;
+            _hasBeenFileLoaded = true;
 
-            Stream stream = new MemoryStream(_fileAsset.bytes);
+            Stream stream = new MemoryStream(fileAsset.bytes);
             BinaryFormatter formatter = new BinaryFormatter();
-            m_vectorPaths = formatter.Deserialize(stream) as PrecalculatedData;
+            _vectorPaths = formatter.Deserialize(stream) as PrecalculatedData;
         }
 
         // ---------------------------------------------------
         /**
 		 * Generation of a new child
 		*/
-        public void CalculateAll(string _filenamePath, bool _raycastFilter = false, params string[] _masksToIgnore)
+        public void CalculateAll(string filenamePath, bool raycastFilter = false, params string[] masksToIgnore)
         {
-            if (m_calculationCompleted) return;
+            if (_calculationCompleted) return;
 
-            m_filenamePath = _filenamePath;
+            _filenamePath = filenamePath;
 
-            if (m_xIterator == -1)
+            if (_xIterator == -1)
             {
-                m_vectorPaths = new PrecalculatedData(new CustomVector3[m_rows * m_cols][]);
+                _vectorPaths = new PrecalculatedData(new CustomVector3[_rows * _cols][]);
             }
 
             PathFindingController.Instance.DebugPathPoints = false;
-            if (m_iterationCompleted)
+            if (_iterationCompleted)
             {
-                m_iterationCompleted = false;
-                m_xIterator++;
-                if (m_xIterator >= m_rows)
+                _iterationCompleted = false;
+                _xIterator++;
+                if (_xIterator >= _rows)
                 {
-                    m_xIterator = 0;
-                    m_yIterator++;
-                    if (m_yIterator >= m_cols)
+                    _xIterator = 0;
+                    _yIterator++;
+                    if (_yIterator >= _cols)
                     {
-                        m_calculationCompleted = true;
+                        _calculationCompleted = true;
                         Debug.LogError("*********************** CALCULATION COMPLETED ***************************");
                         SavePathfindingData();
                         return;
                     }
                 }
-                int originatorCell = (m_xIterator * m_cols) + m_yIterator;
-                m_vectorPaths.Data[originatorCell] = new CustomVector3[m_rows * m_cols];
-                Debug.LogError("++++++++++++ NEW CALCULATION[" + originatorCell + "/" + (m_rows * m_cols) + "]");
+                int originatorCell = (_xIterator * _cols) + _yIterator;
+                _vectorPaths.Data[originatorCell] = new CustomVector3[_rows * _cols];
+                Debug.LogError("++++++++++++ NEW CALCULATION[" + originatorCell + "/" + (_rows * _cols) + "]");
             }
 
-            int originCell = (m_xIterator * m_cols) + m_yIterator;
-            if (m_cells[0][originCell] != PathFindingController.CELL_EMPTY)
+            int originCell = (_xIterator * _cols) + _yIterator;
+            if (_cells[0][originCell] != PathFindingController.CELL_EMPTY)
             {
-                m_iterationCompleted = true;             
+                _iterationCompleted = true;             
             }
             else
             {
-                m_iIterator++;
-                if (m_iIterator >= m_rows)
+                _iIterator++;
+                if (_iIterator >= _rows)
                 {
-                    m_iIterator = 0;
-                    m_jIterator++;
-                    if (m_jIterator >= m_cols)
+                    _iIterator = 0;
+                    _jIterator++;
+                    if (_jIterator >= _cols)
                     {
-                        m_iIterator = -1;
-                        m_jIterator = 0;
-                        m_iterationCompleted = true;
+                        _iIterator = -1;
+                        _jIterator = 0;
+                        _iterationCompleted = true;
                         return;
                     }
                 }
-                int targetCell = (m_iIterator * m_cols) + m_jIterator;
-                m_vectorPaths.Data[originCell][targetCell] = new CustomVector3();
+                int targetCell = (_iIterator * _cols) + _jIterator;
+                _vectorPaths.Data[originCell][targetCell] = new CustomVector3();
                 // Debug.LogError("PROGRESS [" + targetCell + "/" + (m_rows * m_cols) + "]");
-                if (!((m_xIterator == m_iIterator) && (m_yIterator == m_jIterator)))
+                if (!((_xIterator == _iIterator) && (_yIterator == _jIterator)))
                 {
-                    if (m_cells[0][targetCell] == PathFindingController.CELL_EMPTY)
+                    if (_cells[0][targetCell] == PathFindingController.CELL_EMPTY)
                     {
-                        Vector3 origin = new Vector3(m_xIterator, m_yIterator, 0);
-                        Vector3 destination = new Vector3(m_iIterator, m_jIterator, 0);
-                        int limitSearch = m_totalCells - 1;                        
-                        m_vectorPaths.Data[originCell][targetCell].SetVector3( SearchAStar(origin, destination, Vector3.zero, Vector3.one, null, true, limitSearch, _raycastFilter, _masksToIgnore));
+                        Vector3 origin = new Vector3(_xIterator, _yIterator, 0);
+                        Vector3 destination = new Vector3(_iIterator, _jIterator, 0);
+                        int limitSearch = _totalCells - 1;                        
+                        _vectorPaths.Data[originCell][targetCell].SetVector3( SearchAStar(origin, destination, Vector3.zero, Vector3.one, null, true, limitSearch, raycastFilter, masksToIgnore));
                         // Debug.LogError("VALUE[" + m_vectorPaths.Data[originCell][targetCell].ToString() + "]");
                         // Debug.LogError("...");
                     }
