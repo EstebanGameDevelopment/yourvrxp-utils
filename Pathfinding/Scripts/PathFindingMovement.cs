@@ -64,7 +64,7 @@ namespace yourvrexperience.Utils
             _ignoreRigidBody = ignoreRigidBody;
         }
 
-        public bool GoTo(Vector3 origin, Vector3 target, float speedMovement, float speedRotation, float distanceDetection)
+        public bool GoTo(Vector3 origin, Vector3 target, float speedMovement, float speedRotation, float distanceDetection, bool forceAnyway = true)
         {
             _speedMovement = speedMovement;
             _speedRotation = speedRotation;
@@ -73,15 +73,24 @@ namespace yourvrexperience.Utils
             _path = new List<Vector3>();
 
             Vector3 targetFound = PathFindingController.Instance.GetPath(origin, target, _path, 0, false, -1);
+            bool foundPath = true;
             if (targetFound != Vector3.zero)
             {
                 _currentWaypoint = 0;
-                return true;
             }
             else
             {
-                return false;
+                if (forceAnyway)
+                {
+                    _currentWaypoint = 0;
+                    _path.Add(target);
+                }
+                else
+                {
+                    foundPath = false;
+                }
             }
+            return foundPath;
         }
 
         public Vector2 MoveTowardsGoal(Vector3 goal, float speedMovement, float speedRotation)
