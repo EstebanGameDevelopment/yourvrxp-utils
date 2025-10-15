@@ -20,7 +20,10 @@ namespace yourvrexperience.Utils
         private bool _applyGravity;
         private float _directionLeft;
         private bool _ignoreRigidBody;
-        
+        private Rigidbody _actorRigidBody;
+        private CharacterController _controller;
+        private Collider _collider;
+
         private int _currentWaypoint = -1;
         private float _distanceDetection = -1;
         private List<Vector3> _path;
@@ -62,6 +65,18 @@ namespace yourvrexperience.Utils
             _applyGravity = applyGravity;
             _directionLeft = 0;
             _ignoreRigidBody = ignoreRigidBody;
+            _actorRigidBody = this.GetComponent<Rigidbody>();
+            _controller = this.GetComponent<CharacterController>();
+            _collider = this.GetComponent<Collider>();
+            if (_actorRigidBody != null)
+            {
+                _actorRigidBody.isKinematic = _ignoreRigidBody;
+                _actorRigidBody.useGravity = applyGravity;
+                if (_collider != null)
+                {
+                    _collider.isTrigger = !_ignoreRigidBody;
+                }
+            }
         }
 
         public bool GoTo(Vector3 origin, Vector3 target, float speedMovement, float speedRotation, float distanceDetection, bool forceAnyway = true)
@@ -141,32 +156,30 @@ namespace yourvrexperience.Utils
             {
                 Vector3 movement = new Vector3((vf.x * speedMovement * Time.deltaTime),
                                                 0,
-                                                (vf.y * speedMovement * Time.deltaTime)) + ((normalVector.z != 0) ? Vector3.zero : (ApplyGravity ? (Physics.gravity * Time.deltaTime) : Vector3.zero));
-                CharacterController controller = this.GetComponent<CharacterController>();
-                if (controller == null)
+                                                (vf.y * speedMovement * Time.deltaTime)) + ((normalVector.z != 0) ? Vector3.zero : (ApplyGravity ? (Physics.gravity * Time.deltaTime) : Vector3.zero));                
+                if (_controller == null)
                 {
-                    Rigidbody actorRigidBody = this.GetComponent<Rigidbody>();
-                    if (actorRigidBody == null)
+                    if (_actorRigidBody == null)
                     {
                         this.gameObject.transform.position += movement;
                     }
                     else
                     {
-                        if (actorRigidBody.isKinematic)
+                        if (_actorRigidBody.isKinematic && _ignoreRigidBody)
                         {
                             this.gameObject.transform.position += movement;
                         }
                         else
                         {
-                            this.GetComponent<Rigidbody>().MovePosition(new Vector3(actorRigidBody.position.x + (vf.x * speedMovement * Time.deltaTime)
-                                                                                     , actorRigidBody.position.y
-                                                                                     , actorRigidBody.position.z + (vf.y * speedMovement * Time.deltaTime)));
+                            this.GetComponent<Rigidbody>().MovePosition(new Vector3(_actorRigidBody.position.x + (vf.x * speedMovement * Time.deltaTime)
+                                                                                     , _actorRigidBody.position.y
+                                                                                     , _actorRigidBody.position.z + (vf.y * speedMovement * Time.deltaTime)));
                         }
                     }
                 }
                 else
                 {
-                    controller.Move(movement);
+                    _controller.Move(movement);
                 }
             }
             DirectionLeft = directionLeft;
