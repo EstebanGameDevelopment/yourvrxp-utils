@@ -43,6 +43,7 @@ namespace yourvrexperience.Utils
 		public const string ScreenInformationImage = "ScreenInformation";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
 		public const string ScreenLoading = "ScreenLoading";
+		public const string ScreenLoadingImage = "ScreenLoadingImage";
 		public const string ScreenInput = "ScreenInformationInput";
 		public const string ScreenMediumInput = "ScreenInformationMediumInput";
 		public const string ScreenLongInput = "ScreenInformationLongInput";
