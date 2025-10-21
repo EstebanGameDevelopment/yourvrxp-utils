@@ -1,15 +1,18 @@
 ﻿var OpenWindowPlugin = {
     OpenInNewTab: function(link)
     {
-		window.open(Pointer_stringify(link));
+		// window.open(Pointer_stringify(link));
+		window.open(UTF8ToString(link));
     },
 	OpenInSameTab: function (link) {
-		window.location = Pointer_stringify(link);
+		// window.location = Pointer_stringify(link);
+		window.location = UTF8ToString(link);
 		// or window.location.replace(Pointer_stringify(link));
 	},
 	DownloadFile: function (filename, fileData, dataLength) {
         // Convert the filename pointer to a JS string
-        var name = Pointer_stringify(filename);
+        // var name = Pointer_stringify(filename);
+		var name = UTF8ToString(filename);
 
         // Create a typed array from the file bytes in WASM memory
         var bytes = new Uint8Array(dataLength);
