@@ -40,7 +40,7 @@ namespace yourvrexperience.Utils
 		public const string ScreenConfirmationTop = "ScreenConfirmationTop";
 		public const string ScreenConfirmationBig = "ScreenConfirmationBig";
 		public const string ScreenConfirmationInput = "ScreenConfirmationInput";
-		public const string ScreenInformationImage = "ScreenInformation";
+		public const string ScreenInformationImage = "ScreenInformationImage";
 		public const string ScreenConfirmationImage = "ScreenConfirmationImage";
 		public const string ScreenLoading = "ScreenLoading";
 		public const string ScreenLoadingImage = "ScreenLoadingImage";
@@ -60,7 +60,7 @@ namespace yourvrexperience.Utils
 		protected float _timeAcumSec;
 		protected bool _ignoreDestruction = false;
 
-		public static GameObject CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Image infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, ICheckInput checkInput = null)
+		public static GameObject CreateScreenInformation(string screenName, GameObject origin, string title, string description, string customEvent = "", string ok = "", string cancel = "", Sprite infoImage = null, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, ICheckInput checkInput = null)
 		{
 			string okText = ok;
 			if (okText.Length == 0)

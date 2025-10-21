@@ -241,7 +241,7 @@ namespace yourvrexperience.Utils
 				string customEvent = ((parameters.Length>4)?(string)parameters[4]:""); 
 				string ok = ((parameters.Length>5)?(string)parameters[5]:""); 
 				string cancel = ((parameters.Length>6)?(string)parameters[6]:""); 
-				Image infoImage = ((parameters.Length>7)?(Image)parameters[7]:null);
+				Sprite infoImage = ((parameters.Length>7)?(Sprite)parameters[7]:null);
 
 				ScreenInformationView.CreateScreenInformation(screenName, origin, title, description, customEvent, ok, cancel, infoImage);
 			}
