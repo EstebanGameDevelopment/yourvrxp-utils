@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using Unity.SharpZipLib.Zip;
 using UnityEngine;
 using UnityEngine.Networking;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace yourvrexperience.Utils
 {
@@ -118,7 +118,7 @@ namespace yourvrexperience.Utils
 			var files = new List<(string FileName, byte[] Content)>();
 
 			using (var memoryStream = new MemoryStream(zipData))
-			using (var zipFile = new ICSharpCode.SharpZipLib.Zip.ZipFile(memoryStream))
+			using (var zipFile = new Unity.SharpZipLib.Zip.ZipFile(memoryStream))
 			{
 				if (!string.IsNullOrEmpty(password))
 					zipFile.Password = password;
