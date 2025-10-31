@@ -321,9 +321,12 @@ namespace yourvrexperience.Utils
 
 		public void LoadSoundDataBytes(byte[] receivedBytes, string eventName, int id, string extension, bool shouldReport)
 		{
+#if USE_NVORBIS
 			StartCoroutine(CreateAudioclipBytes(receivedBytes, eventName, id, extension, shouldReport));
+#endif
 		}
 
+#if USE_NVORBIS
 		public IEnumerator CreateAudioclipBytes(byte[] receivedBytes, string eventName, int id, string extension, bool shouldReport)
         {
 			// Decode OGG data using NVorbis
@@ -383,6 +386,7 @@ namespace yourvrexperience.Utils
 				}
 			}
 		}
+#endif
 
 		private IEnumerator LoadMusic(string eventName, int id, string extension, string urlAudioPath, bool shouldReport)
 		{
