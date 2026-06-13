@@ -416,17 +416,25 @@ namespace yourvrexperience.Utils
 
 					if (www.result != UnityWebRequest.Result.Success)
 					{
-						Debug.LogError($"Error downloading audio: {www.error}");
+						// Debug.LogError($"Error downloading audio: {www.error}");
+						SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 						yield break;
 					}
 
 					byte[] receivedBytes = www.downloadHandler.data;
 
-					try
+					if ((receivedBytes == null) || (receivedBytes.Length == 0))
 					{
-						LoadSoundDataBytes(receivedBytes, eventName, id, extension, shouldReport);
+						SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 					}
-					catch (Exception err) { }
+					else
+					{
+						try
+						{
+							LoadSoundDataBytes(receivedBytes, eventName, id, extension, shouldReport);
+						}
+						catch (Exception err) { }
+					}
 				}
 			}
 		}
