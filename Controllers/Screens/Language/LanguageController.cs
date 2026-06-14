@@ -35,6 +35,8 @@ namespace yourvrexperience.Utils
         public string[] SupportedLanguages;
 
         private Hashtable m_texts = new Hashtable();
+        private TextEntry _narration;
+        private TextEntry _speech;
 
 		public void Initialize()
 		{
@@ -137,6 +139,7 @@ namespace yourvrexperience.Utils
             }
             return LanguageController.Instance.GetText("language.name.english");
         }
+
         public void SetGameTexts(TextAsset gameTexts)
         {
             GameTexts = gameTexts;
@@ -144,18 +147,101 @@ namespace yourvrexperience.Utils
             LoadGameTexts();
         }
 
+        public void LoadGameTexts(string gameTexts)
+        {
+            m_texts.Clear();
+            InternalLoadTexts(gameTexts);
+            Debug.LogError("++++++++++++++ GAME TEXTS DOWNLOADED="+gameTexts);
+        }
+
         private void LoadGameTexts()
         {
             if (m_texts.Count != 0) return;
-            XmlDocument xmlDoc = new XmlDocument();
+            InternalLoadTexts(GameTexts.text);
+        }
 
-            xmlDoc.LoadXml(GameTexts.text);
+        private void InternalLoadTexts(string texts)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(texts);
             XmlNodeList textsList = xmlDoc.GetElementsByTagName("text");
             foreach (XmlNode textEntry in textsList)
             {
                 XmlNodeList textNodes = textEntry.ChildNodes;
                 string idText = textEntry.Attributes["id"].Value;
                 m_texts.Add(idText, new TextEntry(idText, textNodes));
+            }
+
+            XmlNodeList voicesEntry = xmlDoc.GetElementsByTagName("narration");
+            if (voicesEntry.Count > 0)
+            {
+                XmlNode voiceEntry = voicesEntry[0];
+                if (voiceEntry != null)
+                {
+                    _narration = new TextEntry(voiceEntry.Attributes["provider"].Value, voiceEntry.ChildNodes);
+                }
+            }
+           
+            XmlNodeList speechesEntry = xmlDoc.GetElementsByTagName("speech");
+            if (speechesEntry.Count > 0)
+            {
+                XmlNode speechEntry = speechesEntry[0];
+                if (speechEntry != null)
+                {
+                    _speech = new TextEntry(speechEntry.Attributes["gender"].Value, speechEntry.ChildNodes);
+                }
+            }
+        }
+
+        public string GetNarrationVoice(string language)
+        {
+            LoadGameTexts();
+            if (_narration != null)
+            {
+                return _narration.GetText(language);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string GetNarrationProvider()
+        {
+            LoadGameTexts();
+            if (_narration != null)
+            {
+                return _narration.Id;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string GetSpeechVoice(string language)
+        {
+            LoadGameTexts();
+            if (_speech != null)
+            {
+                return _speech.GetText(language);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string GetSpeechGender()
+        {
+            LoadGameTexts();
+            if (_speech != null)
+            {
+                return _speech.Id;
+            }
+            else
+            {
+                return null;
             }
         }
 
