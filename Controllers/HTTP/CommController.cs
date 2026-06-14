@@ -568,6 +568,36 @@ namespace yourvrexperience.Utils
 			Request(EVENT_COMM_GET_FILE_DATA, false, url);
 		}
 
+		public void DownloadURL(string eventName, string url)
+		{
+			StartCoroutine(DownloadURLCouroutine(eventName, url));
+		}
+
+		IEnumerator DownloadURLCouroutine(string eventName, string url)
+		{			
+			using (UnityWebRequest www = UnityWebRequest.Get(url))
+			{
+				yield return www.SendWebRequest();
+
+				if (www.result != UnityWebRequest.Result.Success)
+				{
+					SystemEventController.Instance.DispatchSystemEvent(eventName, false);
+					yield break;
+				}
+
+				byte[] receivedBytes = www.downloadHandler.data;
+
+				if ((receivedBytes == null) || (receivedBytes.Length == 0))
+				{
+					SystemEventController.Instance.DispatchSystemEvent(eventName, false);
+				}
+				else
+				{
+					SystemEventController.Instance.DispatchSystemEvent(eventName, true, System.Text.Encoding.UTF8.GetString(receivedBytes));
+				}
+			}
+		}
+
 		public void Update()
 		{
 			ProcessTimedEvents();
