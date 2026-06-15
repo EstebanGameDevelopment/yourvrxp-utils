@@ -37,6 +37,7 @@ namespace yourvrexperience.Utils
         private Hashtable m_texts = new Hashtable();
         private TextEntry _narration;
         private TextEntry _speech;
+        private TextEntry _aiInstructions;
 
 		public void Initialize()
 		{
@@ -190,6 +191,29 @@ namespace yourvrexperience.Utils
                 {
                     _speech = new TextEntry(speechEntry.Attributes["gender"].Value, speechEntry.ChildNodes);
                 }
+            }
+
+            XmlNodeList aiInstructionsEntry = xmlDoc.GetElementsByTagName("ai_instructions");
+            if (aiInstructionsEntry.Count > 0)
+            {
+                XmlNode aiInstructionEntry = aiInstructionsEntry[0];
+                if (aiInstructionEntry != null)
+                {
+                    _aiInstructions = new TextEntry(aiInstructionEntry.Attributes["provider"].Value, aiInstructionEntry.ChildNodes);
+                }
+            }
+        }
+
+        public string GetAIInstructions(string language)
+        {
+            LoadGameTexts();
+            if (_aiInstructions != null)
+            {
+                return _aiInstructions.GetText(language);
+            }
+            else
+            {
+                return null;
             }
         }
 

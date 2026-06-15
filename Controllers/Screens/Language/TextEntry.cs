@@ -9,6 +9,7 @@ namespace yourvrexperience.Utils
 	{
 		private string _id;
 		private Hashtable _texts;
+		private Hashtable _modified;
 
 		public string Id
 		{
@@ -19,6 +20,7 @@ namespace yourvrexperience.Utils
 		{
 			_id = id;
 			_texts = new Hashtable();
+			_modified = new Hashtable();
 			foreach (XmlNode itemParameter in textEntryParameters)
 			{
 				if (_texts[itemParameter.Name] != null)
@@ -28,6 +30,7 @@ namespace yourvrexperience.Utils
 				else
 				{
 					_texts.Add(itemParameter.Name, itemParameter.InnerText);
+					_modified.Add(itemParameter.Name, false);
 				}
 			}
 		}
@@ -67,6 +70,27 @@ namespace yourvrexperience.Utils
 			if (_texts[language] != null)
 			{
 				_texts[language] = value;
+				_modified[language] = true;
+			}
+		}
+
+		public bool GetModified(string language)
+		{
+			if (_modified[language] != null)
+			{
+				return (bool)_modified[language];
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public void ResetModified(string language)
+		{
+			if (_modified[language] != null)
+			{
+				_modified[language] = false;
 			}
 		}
 
