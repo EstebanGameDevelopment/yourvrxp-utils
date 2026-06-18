@@ -289,5 +289,24 @@ namespace yourvrexperience.Utils
 			flipped.Apply();
 			return flipped;
 		}
+
+		public static Texture2D MakeWritableCopy(Texture source)
+		{
+			RenderTexture rt = RenderTexture.GetTemporary(
+				source.width, source.height, 0,
+				RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+
+			Graphics.Blit(source, rt);
+			RenderTexture prev = RenderTexture.active;
+			RenderTexture.active = rt;
+
+			Texture2D copy = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+			copy.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+			copy.Apply();
+
+			RenderTexture.active = prev;
+			RenderTexture.ReleaseTemporary(rt);
+			return copy;
+		}
 	}
 }
