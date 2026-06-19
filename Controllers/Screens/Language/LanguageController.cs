@@ -151,6 +151,9 @@ namespace yourvrexperience.Utils
         public void LoadGameTexts(string gameTexts)
         {
             m_texts.Clear();
+            _narration = null;
+            _speech = null;
+            _aiInstructions = null;
             InternalLoadTexts(gameTexts);
             Debug.LogError("++++++++++++++ GAME TEXTS DOWNLOADED="+gameTexts);
         }
