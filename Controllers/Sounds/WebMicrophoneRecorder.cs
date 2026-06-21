@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
+#if ENABLE_MICROPHONE_OGG
 using Utilities.Audio;
 using Utilities.Encoding.OggVorbis;
+#endif
 
 namespace yourvrexperience.Utils
 {
@@ -22,6 +24,7 @@ namespace yourvrexperience.Utils
                 {
                     _instance = GameObject.FindObjectOfType(typeof(WebMicrophoneRecorder)) as WebMicrophoneRecorder;
                 }
+
                 return _instance;
             }
         }
@@ -107,10 +110,12 @@ namespace yourvrexperience.Utils
             AudioClip audioClip = AudioClip.Create("Float32Audio", resampled.Length, 1, 44100, false);
             audioClip.SetData(resampled, 0);
 
+#if ENABLE_MICROPHONE_OGG
             // Encode to OGG
             var encodedBytes = audioClip.EncodeToOggVorbis();
 
             SystemEventController.Instance.DispatchSystemEvent(EventWebMicrophoneRecorderCompleted, encodedBytes);
+#endif            
         }
 
         
