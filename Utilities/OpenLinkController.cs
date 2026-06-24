@@ -13,33 +13,39 @@ namespace yourvrexperience.Utils
 
 		public static void OpenLinkJSPluginNewTab(string url)
 		{
-#if !UNITY_EDITOR
-		OpenInNewTab(url);
+#if UNITY_IOS || UNITY_ANDROID
+			Application.OpenURL(url);
+#elif UNITY_WEBGL && !UNITY_EDITOR
+			OpenInNewTab(url);
 #else
 			Application.OpenURL(url);
-#endif
+#endif			
 		}
 		public static void OpenLinkJSPluginSameTab(string url)
 		{
-#if !UNITY_EDITOR
-		OpenInSameTab(url);
+#if UNITY_IOS || UNITY_ANDROID
+			Application.OpenURL(url);
+#elif UNITY_WEBGL && !UNITY_EDITOR
+			OpenInSameTab(url);
 #else
 			Application.OpenURL(url);
-#endif
+#endif			
 		}
 
 		public static void SaveScreenshotPNG(string fileName, byte[] pngBytes)
 		{
-#if !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
 			DownloadFile(fileName, pngBytes, pngBytes.Length);
-#endif
+#endif			
 		}
 
+#if UNITY_WEBGL
 		[DllImport("__Internal")]
 		public static extern void OpenInNewTab(string url);
 		[DllImport("__Internal")]
 		public static extern void OpenInSameTab(string url);
 		[DllImport("__Internal")]
 		private static extern void DownloadFile(string filename, byte[] fileData, int dataLength);
+#endif		
 	}
 }

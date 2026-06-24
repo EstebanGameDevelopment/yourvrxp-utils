@@ -8,15 +8,19 @@ namespace yourvrexperience.Utils
 	{
 		public static bool IsRunningInMobileDevice()
 		{
-#if !UNITY_EDITOR
+#if UNITY_IOS || UNITY_ANDROID
+			return true;			
+#elif UNITY_WEBGL && !UNITY_EDITOR
 			return IsMobileDevice() == 1;
 #else
 			return false;
 #endif
 		}
 
+#if UNITY_WEBGL
 		[DllImport("__Internal")]
 		private static extern int IsMobileDevice();
+#endif
 
 	}
 }
