@@ -31,6 +31,7 @@ namespace yourvrexperience.Utils
 			return Vector3.zero;
 		}
 
+
 		public static GameObject GetMouseCollisionObject(Camera camera, ref RaycastHit hitCollision, int mask = -1)
 		{
 			Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -274,6 +275,24 @@ namespace yourvrexperience.Utils
 			}
 			return false;
 		}
+
+		// ---------------------------------------------------
+		/**
+		 @brief We get the collided point of the raycast, with the mask to ignore
+		 */
+		public static bool GetRaycastAgainstMask(Vector3 _origin, Vector3 _direction, out Vector3 point, int mask = -1)
+		{
+			point = Vector3.zero;
+			Ray ray = new Ray(_origin, _direction.normalized);
+
+			bool hit = (mask != -1)
+				? Physics.Raycast(ray, out RaycastHit h, Mathf.Infinity, mask)
+				: Physics.Raycast(ray, out h, Mathf.Infinity);
+
+			if (hit) { point = h.point; return true; }
+			return false;
+		}
+
 
 		public static Vector3 GetPositionInteraction(RectTransform targetRect, bool debugObject = false)
 		{
