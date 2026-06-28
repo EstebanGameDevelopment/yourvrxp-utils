@@ -56,5 +56,35 @@ namespace yourvrexperience.Utils
         {
             return convert ? ConvertScale(s) : s;
         }
+
+        public static void CapturePose(Transform obj, Transform areaAnchor, bool isNormalAxis, out Vector3 storedPos, out Quaternion storedRot)
+        {
+            // 1) same frame for both (area-anchor local), independent of parenting
+            Vector3 localPos = areaAnchor.InverseTransformPoint(obj.position);
+            Quaternion localRot = Quaternion.Inverse(areaAnchor.rotation) * obj.rotation;
+
+            // 2) same convention for both (swap only in AR/MaxST mode)
+            bool swap = !isNormalAxis;
+            storedPos = ConvertVectorIfNeeded(localPos, swap);
+            storedRot = ConvertRotationIfNeeded(localRot, swap);
+        }
+
+        public static void ApplyPose(Transform obj, Transform areaAnchor, bool isNormalAxis, Vector3 storedPos, Quaternion storedRot)
+        {
+            bool swap = !isNormalAxis;
+            Vector3 localPos = ConvertVectorIfNeeded(storedPos, swap);
+            Quaternion localRot = ConvertRotationIfNeeded(storedRot, swap);
+
+            obj.position = areaAnchor.TransformPoint(localPos);
+            obj.rotation = areaAnchor.rotation * localRot;
+        }
+
+        public static Quaternion UprightFacing(Camera cam)
+        {
+            Vector3 flat = cam.transform.forward;
+            flat.y = 0f;
+            if (flat.sqrMagnitude < 1e-4f) flat = -cam.transform.up; // camera pointing straight up/down
+            return Quaternion.LookRotation(flat.normalized, Vector3.up);
+        }
     }
 }
