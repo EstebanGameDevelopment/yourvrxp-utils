@@ -37,9 +37,9 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-		public void ChangeAnimation(string triggerAnimation)
+		public void ChangeAnimation(string triggerAnimation, bool forceChange = false)
 		{
-			if (_currentTriggerAnimation != triggerAnimation)
+			if (forceChange || _currentTriggerAnimation != triggerAnimation)
 			{
 				_currentTriggerAnimation = triggerAnimation;
 				AnimatorComponent.SetTrigger(triggerAnimation);

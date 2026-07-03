@@ -12,8 +12,13 @@ namespace yourvrexperience.Utils
         private float _speed = 1.0f;
         private float _accuracy = 0.01f;
         private float _segmentTime = 1;
+        private float _duration = 1;
         private bool _loop = false;
         private bool _isActive = false;
+        public float Duration 
+        {
+            get { return _duration; }
+        }
 
         public void Init(List<Transform> waypoints, float speed = 1.0f, float accuracy = 0.01f, float segmentTime = 1, bool loop = false)
         {
@@ -23,6 +28,7 @@ namespace yourvrexperience.Utils
             _speed = speed;
             _accuracy = accuracy;
             _segmentTime = segmentTime;
+            _duration = segmentTime / speed;
             _loop = loop;
             if (_waypoints.Count < 4)
             {
