@@ -433,7 +433,10 @@ namespace yourvrexperience.Utils
 						{
 							LoadSoundDataBytes(receivedBytes, eventName, id, extension, shouldReport);
 						}
-						catch (Exception err) { }
+						catch (Exception err) 
+						{ 
+							SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
+						}
 					}
 				}
 			}
