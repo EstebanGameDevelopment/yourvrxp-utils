@@ -344,7 +344,10 @@ namespace yourvrexperience.Utils
 		{
 			return (long)((DateTime.UtcNow - Jan1St1970).TotalMilliseconds);
 		}
-
+		public static long GetTimestampSeconds()
+		{
+			return (long)((DateTime.UtcNow - Jan1St1970).TotalSeconds);
+		}
 		public static Vector2 RotatePoint(Vector2 pointToRotate, Vector2 centerPoint, double angleInDegrees)
         {
             double angleInRadians = angleInDegrees * (Math.PI / 180);
