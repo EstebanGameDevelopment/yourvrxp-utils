@@ -225,7 +225,7 @@ namespace yourvrexperience.Utils
                         _loadedObjects.Add(name, item.Value.LoadAsset(name));
                     }
                     GameObject newObject = Instantiate(_loadedObjects[name]) as GameObject;
-#if UNITY_EDITOR
+#if UNITY_EDITOR || ENABLE_URP_SHADERS
                     yourvrexperience.Utils.Utilities.ResetMaterials(newObject);
 #endif
                     return newObject;

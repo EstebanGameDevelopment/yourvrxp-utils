@@ -60,8 +60,11 @@ namespace yourvrexperience.Utils
 		[SerializeField] private float withVRScreen = 1920;
 		[SerializeField] private float heightVRScreen = 3414;
 		[SerializeField] private GameFontAsset[] Fonts;
-
 		public GameObject[] Screens;
+ 
+ 		[SerializeField] private bool applyOverlay = false;   // shader: UI/WorldspaceOverlay
+ 		[SerializeField] private Material overlayUIMaterial;   // shader: UI/WorldspaceOverlay
+        [SerializeField] private Shader   overlayTextShader;   // duplicated TMP SDF shader with ZTest Always		
 
         private List<GameObject> _screensCreated = new List<GameObject>();
 
@@ -85,6 +88,11 @@ namespace yourvrexperience.Utils
         {
 			get { return _screensCreated.Count; }
         }
+		public bool ApplyOverlay 
+		{
+			get { return applyOverlay; }
+			set { applyOverlay = value; }
+		}
 
 		public void Initialize()
 		{
@@ -207,6 +215,27 @@ namespace yourvrexperience.Utils
 		}
 #endif			
 
+        public void ApplyOverlayShader(GameObject screen)
+        {
+            if (screen == null) return;
+ 
+            Graphic[] graphics = screen.GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                if (graphics[i] is TMP_Text) continue;
+                if (overlayUIMaterial != null) graphics[i].material = overlayUIMaterial;
+            }
+ 
+            TMP_Text[] texts = screen.GetComponentsInChildren<TMP_Text>(true);
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (overlayTextShader != null)
+                {
+                    texts[i].fontMaterial.shader = overlayTextShader;
+                }
+            }
+        }
+
 		private void OnSystemEvent(string nameEvent, object[] parameters)
         {
 			if (nameEvent.Equals(SystemEventController.EventSystemEventControllerReleaseAllResources))
@@ -314,20 +343,35 @@ namespace yourvrexperience.Utils
         public GameObject CreateForwardScreen(string nameScreen, Vector3 forward, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _forward = forward;
-            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            GameObject screen = CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			if (applyOverlay)
+			{
+				ApplyOverlayShader(screen);
+			}
+			return screen;			
         }
 
 		public GameObject CreateDistanceScreen(string nameScreen, float distance, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _defaultDistance = distance;
-            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            GameObject screen = CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			if (applyOverlay)
+			{
+				ApplyOverlayShader(screen);
+			}
+			return screen;			
         }
 
         public GameObject CreatePositionScreen(string nameScreen, Vector3 position, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
             _position = position;
             _scale = scale;
-            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            GameObject screen = CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			if (applyOverlay)
+			{
+				ApplyOverlayShader(screen);
+			}
+			return screen;				
         }
 
         public GameObject CreatePositionForwardScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
@@ -335,7 +379,12 @@ namespace yourvrexperience.Utils
             _position = position;
             _scale = scale;
 			_forward = forward;
-            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			GameObject screen = CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			if (applyOverlay)
+			{
+				ApplyOverlayShader(screen);
+			}
+			return screen;			
         }
 
         public GameObject CreateScreen3DAnchor(string nameScreen, GameObject anchor, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
@@ -344,7 +393,12 @@ namespace yourvrexperience.Utils
             _scale = scale;
 			_forward = forward;
 			_anchor = anchor;
-            return CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+            GameObject screen = CreateScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			if (applyOverlay)
+			{
+				ApplyOverlayShader(screen);
+			}
+			return screen;
         }
 
         public GameObject CreateWorldScreen(string nameScreen, Vector3 position, Vector3 forward, float scale, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
@@ -354,11 +408,20 @@ namespace yourvrexperience.Utils
 			newScreen.transform.forward = forward;
 			newScreen.transform.localScale = new Vector3(scale, scale, scale);
 			newScreen.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+			if (applyOverlay)
+			{
+				ApplyOverlayShader(newScreen);
+			}
 			return newScreen;
         }
 		public GameObject CreateScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
-			return CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			GameObject screen = CreateSingleScreen(nameScreen, destroyPreviousScreen, hidePreviousScreen, parameters);
+			if (applyOverlay)
+			{
+				ApplyOverlayShader(screen);
+			}
+			return screen;
 		}
         private GameObject CreateSingleScreen(string nameScreen, bool destroyPreviousScreen, bool hidePreviousScreen, params object[] parameters)
         {
