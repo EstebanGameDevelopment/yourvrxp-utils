@@ -194,9 +194,9 @@ namespace yourvrexperience.Utils
             int newNumberErrors = 0;
             List<WordChecked> wordsError = new List<WordChecked>();            
             string formattedText = textOrigin.Replace("?", ".");
-            formattedText = formattedText.Replace("¿", string.Empty);
-            formattedText = formattedText.Replace("¡", string.Empty);
-            formattedText = formattedText.Replace("…", string.Empty);
+            formattedText = formattedText.Replace("ï¿½", string.Empty);
+            formattedText = formattedText.Replace("ï¿½", string.Empty);
+            formattedText = formattedText.Replace("ï¿½", string.Empty);
             formattedText = formattedText.Replace("!", ".");            
             string paragraph = yourvrexperience.Utils.Utilities.RemoveXmlTags(formattedText);
 
@@ -204,11 +204,11 @@ namespace yourvrexperience.Utils
 
             if ((paragraph.IndexOf(' ') != -1) || (paragraph.IndexOf(',') != -1) || (paragraph.IndexOf('.') != -1)
                 || (paragraph.IndexOf('\"') != -1) || (paragraph.IndexOf('\n') != -1) || (paragraph.IndexOf(':') != -1)
-                || (paragraph.IndexOf('—') != -1) || (paragraph.IndexOf('-') != -1) || (paragraph.IndexOf(';') != -1)
+                || (paragraph.IndexOf('ï¿½') != -1) || (paragraph.IndexOf('-') != -1) || (paragraph.IndexOf(';') != -1)
                 || (paragraph.IndexOf('%') != -1) || (paragraph.IndexOf(')') != -1) || (paragraph.IndexOf('(') != -1)
                 || (paragraph.IndexOf('_') != -1))
             {
-                string[] splittedFull = paragraph.Split(' ', ',', '.', ':', ';', '\n', '\"', '-', '—', '%', '(', ')', '_');
+                string[] splittedFull = paragraph.Split(' ', ',', '.', ':', ';', '\n', '\"', '-', 'ï¿½', '%', '(', ')', '_');
                 List<string> splittedListFull = splittedFull.ToList<string>();
                 splittedListFull.RemoveAt(splittedListFull.Count - 1);
                 string[] splitted = splittedListFull.ToArray();
@@ -216,7 +216,7 @@ namespace yourvrexperience.Utils
                 for (int i = 0; i < splitted.Length; i++)
                 {
                     string sword = splitted[i];
-                    sword = sword.Replace("’", "'");
+                    sword = sword.Replace("ï¿½", "'");
                     _currentWordsParagraph.Add(new WordChecked(sword.ToLower(), splitted[i]));
                 }
 
@@ -294,9 +294,9 @@ namespace yourvrexperience.Utils
                     {
                         newNumberErrors++;
 
-                        string[] sentences = paragraph.Split(new char[] { '.', '!', '?', ';', '\n', '\"', '-', '—', '(', ')', '_' }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] sentences = paragraph.Split(new char[] { '.', '!', '?', ';', '\n', '\"', '-', 'ï¿½', '(', ')', '_' }, StringSplitOptions.RemoveEmptyEntries);
                         string sentenceContainingWord = sentences.FirstOrDefault(sentence =>
-                            sentence.Split(' ', ',', ':', ';', '\n', '\"', '-', '—', '(', ')', '_').Contains(word, StringComparer.OrdinalIgnoreCase));
+                            sentence.Split(' ', ',', ':', ';', '\n', '\"', '-', 'ï¿½', '(', ')', '_').Contains(word, StringComparer.OrdinalIgnoreCase));
 
                         if ((sentenceContainingWord != null) && (sentenceContainingWord.Length > 0))
                         {
@@ -326,15 +326,6 @@ namespace yourvrexperience.Utils
 
                             wordError.Suggestions = finalSuggestions.ToArray<WordSuggestion>();
                             wordError.SentenceWrong = sentenceContainingWord.ToLower().Trim();
-
-                            /*
-                            string logSuggestions = "++SUGGESTION FOR WORD["+ wordError.WordOriginal + "]=";
-                            for (int k = 0; k < wordError.Suggestions.Length; k++)
-                            {
-                                logSuggestions += wordError.Suggestions[k].Word + ",";
-                            }
-                            Debug.LogError(logSuggestions);
-                            */
                         }
                     }
                 }

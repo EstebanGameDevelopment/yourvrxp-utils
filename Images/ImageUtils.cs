@@ -216,11 +216,9 @@ namespace yourvrexperience.Utils
 
 		public static Vector2Int GetImageResolution(byte[] _imageBytes)
 		{
-			// Load the image into a Texture2D
 			Texture2D texture = new Texture2D(2, 2);
 			texture.LoadImage(_imageBytes);
 
-			// Get the width and height of the texture
 			int width = texture.width;
 			int height = texture.height;
 
@@ -229,14 +227,11 @@ namespace yourvrexperience.Utils
 
 		public static byte[] ResizeImage(byte[] _imageBytes, int targetWidth, int targetHeight)
 		{
-			// Load the image into a Texture2D
 			Texture2D sourceTexture = new Texture2D(2, 2);
 			sourceTexture.LoadImage(_imageBytes);
 
-			// Create a new Texture2D with the target size
 			Texture2D resizedTexture = new Texture2D(targetWidth, targetHeight, sourceTexture.format, false);
 
-			// Resize the image
 			Color[] pixels = sourceTexture.GetPixels(0, 0, sourceTexture.width, sourceTexture.height);
 			Color[] resizedPixels = new Color[targetWidth * targetHeight];
 
@@ -251,22 +246,16 @@ namespace yourvrexperience.Utils
 			resizedTexture.SetPixels(resizedPixels);
 			resizedTexture.Apply();
 
-			// Convert the resized texture to a byte array
 			byte[] resizedImageBytes = resizedTexture.EncodeToPNG();
 			return resizedImageBytes;
 		}
 
-		// Call this function to flip the image horizontally
 		public static byte[] FlipImageHorizontally(byte[] imageBytes)
 		{
-			// Step 1: Convert byte array to Texture2D
 			Texture2D originalTexture = new Texture2D(2, 2);
 			originalTexture.LoadImage(imageBytes);
 
-			// Step 2: Flip the Texture2D horizontally
 			Texture2D flippedTexture = FlipTextureHorizontally(originalTexture);
-
-			// Step 3: Convert the flipped Texture2D back to byte array
 			byte[] flippedImageBytes = flippedTexture.EncodeToPNG(); // or EncodeToJPG(), depending on your format
 
 			return flippedImageBytes;

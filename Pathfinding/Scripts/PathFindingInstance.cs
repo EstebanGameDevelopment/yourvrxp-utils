@@ -8,19 +8,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace yourvrexperience.Utils
 {
 
-    /******************************************
-	* 
-	* PathFindingInstance
-	* 
-	* Run A* to search a path between to cells of a matrix
-	* 
-	* @author Esteban Gallardo
-	*/
     public class PathFindingInstance : MonoBehaviour
 	{
-        // ----------------------------------------------
-        // PRIVATE MEMBERS
-        // ----------------------------------------------	
         private int _cols;                     //! Cols of the matrix
 		private int _rows;                     //! Rows of the matrix
 		private int _layers;                   //! Height of the matrix
@@ -45,9 +34,6 @@ namespace yourvrexperience.Utils
 
         private float _pathCheckHeight = 1;
 
-        // ----------------------------------------------
-        // SETTERS/GETTERS
-        // ----------------------------------------------	
         public int Cols
 		{
 			get { return _cols; }
@@ -99,19 +85,10 @@ namespace yourvrexperience.Utils
             set { _pathCheckHeight = value; }
         }
 
-
-        // ---------------------------------------------------
-        /**
-		 * Constructor of cPathFinding
-		 */
         public void Initialize()
 		{
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * ClearDotPaths
-		 */
 		public void ClearDotPaths()
 		{
 			foreach (GameObject dot in _dotPaths)
@@ -121,44 +98,27 @@ namespace yourvrexperience.Utils
 			_dotPaths.Clear();
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Will clear the allocated memory
-		 */
 		public void ClearMemoryAllocated()
 		{
 			if (_matrixAI != null) _matrixAI.Clear();
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Destroy
-		 */
 		public void Destroy()
 		{
 			ClearDotPaths();
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * CreateDotPath
-		 */
 		private void CreateDotPath(Vector3 position, int totalDots)
 		{
 			if (PathFindingController.Instance.DebugPathPoints)
 			{
 				GameObject newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReferenceWay, position, new Quaternion());
-                // float cellSize = (m_cellSize / 3) + (1.2f * (float)(m_dotPaths.Count + 1) / (float)_totalDots);
                 float cellSize = (_cellSize / 2);
                 newdot.transform.localScale = new Vector3(cellSize, cellSize, cellSize);
 				_dotPaths.Add(newdot);
 			}
 		}
 
-        // ---------------------------------------------------
-        /**
-		 * CreateSingleDot
-		 */
         public GameObject CreateSingleDot(Vector3 position, float size, int type)
         {
             GameObject prefabDot = PathFindingController.Instance.DotReferenceWay;
@@ -182,10 +142,6 @@ namespace yourvrexperience.Utils
             return newdot;
         }
 
-        // ---------------------------------------------------
-        /**
-		 * CreateDot
-		 */
         private void CreateDot(Vector3 position, bool enableRenderer = true, float scaleSize = 3)
         {
             GameObject newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReferenceWay, position, new Quaternion());
@@ -198,19 +154,11 @@ namespace yourvrexperience.Utils
             _dotPaths.Add(newdot);
         }
 
-        // ---------------------------------------------------
-        /**
-		 * CheckBlockedPath
-		 */
         public bool CheckBlockedPath(Vector3 origin, Vector3 target, float dotSize = 3, params string[] masksToIgnore)
         {
             return (RaycastingTools.GetCollidedObjectBySegmentTargetIgnore(target, origin, masksToIgnore));
         }
 
-        // ---------------------------------------------------
-        /**
-		 * Will initialize the structure to be able to use it
-		 */
         public void AllocateMemoryMatrix(int cols,
 										int rows,
 										int layers,
@@ -275,19 +223,11 @@ namespace yourvrexperience.Utils
 		}
 
 
-		// ---------------------------------------------------
-		/**
-		 * SetContentCollisionCell
-		*/
 		public void SetContentCollisionCell(Vector3 posMatrix, int content)
 		{
 			_cells[(int)posMatrix.z][(int)((posMatrix.x * _cols) + posMatrix.y)] = content;
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * SetContentCollisionFloor
-		*/
 		public void SetContentCollisionFloor(Vector3 posMatrix, int content)
 		{
 			_floor[(int)((posMatrix.x * _cols) + posMatrix.y)] = content;
@@ -295,10 +235,6 @@ namespace yourvrexperience.Utils
 
         private List<GameObject> m_temporalDots = new List<GameObject>();
 
-        // ---------------------------------------------------
-        /**
-         * Destroy debug sphere reference
-         */
         public void DestroyDebugMatrixConstruction()
         {
             if (m_temporalDots.Count > 0)
@@ -311,10 +247,6 @@ namespace yourvrexperience.Utils
             m_temporalDots.Clear();
         }
 
-        // ---------------------------------------------------
-        /**
-         * Render an sphere int the empty cells to check if the matrix was build right
-         */
         public void RenderDebugMatrixConstruction(int layerToCheck = 0, int heightLayer = -1, float timeToDisplayCollisions = 0)
 		{
 			if (_dotPaths.Count > 0) return;
@@ -352,7 +284,6 @@ namespace yourvrexperience.Utils
                         newdot = (GameObject)Instantiate(PathFindingController.Instance.DotReference, this.gameObject.transform);
                     }
                     newdot.transform.localScale = new Vector3(_cellSize / 3, _cellSize / 3, _cellSize / 3);
-                    // newdot.transform.localScale = new Vector3(m_cellSize / 2, m_cellSize / 2, m_cellSize / 2);
                     newdot.transform.position = pos;
                     newdot.transform.parent = PathFindingController.Instance.transform;
                     if (timeToDisplayCollisions > 0)
@@ -368,10 +299,6 @@ namespace yourvrexperience.Utils
 			}
 		}
 
-        // ---------------------------------------------------
-        /**
-		 * Will dynamically calculate the collisions
-		 */
         public void CalculateCollisions(int layerToCheck = 0, params string[] layersToIgnore)
         {
             _cells = new int[_layers][];
@@ -431,10 +358,6 @@ namespace yourvrexperience.Utils
             }
         }
 
-        // ---------------------------------------------------
-        /**
-		 * Gets the direction to go from two points
-		*/
         private int GetDirectionByPosition(int xOrigin, int yOrigin, int xDestination, int yDestination)
 		{
 			if (yOrigin > yDestination) return (PathFindingController.DIRECTION_UP);
@@ -445,10 +368,6 @@ namespace yourvrexperience.Utils
 			return (PathFindingController.DIRECTION_NONE);
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Get the content of the cell in the asked position
-		 */
 		public bool CheckOutsideBoard(float x, float y, float z)
 		{
 			int xCheck = (int)(x / _cellSize);
@@ -460,10 +379,6 @@ namespace yourvrexperience.Utils
 			return false;
 		}
 
-        // ---------------------------------------------------
-        /**
-		 * Get the cell of the current position
-		 */
         public Vector3 GetCellPositionInMatrix(float x, float y, float z)
         {
             int xCheck = (int)((x - _xIni) / _cellSize);
@@ -471,10 +386,6 @@ namespace yourvrexperience.Utils
             return new Vector3(xCheck, zCheck, 0);
         }
 
-        // ---------------------------------------------------
-        /**
-		 * Get the content of the cell in the asked position
-		 */
         public int GetCellContentByRealPosition(float x, float y, float z)
 		{
 			int xCheck = (int)((x - _xIni) / _cellSize);
@@ -482,10 +393,6 @@ namespace yourvrexperience.Utils
 			return GetCellContent(xCheck, zCheck, 0);
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Get the content of the cell in the asked position
-		 */
 		public int GetCellContent(int x, int y, int z)
 		{
 			if (y < 0) return PathFindingController.CELL_COLLISION;
@@ -497,10 +404,6 @@ namespace yourvrexperience.Utils
 			return (int)(_cells[z][(x * _cols) + y]);
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Get the content of the cell in the asked position
-		 */
 		public bool OutOfBoundaries(int x, int y, int z)
 		{
 			if (y < 0) return true;
@@ -512,28 +415,16 @@ namespace yourvrexperience.Utils
 			return false;
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Distance between two points
-		*/
 		private float GetDistance(int xOrigin, int yOrigin, int zOrigin, int xDestination, int yDestination, int zDestination)
 		{
 			return (Mathf.Abs(xOrigin - xDestination) + Math.Abs(yOrigin - yDestination) + Math.Abs(zOrigin - zDestination));
 		}
 
-		// ---------------------------------------------------
-		/**
-		* CheckCollidedContent
-		*/
 		public bool CheckCollidedContent(int _content)
 		{
 			return (_content != PathFindingController.CELL_EMPTY);
 		}
 
-        // ---------------------------------------------------
-        /*
-		* GetRandomFreeCellBorder
-		*/
         public Vector3 GetRandomFreeCellBorder(int layer = 0)
         {
             int finalX = -1;
@@ -574,10 +465,6 @@ namespace yourvrexperience.Utils
             return new Vector3((finalX * _cellSize) + (_cellSize / 2) + _xIni, (_cellSize / _waypointHeight), (finalY * _cellSize) + (_cellSize / 2) + _zIni);
         }
 
-        // ---------------------------------------------------
-        /*
-		 * GetHops
-		*/
         private int GetHops(int current)
 		{
 			int curIndexBack = current;
@@ -590,10 +477,6 @@ namespace yourvrexperience.Utils
 			return hops;
 		}
 
-        // ---------------------------------------------------
-        /**
-		* Check if the position is in a free postion
-		*/
         public Vector3 IsPositionInFreeNode(Vector3 position)
         {
             Vector3 positionCheck = new Vector3(position.x, (_cellSize / _waypointHeight), position.z);
@@ -608,10 +491,6 @@ namespace yourvrexperience.Utils
             }
         }
 
-        // ---------------------------------------------------
-        /**
-        * Get the closest free node to a position
-        */
         public Vector3 GetClosestFreeNode(Vector3 position)
         {
             Vector3 positionCheck = new Vector3(position.x, (_cellSize / _waypointHeight), position.z);
@@ -647,10 +526,6 @@ namespace yourvrexperience.Utils
             }
         }
 
-        // ---------------------------------------------------
-        /**
-		* Gets the path between 2 positions
-		*/
         public Vector3 GetPath(Vector3 origin,
                                 Vector3 destination,
                                 List<Vector3> waypoints,
@@ -669,8 +544,6 @@ namespace yourvrexperience.Utils
             destinationCheck.y = (int)((destination.z - _zIni) / _cellSize);
             destinationCheck.z = (oneLayer != -1 ? oneLayer : ((int)((destination.y - _yIni) / _cellSize)));
 
-            // Debug.LogError("GetPath::origin[" + origin.ToString() + "]::destination[" + destination.ToString() + "]");
-
             int limitSearchCheck = ((limitSearch == -1) ? _totalCells - 5 : limitSearch);
 
             if (!_hasBeenFileLoaded)
@@ -687,14 +560,6 @@ namespace yourvrexperience.Utils
             }
         }
 
-        // ---------------------------------------------------
-        /**
-		* Do the search A* in the matrix to search a type or a position
-		* @param x_ori	Initial position X
-		* @param y_ori	Initial position Y
-		* @param x_des	Final position X
-		* @param y_des	Final position Y
-		*/
         public Vector3 SearchAStar(Vector3 origin,
 								Vector3 destination,
                                 Vector3 realOrigin,
@@ -749,7 +614,7 @@ namespace yourvrexperience.Utils
 			}
 			_matrixAI[_sizeMatrix].PreviousCell = -1;
 
-			// ++ START SEARCH ++
+			// SEARCH
 			i = 0;
 			do
 			{
@@ -762,7 +627,7 @@ namespace yourvrexperience.Utils
                     return Vector3.zero;
 				}
 
-				// ++ LOOK FOR THE FIRST BEST NODE TO CONTINUE ++
+				// LOOK FOR THE FIRST BEST NODE TO CONTINUE
 				minimalValue = 100000000;
 				i = -1;
 				for (j = 0; j <= _sizeMatrix; j++)
@@ -783,7 +648,7 @@ namespace yourvrexperience.Utils
 					return Vector3.zero;
 				}
 
-				// ++ SELECT NODE ++
+				// SELECT NODE
 				currentNodeEvaluated = i;
 				if ((_matrixAI[i].X == destination.x) && (_matrixAI[i].Y == destination.y) && (_matrixAI[i].Z == destination.z))
 				{
@@ -832,7 +697,6 @@ namespace yourvrexperience.Utils
                                 {
                                     if (pivotReference == Vector3.zero)
                                     {
-                                        // Debug.LogError("INSERT INITIAL POINT[" + sGoalNext.ToString() + "]");
                                         currentChecked = new Vector3(realDestination.x + (_cellSize / 2), (_cellSize / _waypointHeight), realDestination.z + (_cellSize / 2));
                                         way.Insert(0, currentChecked);
                                         pivotReference = currentChecked;
@@ -848,9 +712,6 @@ namespace yourvrexperience.Utils
                                         }
                                         if (CheckBlockedPath(new Vector3(currentChecked.x, _pathCheckHeight, currentChecked.z), new Vector3(pivotReference.x, _pathCheckHeight, pivotReference.z), 3, masksToIgnore))
                                         {
-                                            // Debug.LogError("INSERT["+ currentChecked.ToString() + "] BECAUSE BLOCKED PATH");
-                                            // way.Insert(0, previousChecked);
-                                            // pivotReference = Utilities.Clone(previousChecked);
                                             way.Insert(0, lastValidChecked);
                                             pivotReference = previousChecked;                                            
                                         }
@@ -918,10 +779,6 @@ namespace yourvrexperience.Utils
 			} while (true);
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Test if the child generated is correct
-		*/
 		private int GetCorrectChild(int xPosition, int yPosition, int zPosition, int sizeMatrix, bool oneLayer)
 		{
 			int sCell;
@@ -947,10 +804,6 @@ namespace yourvrexperience.Utils
 			return 0;
 		}
 
-		// ---------------------------------------------------
-		/**
-		 * Generation of a new child
-		*/
 		private void ChildGeneration(int index,
 									int searched,
 									int xOrigin, int yOrigin, int zOrigin,
@@ -958,7 +811,6 @@ namespace yourvrexperience.Utils
 									int initialDirection,
 									bool oneLayer)
 		{
-			// Generation of Childs 
 			int posx = xOrigin;
 			int posy = yOrigin;
 			int posz = zOrigin;
@@ -986,7 +838,6 @@ namespace yourvrexperience.Utils
 				}
 				else
 				{
-                    // m_matrixAI[m_sizeMatrix].ValueSearch = GetDistance(posx, posy, posz, _xDestination, _yDestination, _zDestination);
                     _matrixAI[_sizeMatrix].ValueSearch = (float)GetHops(index); // hops
                 }
 				_matrixAI[_sizeMatrix].PreviousCell = index;
@@ -1005,10 +856,6 @@ namespace yourvrexperience.Utils
         private string _filenamePath = "Assets/pathfinding.dat";
         private bool _hasBeenFileLoaded = false;
 
-        // ---------------------------------------------------
-        /**
-		 * Save data of pathfinding
-		*/
         private void SavePathfindingData()
         {
             FileStream file;
@@ -1021,10 +868,6 @@ namespace yourvrexperience.Utils
             file.Close();
         }
 
-        // ---------------------------------------------------
-        /**
-		 * Load data of pathfinding
-		*/
         public void LoadFile(string filenamePath)
         {
             if (_hasBeenFileLoaded) return;
@@ -1043,14 +886,9 @@ namespace yourvrexperience.Utils
 
             BinaryFormatter bf = new BinaryFormatter();
             _vectorPaths = (PrecalculatedData)bf.Deserialize(file);
-            // m_vectorPaths.DebugLog();
             file.Close();
         }
 
-        // ---------------------------------------------------
-        /**
-		 * Load data of pathfinding
-		*/
         public void LoadAsset(TextAsset fileAsset)
         {
             if (_hasBeenFileLoaded) return;
@@ -1061,10 +899,6 @@ namespace yourvrexperience.Utils
             _vectorPaths = formatter.Deserialize(stream) as PrecalculatedData;
         }
 
-        // ---------------------------------------------------
-        /**
-		 * Generation of a new child
-		*/
         public void CalculateAll(string filenamePath, bool raycastFilter = false, params string[] masksToIgnore)
         {
             if (_calculationCompleted) return;
@@ -1088,14 +922,12 @@ namespace yourvrexperience.Utils
                     if (_yIterator >= _cols)
                     {
                         _calculationCompleted = true;
-                        Debug.LogError("*********************** CALCULATION COMPLETED ***************************");
                         SavePathfindingData();
                         return;
                     }
                 }
                 int originatorCell = (_xIterator * _cols) + _yIterator;
                 _vectorPaths.Data[originatorCell] = new CustomVector3[_rows * _cols];
-                Debug.LogError("++++++++++++ NEW CALCULATION[" + originatorCell + "/" + (_rows * _cols) + "]");
             }
 
             int originCell = (_xIterator * _cols) + _yIterator;
@@ -1120,7 +952,6 @@ namespace yourvrexperience.Utils
                 }
                 int targetCell = (_iIterator * _cols) + _jIterator;
                 _vectorPaths.Data[originCell][targetCell] = new CustomVector3();
-                // Debug.LogError("PROGRESS [" + targetCell + "/" + (m_rows * m_cols) + "]");
                 if (!((_xIterator == _iIterator) && (_yIterator == _jIterator)))
                 {
                     if (_cells[0][targetCell] == PathFindingController.CELL_EMPTY)
@@ -1129,8 +960,6 @@ namespace yourvrexperience.Utils
                         Vector3 destination = new Vector3(_iIterator, _jIterator, 0);
                         int limitSearch = _totalCells - 1;                        
                         _vectorPaths.Data[originCell][targetCell].SetVector3( SearchAStar(origin, destination, Vector3.zero, Vector3.one, null, true, limitSearch, raycastFilter, masksToIgnore));
-                        // Debug.LogError("VALUE[" + m_vectorPaths.Data[originCell][targetCell].ToString() + "]");
-                        // Debug.LogError("...");
                     }
                 }
             }

@@ -148,7 +148,6 @@ namespace yourvrexperience.Utils
             }
             Vector2 vf = new Vector2((float)Mathf.Cos(yawGoal), (float)Mathf.Sin(yawGoal));
             vf.Normalize();
-            // Debug.DrawLine(new Vector3(pos.x, 1, pos.y), new Vector3(pos.x + vf.x, 1, pos.y + vf.y), Color.yellow);			
 
             // MOVE AND ROTATE
             yawGoal = yawGoal * Mathf.Rad2Deg;
@@ -227,7 +226,6 @@ namespace yourvrexperience.Utils
             }
             Vector2 vf = new Vector2((float)Mathf.Cos(yawGoal), (float)Mathf.Sin(yawGoal));
             vf.Normalize();
-            // Debug.DrawLine(new Vector3(pos.x, 1, pos.y), new Vector3(pos.x + vf.x, 1, pos.y + vf.y), Color.yellow);			
 
             // MOVE AND ROTATE
             yawGoal = yawGoal * Mathf.Rad2Deg;
@@ -280,7 +278,7 @@ namespace yourvrexperience.Utils
             }
             float d = -((r.x * p1.x) + (r.y * p1.y) + (r.z * p1.z));
 
-            // Check if point objective is in one side or another of the planeppos si centro del plano
+            // Check if point objective is in one side or another of the planeppos is in the center of the plane
             return (((objetive.x * r.x) + (objetive.y * r.z)) + d);
         }
 

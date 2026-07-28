@@ -87,8 +87,6 @@ namespace yourvrexperience.Utils
 		{
 			if (!EnableSound) return;
 
-			// ResetFade();
-
 			_currentAudioMelodyPlaying = audio.name;
 			_audioBackground.clip = audio;
 			_audioBackground.loop = loop;
@@ -147,8 +145,6 @@ namespace yourvrexperience.Utils
 			if (!EnableSound) return;
 			if ((int)channel >= _audioSources.Length) return;
 
-			// ResetFade();
-
 			_audioSources[(int)channel].clip = audio;
 			_audioSources[(int)channel].loop = loop;
 			_audioSources[(int)channel].volume = volume;
@@ -162,8 +158,6 @@ namespace yourvrexperience.Utils
 		{
 			if (!EnableSound) return;
 			if ((int)channel >= _audioSources.Length) return;
-
-			// ResetFade();
 
 			_audioSources[(int)channel].loop = loop;
 			_audioSources[(int)channel].volume = volume;
@@ -336,7 +330,7 @@ namespace yourvrexperience.Utils
 				int channels = vorbisReader.Channels;
 				int sampleRate = vorbisReader.SampleRate;
 
-				List<float> sampleList = new List<float>();  // Use dynamic list
+				List<float> sampleList = new List<float>(); 
 				float[] buffer = new float[1024];
 
 				// Read all samples into the list
@@ -378,7 +372,6 @@ namespace yourvrexperience.Utils
 					{
 						SystemEventController.Instance.DispatchSystemEvent(eventName, true, id, shouldReport, extension, audioClip, receivedBytes);
 					}
-					// Debug.LogError("AUDIO DATA::targetAudioClip[" + audioClip.samples + "], channels[" + audioClip.channels + "], frequency[" + audioClip.frequency + "]");
 				}
 				else
 				{
@@ -409,14 +402,12 @@ namespace yourvrexperience.Utils
 			}
 			else
 			{
-				// Debug.LogError("DOWNLOADING SOUND[" + typeAudio.ToString() + "]::URL=" + urlAudioPath);
 				using (UnityWebRequest www = UnityWebRequest.Get(urlAudioPath))
 				{
 					yield return www.SendWebRequest();
 
 					if (www.result != UnityWebRequest.Result.Success)
 					{
-						// Debug.LogError($"Error downloading audio: {www.error}");
 						SystemEventController.Instance.DispatchSystemEvent(eventName, false, id);
 						yield break;
 					}

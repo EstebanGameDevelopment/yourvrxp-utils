@@ -40,7 +40,6 @@ namespace yourvrexperience.Utils
 
         public void DispatchSystemEvent(string nameEvent, params object[] parameters)
         {
-			// Debug.LogError("SystemEventController::DISPATCH::nameEvent="+nameEvent);
             if (Event != null) Event(nameEvent, parameters);
         }
 
@@ -48,7 +47,6 @@ namespace yourvrexperience.Utils
 		{
             if (_instance == null) return;
 
-			// Debug.LogError("SystemEventController::DELAY::nameEvent="+nameEvent);
             _listEvents.Add(new TimedEventData(nameEvent, -1, -1, time, list));
 		}
 

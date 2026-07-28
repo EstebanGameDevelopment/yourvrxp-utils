@@ -146,8 +146,6 @@ namespace yourvrexperience.Utils
 			for (int i = 0; i < Waypoints.Length; i++)
 			{
 				Waypoints[i] = new Waypoint(waypointsArray[i]);
-				// GameObject way = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-				// way.transform.position = Waypoints[i].Position;
 			}
 
 			Speed = float.Parse(dataArray[1]);

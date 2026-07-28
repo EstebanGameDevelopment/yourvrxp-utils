@@ -5,14 +5,6 @@ using System.Text;
 
 namespace yourvrexperience.Utils
 {
-	/******************************************
-	* 
-	* CommEventData
-	* 
-	* Class used to dispatch events of communications HTTP
-	* 
-	* @author Esteban Gallardo
-	*/
 	public class CommEventData
 	{
 		private string m_nameEvent;
@@ -44,10 +36,6 @@ namespace yourvrexperience.Utils
 			get { return m_list; }
 		}
 
-		// -------------------------------------------
-		/* 
-		 * Constructor
-		 */
 		public CommEventData(string _nameEvent, List<ItemMultiTextEntry> _headers, bool _isBinaryResponse, float _time, params object[] _list)
 		{
 			m_nameEvent = _nameEvent;

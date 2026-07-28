@@ -7,15 +7,6 @@ using UnityEngine.Networking;
 
 namespace yourvrexperience.Utils
 {
-
-	/******************************************
-	 * 
-	 * CommController
-	 * 
-	 * It manages all the communications with the server
-	 * 
-	 * @author Esteban Gallardo
-	 */
 	public class CommController : StateMachine
 	{
 		public const char TOKEN_SEPARATOR_COMA = ',';
@@ -297,7 +288,6 @@ namespace yourvrexperience.Utils
 					break;
 
 				case BaseDataHTTP.METHOD_CANCEL:
-					Debug.LogError("=====================CANCELLED HTTP=" + _commRequest.UrlRequest);
 					ChangeState(STATE_IDLE);
 					ProcesQueuedComms();
 					break;

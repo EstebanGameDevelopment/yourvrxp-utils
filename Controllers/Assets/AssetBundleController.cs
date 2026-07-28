@@ -9,12 +9,6 @@ namespace yourvrexperience.Utils
 {
     public delegate void AssetBundleEventHandler(string nameEvent, params object[] parameters);
 
-    /******************************************
-	 * 
-	 * AssetbundleController
-	 * 
-	 * Manager of the asset bundle
-	 */
     public class AssetBundleController : MonoBehaviour
     {
         public event AssetBundleEventHandler AssetBundleEvent;
@@ -39,7 +33,7 @@ namespace yourvrexperience.Utils
             }
         }
 
-		[SerializeField] private string AssetBundleURL = "https://www.yourvrexperience.com/mygames/multiuserapp/multiuserapp";
+		[SerializeField] private string AssetBundleURL = "https://www.yourvrexperience.com/address/to/assetbundle";
 		[SerializeField] private int AssetBundleVersion = 1;
 
         private bool _isLoadinAnAssetBundle = false;

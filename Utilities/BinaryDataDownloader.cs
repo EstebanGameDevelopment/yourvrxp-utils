@@ -37,7 +37,6 @@ namespace yourvrexperience.Utils
 
         public void DispatchBinaryDownloadEvent(string nameEvent, byte[] data, params object[] parameters)
         {
-            // Debug.LogError("UIEventController::DISPATCH::nameEvent="+nameEvent);
             if (Event != null) Event(nameEvent, data, parameters);
         }
 
@@ -60,7 +59,6 @@ namespace yourvrexperience.Utils
                     Debug.Log($"Downloaded {data.Length} bytes.");
 #endif
                     DispatchBinaryDownloadEvent(EventBinaryDataDownloaderDataDownloadedSuccess, data, parameters);
-                    // Process the binary data as needed
                 }
                 else
                 {

@@ -9,19 +9,11 @@ namespace yourvrexperience.Utils
     {
 		public CustomVector3[][] Data;
 
-		// -------------------------------------------
-		/* 
-		 * Constructor
-		 */
 		public PrecalculatedData(CustomVector3[][] _data)
 		{
             Data = _data;
         }
 
-        // -------------------------------------------
-        /* 
-		 * Trace the data
-		 */
         public void DebugLog()
         {
             for (int i = 0; i < Data.Length; i++)

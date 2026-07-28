@@ -23,7 +23,6 @@ namespace yourvrexperience.Utils
             textInput.onTextSelection.AddListener(OnSelectText);
 
             SymSpellController.Instance.Initialize(LanguageController.CodeLanguageEnglish);
-            // SymSpellController.Instance.Initialize(LanguageController.CodeLanguageSpanish);
 
             SystemEventController.Instance.Event += OnSystemEvent;
         }

@@ -87,7 +87,6 @@ namespace yourvrexperience.Utils
             string[] fullData = data.Split('|');
             string frequencyRecorded = fullData[0];
             string base64 = fullData[1];
-            // Debug.LogError("Received Base64 Ogg data::FREQUENCY["+ frequencyRecorded + "]");
             byte[] byteRaw = Convert.FromBase64String(base64);
 
             // Read PCM bytes
@@ -106,7 +105,6 @@ namespace yourvrexperience.Utils
             }
 
             var resampled = Resample(samples, 48000, 44100);
-            // for (int i = 0; i < samples.Length; i++) samples[i] = Mathf.Clamp(samples[i], -1f, 1f);
             AudioClip audioClip = AudioClip.Create("Float32Audio", resampled.Length, 1, 44100, false);
             audioClip.SetData(resampled, 0);
 

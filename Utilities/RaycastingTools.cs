@@ -185,10 +185,6 @@ namespace yourvrexperience.Utils
 			return camera.transform.position + currentForwardMouse * distanceCollision;
 		}
 
-		// ---------------------------------------------------
-		/**
-		 @brief We get the collided object between 2 points
-		 */
 		public static bool GetCollidedObjectBySegmentTargetIgnore(Vector3 _goalPosition, Vector3 _originPosition, params string[] _masksToIgnore)
 		{
 			Vector3 fwd = new Vector3(_goalPosition.x - _originPosition.x, _goalPosition.y - _originPosition.y, _goalPosition.z - _originPosition.z);
@@ -211,7 +207,6 @@ namespace yourvrexperience.Utils
 			{
 				if (Physics.Raycast(_originPosition, fwd, out hitCollision, distanceTotal))
 				{
-					// Debug.LogError("[--NO FILTER--]::NAME["+ hitCollision.collider.gameObject.name + "]::LAYER["+ LayerMask.LayerToName(hitCollision.collider.gameObject.layer) + "]");
 					return true;
 				}
 			}
@@ -219,7 +214,6 @@ namespace yourvrexperience.Utils
 			{
 				if (Physics.Raycast(_originPosition, fwd, out hitCollision, distanceTotal, layerMask))
 				{
-					// Debug.LogError("[++WITH FILTER++]::NAME[" + hitCollision.collider.gameObject.name + "]::LAYER[" + LayerMask.LayerToName(hitCollision.collider.gameObject.layer) + "]::DISTANCE CHECK["+ distanceTotal + "]");
 					return true;
 				}
 			}
@@ -227,10 +221,6 @@ namespace yourvrexperience.Utils
 			return false;
 		}
 
-		// ---------------------------------------------------
-		/**
-		 @brief We get the whole RaycastHit information of the collision, with the mask to ignore
-		 */
 		public static RaycastHit GetRaycastHitInfoByRay(Vector3 _origin, Vector3 _forward, params string[] _masksToIgnore)
 		{
 			Vector3 fwd = _forward;
@@ -250,11 +240,6 @@ namespace yourvrexperience.Utils
 			return hitCollision;
 		}
 
-
-		// ---------------------------------------------------
-		/**
-		 @brief We get the whole RaycastHit information of the collision, with the mask to ignore
-		 */
 		public static bool GetRaycastHitInfoByRay(Vector3 _origin, Vector3 _forward, ref RaycastHit _hitCollision, params string[] _masksToIgnore)
 		{
 			Vector3 fwd = _forward;
@@ -276,10 +261,6 @@ namespace yourvrexperience.Utils
 			return false;
 		}
 
-		// ---------------------------------------------------
-		/**
-		 @brief We get the collided point of the raycast, with the mask to ignore
-		 */
 		public static bool GetRaycastAgainstMask(Vector3 _origin, Vector3 _direction, out Vector3 point, int mask = -1)
 		{
 			point = Vector3.zero;

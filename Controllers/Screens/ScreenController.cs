@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using IngameDebugConsole;
 using UnityEngine.UI;
 using TMPro;
 #if ENABLE_NREAL
@@ -137,11 +136,7 @@ namespace yourvrexperience.Utils
 #endif			
 				SystemEventController.Instance.DispatchSystemEvent(EventScreenControllerStarted);
 
-				_isInGameDebugConsole = DebugLogManager.Instance != null;
-				if (_isInGameDebugConsole)
-				{
-					DebugLogManager.Instance.PopupEnabled = false;
-				}
+				_isInGameDebugConsole = false;
 			}
 		}
 
@@ -310,33 +305,6 @@ namespace yourvrexperience.Utils
 			}
 			if (nameEvent.Equals(EventScreenControllerToggleInGameDebugConsole))
 			{
-				if (DebugLogManager.Instance != null)
-				{
-					if (!DebugLogManager.Instance.IsLogWindowVisible)
-					{							
-						DebugLogManager.Instance.ShowLogWindow();
-#if ENABLE_OCULUS || ENABLE_OPENXR || ENABLE_ULTIMATEXR || ENABLE_NREAL
-						DebugLogManager.Instance.gameObject.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
-						DebugLogManager.Instance.gameObject.transform.position = VRInputController.Instance.VRController.HeadController.transform.position + VRInputController.Instance.VRController.HeadController.transform.forward.normalized + new Vector3(0,-0.5f,0);
-						DebugLogManager.Instance.gameObject.transform.forward = VRInputController.Instance.VRController.HeadController.transform.forward;
-						DebugLogManager.Instance.gameObject.transform.localScale = new Vector3(0.002f, 0.002f, 0.002f);
-#if ENABLE_OCULUS
-						if (DebugLogManager.Instance.gameObject.GetComponent<OVRRaycaster>() == null) DebugLogManager.Instance.gameObject.AddComponent<OVRRaycaster>();
-#elif ENABLE_OPENXR
-						if (DebugLogManager.Instance.gameObject.GetComponent<TrackedDeviceGraphicRaycaster>() == null) DebugLogManager.Instance.gameObject.AddComponent<TrackedDeviceGraphicRaycaster>();
-#elif ENABLE_ULTIMATEXR						
-						if (DebugLogManager.Instance.gameObject.GetComponent<UxrCanvas>() == null) DebugLogManager.Instance.gameObject.AddComponent<UxrCanvas>();
-						if (DebugLogManager.Instance.gameObject.GetComponent<UxrLaserPointerRaycaster>() == null) DebugLogManager.Instance.gameObject.AddComponent<UxrLaserPointerRaycaster>();
-						DebugLogManager.Instance.gameObject.GetComponent<UxrCanvas>().CanvasInteractionType = UxrInteractionType.LaserPointers;
-						DebugLogManager.Instance.gameObject.GetComponentInChildren<Canvas>().renderMode = RenderMode.WorldSpace;
-#endif
-#endif
-					}
-					else
-					{
-						DebugLogManager.Instance.HideLogWindow();
-					}
-				}
 			}
         }
 

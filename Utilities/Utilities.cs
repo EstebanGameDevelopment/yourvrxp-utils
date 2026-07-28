@@ -118,7 +118,6 @@ namespace yourvrexperience.Utils
 		public static bool AreCoordsWithinUiObject(Vector2 coords, GameObject gameObj)
 		{
 			Vector2 localPos = gameObj.transform.InverseTransformPoint(coords);
-			// if (GameConfig.ENABLE_SHOW_ALL_DEBUG_MESSAGES) Debug.LogError("AreCoordsWithinUiObject=" + localPos.ToString());
 			return ((RectTransform)gameObj.transform).rect.Contains(localPos);
 		}		
 		
@@ -576,8 +575,6 @@ namespace yourvrexperience.Utils
 		public static void ReverseNormals(GameObject gameObject)
 		{
 			// Renders interior of the overlay instead of exterior.
-			// Included for ease-of-use. 
-			// Public so you can use it, too.
 			MeshFilter filter = gameObject.GetComponent(typeof(MeshFilter)) as MeshFilter;
 			if(filter != null)
 			{
@@ -691,7 +688,6 @@ namespace yourvrexperience.Utils
 					foreach (AnimationClip item in animationClips)
 					{
 						string triggerAnimation = item.name;
-						// THIS CODE WON'T BE HERE BECAUSE THE ANIMATIONS WILL HAVE THE SAME NAME AS THE TRIGGERS
 						int indexSpecialAnimation = triggerAnimation.IndexOf(separator);
 						if (indexSpecialAnimation != -1)
 						{
@@ -780,10 +776,8 @@ namespace yourvrexperience.Utils
 		{
 			using (SHA256 sha256Hash = SHA256.Create())
 			{
-				// Convert the input string to a byte array and compute the hash.
 				byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-				// Convert byte array to a string.
 				StringBuilder builder = new StringBuilder();
 				for (int i = 0; i < bytes.Length; i++)
 				{
@@ -1140,18 +1134,10 @@ namespace yourvrexperience.Utils
 			{
 				string token = textParagraphs[i] + " ";
 				output += token;
-				/*                
-                List<char> specials = token.Where(c => !char.IsLetterOrDigit(c)).Distinct().ToList();
-                foreach (var ch in specials)
-                {
-                    Debug.LogError("ch="+ ch + "::number="+ (int)ch);
-                }
-                */
 				textParagraphs[i] = textParagraphs[i].Trim();
 				if (textParagraphs[i].Length == 0)
 				{
 					output += "\n\n";
-					// Debug.LogError("FOUND DOUBLE CR");
 				}
 			}
 
@@ -1206,14 +1192,12 @@ namespace yourvrexperience.Utils
 
 				Vector3 currentScale = objectA.transform.localScale;
 
-				// Calculate scale factors needed on each axis
 				Vector3 scaleFactor = new Vector3(
 					sizeB.x / sizeA.x,
 					sizeB.y / sizeA.y,
 					sizeB.z / sizeA.z
 				);
 
-				// Apply it to the current localScale
 				objectA.transform.localScale = Vector3.Scale(currentScale, scaleFactor);
 			}
 		}

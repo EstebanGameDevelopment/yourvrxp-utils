@@ -37,7 +37,7 @@ namespace yourvrexperience.Utils
 
             if (maxLength == 0)
             {
-                return 100.0f; // Both strings are empty
+                return 100.0f;
             }
 
             int distance = LevenshteinDistance(s1, s2);

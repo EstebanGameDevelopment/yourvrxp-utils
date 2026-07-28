@@ -92,7 +92,6 @@ namespace yourvrexperience.Utils
 		public void FadeOut()
 		{
 			_isFadeIn = false;
-			// Fade the overlay to `out_alpha`.
 			if (this != null)
             {
 				if (_material != null)

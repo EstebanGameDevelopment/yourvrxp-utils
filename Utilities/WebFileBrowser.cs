@@ -27,7 +27,7 @@ namespace yourvrexperience.Utils
         [DllImport("__Internal")] private static extern string WebFileBrowserUpload(string extensionFilter, string receiverName, string methodName);
 
         private static WebFileBrowser _instance;
-        private static Action<string, string, byte[]> _callback; // name, MIME, bytes.
+        private static Action<string, string, byte[]> _callback;
 
         public void Awake()
         {

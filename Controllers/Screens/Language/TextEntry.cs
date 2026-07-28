@@ -25,7 +25,7 @@ namespace yourvrexperience.Utils
 			{
 				if (_texts[itemParameter.Name] != null)
 				{
-					Debug.LogError("TAG REPETIDO[" + _id + "]");
+					Debug.LogError("REPEATED TAG[" + _id + "]");
 				}
 				else
 				{

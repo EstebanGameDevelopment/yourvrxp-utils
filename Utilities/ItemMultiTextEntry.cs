@@ -135,13 +135,11 @@ namespace yourvrexperience.Utils
 
 		public void UpdateInstructions(string instructions)
 		{
-			// SET ONLY THE ITEM
 			while (_items.Count > 1)
 			{
 				_items.RemoveAt(_items.Count - 1);
 			}
 
-			// ADD THE INSTRUCTIONS
 			string[] replaceInstructions = instructions.Split(new string[] { TokenSeparatorData }, StringSplitOptions.None);
 			for (int i = 0; i < replaceInstructions.Length; i++)
 			{
