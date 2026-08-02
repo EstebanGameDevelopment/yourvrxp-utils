@@ -224,6 +224,7 @@ namespace yourvrexperience.Utils
 						www = new UnityWebRequest(_commRequest.UrlRequest, "POST");					
 						_currentWWW = www;
 						www.uploadHandler = new UploadHandlerRaw(_commRequest.RawData);
+						www.uploadHandler.contentType = "application/octet-stream";
 						www.downloadHandler = new DownloadHandlerBuffer();
 						www.disposeDownloadHandlerOnDispose = true;
 						www.disposeUploadHandlerOnDispose = true;
