@@ -18,6 +18,9 @@ namespace yourvrexperience.Utils
 			}
 		}
 
+		[SerializeField]
+		private string defaultTriggerAnimation;
+
 		private Animator _animator;
 		private string _currentTriggerAnimation;
 
@@ -34,6 +37,14 @@ namespace yourvrexperience.Utils
 					_animator = this.GetComponent<Animator>();
 				}
 				return _animator;
+			}
+		}
+
+		void Start()
+		{
+			if (!string.IsNullOrEmpty(defaultTriggerAnimation))
+			{
+				ChangeAnimation(defaultTriggerAnimation);
 			}
 		}
 
